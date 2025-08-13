@@ -1,0 +1,41 @@
+
+Installer Chocolatey (si tu ne l’as pas déjà) : 
+
+Set-ExecutionPolicy Bypass -Scope Process -Force; `
+[System.Net.ServicePointManager]::SecurityProtocol = `
+[System.Net.ServicePointManager]::SecurityProtocol -bor 3072; `
+iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+Installer Terraform
+
+choco install terraform -y
+
+Vérifier l’installation :
+
+terraform -version
+
+
+az login
+
+az group create --name rg-terraform-backend --location eastus
+
+az storage account create \
+  --name stterraformbackend123 \
+  --resource-group rg-terraform-backend \
+  --location eastus \
+  --sku Standard_LRS
+
+az storage container create \
+  --name tfstate \
+  --account-name stterraformbackend123
+
+
+1. Initialiser Terraform (prépare le backend, télécharge les providers)
+terraform init
+2. (Optionnel) Voir ce que Terraform va créer/modifier
+terraform plan
+3. Appliquer la configuration (déploiement)
+terraform Apply
+4. (Optionnel) Pour détruire tout ce que tu as créé
+terraform destroy
+
