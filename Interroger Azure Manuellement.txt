@@ -1,0 +1,65 @@
+======================================================================
+1. Obtenir un token d’accès (OAuth2) : script1.ps1
+======================================================================
+
+$tenantId = "1324dfb4-4457-41c3-a943-293c61bbd70c"
+$clientId = "3a38a7e4-2dec-4275-a6cd-29cf91ecbd76"
+$clientSecret = "Confidentiellll"
+
+$body = @{
+    grant_type    = "client_credentials"
+    client_id     = $clientId
+    client_secret = $clientSecret
+    scope         = "https://management.azure.com/.default"
+}
+
+$response = Invoke-RestMethod -Method Post -Uri "https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token" -ContentType "application/x-www-form-urlencoded" -Body $body
+
+# Affiche le token
+$response.access_token
+
+
+=====================================================================
+2. lister les machines virtuelles dans une subscription : script2.ps1
+=====================================================================
+
+# =====================
+# Variables
+# =====================
+$subscriptionId = "c5346ccd-9bc4-4053-91da-8ab9be9ab95e"
+
+# Token récupéré
+$accessToken = $response.access_token.Trim() -replace "`r","" -replace "`n",""
+
+# =====================
+# Lister toutes les VMs
+# =====================
+$uri = "https://management.azure.com/subscriptions/$subscriptionId/providers/Microsoft.Compute/virtualMachines?api-version=2024-11-01"
+
+try {
+    $vms = Invoke-RestMethod -Method Get -Uri $uri -Headers @{ Authorization = "Bearer $accessToken" }
+} catch {
+    Write-Error "Erreur lors de la récupération des VMs : $_"
+    return
+}
+
+# =====================
+# Afficher état de chaque VM
+# =====================
+foreach ($vm in $vms.value) {
+    # Extraire le Resource Group du chemin de la VM
+    $rgName = $vm.id.Split("/")[4]
+    $vmName = $vm.name
+
+    # URI pour récupérer l'état de la VM
+    $statusUri = "https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$rgName/providers/Microsoft.Compute/virtualMachines/$vmName/instanceView?api-version=2024-11-01"
+
+    try {
+        $status = Invoke-RestMethod -Method Get -Uri $statusUri -Headers @{ Authorization = "Bearer $accessToken" }
+        $powerState = ($status.statuses | Where-Object { $_.code -like "PowerState/*" }).displayStatus
+    } catch {
+        $powerState = "Erreur récupération état"
+    }
+
+    Write-Output "VM: $vmName, ResourceGroup: $rgName, État: $powerState"
+}

@@ -1,4 +1,26 @@
 
+MsolService : Ancien accès à azure AD via le module MSOnline
+Azure AD : module pour gérer Entra-ID via PowerShell
+ExchangeOnline : module qui permet d'administrer exchange d'O365 (mailboxes …)
+Microsoft Graph API : accès moderne à Microsoft 365, il gère tout : Entra-ID, M365 … via le module Microsoft.Graph
+Azure ARM/REST APIs : Gérer les ressources Azure comme VMs, réseaux ...
+
+Connect-AzAccount
+Get-AzSubscription
+
+Connect-AzureAD
+Get-AzureADUser -ObjectId "soufiane.talibi@castel-afrique.com" | Format-List *
+
+Connect-MgGraph -Scopes "User.Read.All"
+Get-MgUser -UserId "soufiane.talibi@castel-afrique.com"
+
+ Gérer les boites mails O365
+Connect-ExchangeOnline
+Get-MailboxStatistics -Identity "soufiane.talibi@castel-afrique.com" | 
+    Select DisplayName, TotalItemSize, ItemCount
+
+======================================================================================================
+
  Les 4 types de compute dans le cloud : 
 
 -Machines virtuelles (VM – Virtual Machines)
@@ -24,6 +46,58 @@ déclencheur de la fonction : nouveau msg reçu dans la file d'attente
 Lire les infos de la commande depuis le message (JSON).
 Mettre à jour la base de données SQL server.
 Appeler un service d’email (ex. SendGrid) pour envoyer la confirmation.
+
+=============================================
+Conteneurisation sur le cloud :
+
+      1-azure ACI
+      2-app service
+      3-AKS  
+            (Azure ACR est un registry des images comme docker Hub)
+
+ -je crée une VM linux sur le cloud, j'y installe docker,docker-compose et je gère moi même le tout (VM Dockerisée)
+
+ -je veux juste lancer des images docker : azure ACI (conteneur serverless, je crée des conteneurs sans gérer l'infra docker) mais ne supporte pas docker compose
+
+ -je veux déployer une app constituée de  quelques images "php+mysql" comme un docker-compose : app service for containers
+
+ -orchestrer plusieurs conteneurs : Azure AKS
+
+ ==========> azure ACI est idéal pour test, script, API
+
+ ==========> app service for containers est idéal pour une app constituées (php+mysql…)
+
+ ==========> Azure AKS est idéal pour microservices complexes avec CI/CD
+
+
+======================
+App service : 
+======================
+
+-Web App : permet de déployer une API ou une app backend uniquement (Node.js, Spring Boot, PHP, etc.), Pas de DB incluse par défaut, il faut l'ajouter manuellement
+
+-Static Web App : App frontend only (React, vue angular) qui peut être connecté à une API serverless (Azure Functions)
+
+-Web App + Database : Apps fullstack (crée un backend + avec base de données incluse) ex :  Express + MySQL , Spring Boot + PostgreSQL
+
+-WordPress on App Service : installe un site vitrine wordpress avec DB. 
+
+Exemple de Web App : 
+
+   application backend Spring Boot uniquement, avec une API REST qui gère des tâches (tasks), sans interface utilisateur (frontend)
+  on utilise avec spring boot une base de données relationnelle H2 légère en mémoire (ou en fichier), écrite en Java
+
+  GET /api/tasks – Liste des tâches
+  POST /api/tasks – Créer une tâche
+  PUT /api/tasks/{id} – Modifier une tâche
+  DELETE /api/tasks/{id} – Supprimer une tâche
+
+Accède à l’API :
+GET http://localhost:8080/api/tasks
+  
+Accède à la base :
+http://localhost:8080/h2-console
+(JDBC URL : jdbc:h2:mem:taskdb, user : sa, password : vide)
 
 =============================================================
 On peut créer : 

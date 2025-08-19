@@ -1,3 +1,20 @@
+﻿
+je peux interroger azure via :
+
+ 1. Portail Azure
+ 2. Azure PowerShell (Connect-AzAccount)
+ 3. Azure CLI (az login)
+ 4. Cloud Shell (le shell sur le portail)
+ 5. Azure REST API (avec curl, je récupère un token tout d'abord puis j'interroge azure avec ce token) => authentification manuelle 
+ 6. SDK dans un langage X ( ex azure-mgmt-* dans python...) ==> le SDK s'authentifie et interroge azure, ==> authentification automatique  
+
+
+je peux m'authentifier sur azure avec : 
+ -Mon compte Azure, rapide pour dev/test mais pas adapté pour un script automatique
+ -Service Principal, créer une application SP azure AD, (Subscription_ID, appId → CLIENT_ID, password → CLIENT_SECRET, tenant → TENANT_ID)
+
+Exemple d'utilisation des SDK : 
+
 SDK sur python vers API vmware 
 SDK sur Java vers API AWS
 SDK sur Node.js vers  l’API d’OpenAI
@@ -9,8 +26,6 @@ Le SDK d'un langage "Y" se branche sur l'API d'une application "X"    : résulta
 Par ex : 
     Le SDK azure-mgmt-* de Python (PyPI) se branche sur "ARM API d'azure"  : résultat --> le programme Python pour faire des actions sur azure (créer VM, lister les ressources ...) 
     
-
-
 je peux utiliser aussi un plugin qui va interroger une API azure : 
  
 Le plugin centreon-plugin-Cloud-Azure peut contacter l'API Azure Monitor, cette dernière se base en arrière plan sur l'ARM API  : résultat  --> voir CPU, RAM, disque, etc
@@ -54,7 +69,6 @@ print(data["message"])  # ca va m'afficher le retour
 2-Se connecter via un script powershell ou python pour avoir le token puis envoyer des requêtes avec le token reçu.   (Token d'abord ensuite envoyer la requête)
    ou bien le plus propre est d'interroger l'API azure avec l'un des SDK (ex SDK python) pour interroger azure via      (token abstrait, plus simple à employer)
  
-
 Sur Entra-ID, créer une App registration, nom : AzureAPIClient, 
   -Application (client) ID
   -Directory (tenant) ID
@@ -97,3 +111,5 @@ Azure API Management sert à exposer, sécuriser, gérer, surveiller et versionn
                          --> VMs ou serveurs physiques
 
 Tant que ton backend expose une API HTTP/HTTPS, tu peux le connecter à Azure API Management.
+
+=======================================================================================================

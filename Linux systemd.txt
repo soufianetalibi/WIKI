@@ -1,4 +1,4 @@
-1. Infos système générales
+﻿1. Infos système générales
 
 
 uname -a              # Version du noyau et archi
@@ -111,7 +111,6 @@ journalctl -u nom_service   # Logs d’un service précis
 tail -f /var/log/syslog     # Logs système en direct
 tail -f /var/log/auth.log   # Connexions SSH et authentifications
 last
-
 
 
 ====Démarrage linux : 
