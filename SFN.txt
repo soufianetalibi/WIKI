@@ -1,0 +1,146 @@
+ERP : progiciel qui permet le pilotage de tous les activités de l'entreprise, 
+      personnalisable, se compose de plusieurs modules : ventes, stock, comptabilité, finance, RH ...
+      ex: SAP S/4HANA, ORACLE, SAGE , Microsoft Dynamics, M3 ...
+
+Network security solutions : 
+
+Firewalls : Fortinet, checkpoint, palo alto, cisco ASA
+IAM : Identity and access management : Azure AD, Okta, Duo securitySailpoint identity
+IDPS : intrusion detection and prevention systems : snort, cisco firepower, check point sandblast
+SIEM : Security information and event management : Splunk, IBM Qradar, LogRhythm NG SIEM...
+SWG : secure web gateways : zscaler, symantec web, Macafee web, Forcepoint web...
+NAC : Network access control : Cisco ISE, Aruba ClearPass, Forescout counterACT...
+Email security : Barracuda email, Proofpoint email, Cisco email...
+DLP : Data loss prevention : Symantec DLP, Macafee Total DLP, Forcepoint DLP ...
+Antivirus and antimalware : Symantec, Macafee, Kaspersky, ESET
+EDR : Endpoint detection and response : Crowdstrike, SentinelOne, Carbon black, 
+
+
+nodejs is used to build network programs like web servers, similar to PHP, Java, or ASP.NET
+
+check du ldaps de google : 
+ openssl s_client -connect ldap.google.com:636
+
+ADDS : Microsoft Entra Domain Services : azure.castel-afrique.com
+       ADDS est lié à un vnet, les applications, et VMs qui se connectent à ce vnet pour l'utiliser : jonction au domaine, GPO, LDAP authentification Kerberos/NTLM
+       "Microsoft Entra Domain Services" sur portal.azure.com ou entra.microsoft.com
+       Activer LDAPS et activer le sur internet (mais le domaine sera vulnérable aux attaques), puis limiter les ip sources.
+       le certificat LDAPS doit être distribué aux users
+       Tester ldaps : telnet ldaps.azure.castel-afrique.com -port 636
+       sur le NSG "aads-nsg", inbound rules, limiter les ip sources.
+       
+       nslookup sur ldaps.azure.castel-afrique.com (affiche les IP des serveurs virtuels azure ADDS : 10.246.208.4, 10.246.208.5 vnet-commun/snet-adds )
+        --> ce sont deux ip privées, une PIP visible depuis l'extérieur "51.105.105.212" et un NSG qui filtre l'accès LDAPS, DNS ...
+        ldaps est diffusé sur internet mais seul le DC IBM "129.35.165.137/32" est autorisé à l'interroger pour l'accès M3
+
+AD on promise : Base NTDS.dit, GPO, kerberos/NTLM, interroger avce ldap://castel.afrique (port 389 par défaut)
+
+AD azure : interroger avec ldaps.azure.castel-afrique.com (port 636 par défaut)
+
+Test-NetConnection 51.105.105.212 -port 636
+Test-NetConnection -ComputerName icubedev.service-now.com -Port 443
+
+
+ surl'ERP M3, c'est le module ldap provider qui communique avec le ldaps d'azure AD.
+
+pour réussir la synchro entre serveurs AD : 53, 88, 389, 445, 636, 49152-65535
+
+=====
+
+la virtualisation matérielle : plusieurs OS sur un seul hardware : ESXi, Citrix XenServer, HyperV, KVM
+la virtualisation du système d’exploitation : plusieurs conteneurs sur 1 seul OS (environnements d’exécution des applications) : docker
+
+application multi-conteneurs : elle s'exécute sur un cluster de plusieurs conteneurs répartis sur différents systèmes physiques et virtuels, ce cluster est géré par ex par kubernetes.
+
+Le cloud : 
+ IaaS : VM windows (VM installé avec une image ISO à votre choix), azure VM, Azure ACS, Amazon EC2, Amazon ECS, Rackspace, Google GCE, Oracle cloud, OVH
+ PaaS : OS avec application installée à exploiter, Azure SQL Database, Google App Engine, Azure App Services, amazon Elastic Beanstalk
+ SaaS : application finale accessible par une interface utilisateur, Azure AD, O365, G-suite ... 
+
+
+ Pour créer son VPS dans le cloud : 
+ azure VM
+ Amazon EC2
+ Google GCE
+ oracle OCI
+
+La virtualisation conteneurisées sur le cloud : 
+ Google Container Engine (GKE)
+ Amazon EC2 Container Service (ECS)
+ Azure Container Service (ACS)
+ IONOS Container Cluster
+
+Salesforce : CRM de gestion des clients possible de l'avoir sur le cloud sous forme de Paas et Saas.
+Google G-Suite : outils google sur le cloud (Gmail, Agenda, Drive, Meet) comme O365 de microsoft.
+Slack : outil microsoft de collaboration d'une équipe.
+
+example cloud of serverless execution de code : 
+ azure functions 
+ AWS Lambda
+ google cloud functions
+
+Service DNS sur le cloud : 
+ azure traffic manager
+ amazon route 53
+ cloud DNS
+ce service DNS sur le cloud permet (l'enregistrement DNS, gestion de trafic, géolocalisation ...)
+
+-->godaddy, eurosDNS ... est un simple hébergeur DNS qui permet de publier des enregistrements. 
+pour connaîte l'hébergeur d'un domaine X : https://lookup.icann.org/
+
+NoSQL databases : non relationelles, non structurées
+                  les BD relationnelles suivent le schéma fixe de tables, colonnes et clés, ce qui n'est pas pratique en bigdata.
+                  les BD relationnelles necessitent un scaling UP (+ de ressources CPU, RAM, HDD) pour traiter bcp de données dans le cadre de la BigData.
+                  Les BD no SQL sont légères et permettent un scaling out ( stocker les BDD sur plusieurs serveurs, BD distribuée )
+                  Les BD NoSQL sont utiles pour les applications qui traitent bcp de données (des Térabytes) provenant des réseaux sociaux ...
+
+         Les types de BDD NoSQL : 
+                   clé-valeur : stocker la donnée sous forme d’un couple clé/valeur(s), exemple : l'ensemble des commentaires d'une photo ont la clé X
+                   Orientées colonnes : des colonnes mais non structuées, chaque ligne peut avoir un nombre différent de colonnes selon le besoin.
+                   Graph-Based : composée de nœuds et de bords, Les nœuds représentent la valeur de la donnée, Les bords représentent les relations entre les nœuds.
+                   orientées document : stocker la donnée sous forme d’un couple clé/valeur mais la valeur est un document : Json, XML, TXT ...                
+
+                   Cassandra : NoSQL de type BigData
+                   MongoDB :NoSQl de type document
+                   Redis : NoSQL de type clé-valeur 
+                   Oracle Nosql : noSQL de types clé-valeur, colonnes et documents 
+   
+ Scale UP : Vertical, agmentation des ressources de la même VM, c'est manuel, passer d'un gabarit à un autre.
+ Scale OUT : Horizontal, ajout de nouvelles VM pour absorber le flux, c'est automatique (azure scale set ->Elastic scale-out ) 
+
+POO : C++, JAVA, PYTHON, .NET (based on objects)
+Scripting PL : PHP, Perl, Ruby, Javascript (interpreted, 
+procédural PL : C#, COBOL, PASCAL, Fortran (based on algorithm, tell me what to do and how to do)
+
+vsphere : Compute virtualization
+vSAN : Storage vittualization
+NSX : Network virtualization
+
+AV Detect and remove known malwares in his database : virus, worms, torjans
+
+EDR Monitor and responds to advanced threats 
+
+XDR provids cross-platform, holistic threat detection and response
+
+SSL Handshake : processus pendant lequel le serveur web et la navigateur négocient chiffrement.
+
+ -fixer le protocole à utiliser SSL X, TLS X
+ -le navigateur vérfie l'autorité de certification
+ -le navigateur crée une clé de session et la crypte avec la clé publique du serveur web
+ -le serveur web décrypte le message avec sa clé privé
+ -échange de données
+
+La clé privée - cette clé est contrôlée par le propriétaire d'un site web et maintenue privée, comme le lecteur l'a peut-être spéculé. Cette clé réside sur un serveur web. Elle est utilisée pour déchiffrer les informations chiffrées par la clé publique.
+La clé publique - cette clé est disponible pour tous ceux qui souhaitent interagir avec le serveur de manière sécurisée. Les informations chiffrées par la clé publique ne peuvent être déchiffrées que par la clé privée.
+
+Vcenter : central MGMT, SSO, VDS, HA, DRS, vmotion, FT, update via VUM, 
+
+NIOC : prioritize network traffic and allocate bandwidth to different types of traffic such as storage ...
+
+API : interface qui permet d'interroger une solution et retourner un résultat : comme un menu dans un restaurant qui apporte un plat prêt à manger.
+
+REST API : c'est un type d'API à base HTTP qui effectue un GET, POST, DELETE
+         exemple : API avec methode GET et URL https://api.example.com/users/123 qui retourne un json ayant le user {"id":123, "name":"TALIBI","prenom":"soufiane"}
+                   API avec methode POST et URL https://api.example.com/users et corps json ayant le user {"name":"TALIBI","prenom":"soufiane"} qui crée le user et retourne le code 201 created et le corps : {"id":124, "name":"TALIBI","prenom":"soufiane"} 
+                   API avec methode DELETE et URL https://api.example.com/users/124 supprime le user 124 et retourne 204 No Content
+

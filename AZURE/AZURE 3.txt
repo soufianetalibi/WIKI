@@ -1,0 +1,825 @@
+
+
+
+
+
+-Prepare azure fundamentals az-900 et administrator az104 : 
+https://docs.microsoft.com/en-us/learn/certifications/exams/az-900
+https://docs.microsoft.com/en-us/learn/certifications/exams/az-104
+
+cloud computing : computing ressources over internet that is managed by a provider.
+
+Une zone géographique Azure est un marché distinct, contenant généralement au minimum une ou plusieurs régions
+Une région Azure est constituée d’un ensemble de centres de données déployés dans un périmètre.
+
+55 régions sur 140 pays
+Bande passante par région : 1,6 Pbits/s
+
+Exemple de régions : France central, North Europe, West Europe, Central US, East US 
+
+
+=======Ressources in azure : 
+VM
+virtual network
+network interface
+storage account
+public ip address
+app service 
+app service plan
+
+--->localted in ressource groupes, locations and subscriptions
+
+management groups :
+ create a group for each team.
+ put subscription1 in the management group
+ we can apply rules on the group
+
+Ressource groups : 
+ un service se compose de plusieurs ressources
+ de préférence, lorsque nous créeons un service, il vaut mieux le mettre dans un nouveau ressource group
+ en cas de démantelement, la suppression du ressource group permet de supprimer le service en complet. 
+ Ressource group permet aussi d'appliquer des RBAC permission 'role based acces control' pour limiter les accès.
+
+ Virtual Machine : VM, public ip address, network security group, virtual network, network interface, Disk, storage account
+ ce qui joue sur la facture azure :   
+  size de la VM
+  Licence de windows server 2019
+  type de disque (HDD, SSD,SSD premium) par défaut pour le C:
+  disque supplémentaire (attach disk) pour D:
+  networking : public IP
+  data transfert in (dans le DC généralement gratuit)
+  data transfert out (sur l'exterieur c'est payant)
+  region
+  nombre d'heures d'exploitation. (pay as you go)
+  snapshot
+  support
+ --> possible d'utiliser azure pricing calculator pour prévoir avant de créer le service.
+
+Tag : tagguer les ressources partout dans mon espace. 
+-->pour voir tous les tag, aller au service "tags"
+
+Lors de la création d'une VM, l'onglet tags permet de voir les ressources qui seront crées pour cette VM.
+
+Lock : éviter la suppression accidentelle ou mettre en read only une ressource ou un group de ressources.
+
+============TP azure :
+ 
+Créer et se connecter à une machine virtuelle Windows Azure en RDP : 
+https://akril.net/creer-et-se-connecter-a-une-machine-virtuelle-windows-azure-en-rdp/
+
+Connecting to a Windows Azure VM in Remote PowerShell : 
+https://akril.net/connecting-to-a-windows-azure-vm-in-remote-powershell/
+
+Créer et se connecter à une BD SQL windows azure : 
+https://akril.net/se-connecter-a-une-base-de-donnees-sql-windows-azure-avec-sql-management-studio/
+
+Création d’un Open VPN dans Windows Azure : 
+https://akril.net/creation-dun-vpn-dans-windows-azure/
+ -->créer une VM ubuntu "MonVPN" ayant une ip publique et un nom DNS de type : MonVPN.cloudapp.net
+ -->se connecter avec putty sur la VM linux et y installer openVPN.
+
+Créer un réseau privé : 
+https://akril.net/creer-votre-reseau-prive-dans-azure-en-francais/
+
+changer ou récupérer le mdp d'une VM sur azure : 
+https://akril.net/changer-ou-retrouver-le-mot-de-passe-dune-machine-virtuelle-dans-azure/
+
+azure AD : 
+https://akril.net/joindre-une-vm-a-votre-domaine-azure-active-directory/
+
+GPO dans azure AD : 
+https://akril.net/gpo-dans-azure-active-directory/
+
+Conditional Access d'Azure AD : 
+https://akril.net/securiser-azure-active-directory-avec-conditional-access/
+
+ (O365 <--> ADazure <--> AD on-prem)
+https://akril.net/configuration-de-aad-connect-azure-active-directory-connect-et-synchronisation-avec-office-365/
+
+MAJ de l'AD connect : 
+https://akril.net/mise-a-jour-de-azure-ad-connect/
+
+Azure automation : 
+-permet d'arrêter et démarrer les VM via les tags
+-permet de planifier l'execution des script powershell
+
+
+=====================
+
+Types of computing : 
+1-->Virtual Machines : OS + application + ressources
+2---->Containers : juste les bibliothèques nécessaires + application en question + ressources 
+3------>Serverless : changement des fonctions applicative que l'utilisateur demande uniquement sur le conteneur.
+
+-Containers : 
+Pour installer exchange, pas besoin d'installer l'OS complet et y mettre l'appli
+ avoir un conteneur ayant les bibliothèques requises pour exchange + exchange + les ressources matériel
+ containers are managed by container engine
+
+-Serverless : 
+Diviser l'application en fonctions et n'appeler que les fonctions que l'utilisateur a besoin 
+serverless runtime call only the functions that i need to be executed in the container
+ exemple : function login is called juste one time in the start of the session.
+
+serverless : utile pour les developpeurs, possible d'executer un code (java, php ...) directement sur une intrface.
+=============
+Capex : dépenses suite à acquisition : on promise 
+Opex : dépenses suite à utilisation : Cloud service
+===============
+IAAS : i have to manage OS, Middleware, runtime, data, application
+PAAS : i have to manage runtime, data, application : equivalent à docker, crée ton conteneur pour l'application à tourner
+SAAS : the provider manage everything 
+===============
+Free azure account for 1 year with 200$ pay as you go to spend in 30 days. max of 4cpus on all VMs
+25 products for free always
+-->needs a valid phone number, credit card and mail on microsoft.
+
+we can pay on azure.com or partner of microsoft.
+===============
+portal : 
+ --> portal.azure.com
+===============
+subscriptions : 
+
+ressources : VM, container, Website, AD, Ax Dynamic, APP, VPN, FW, storage
+
+un seul user ne peut pas gérer toutes les ressources azure, 
+
+billing account : le compte général de facturation surlequel je crée des profiles puis des souscriptions.
+ -->profile1 avec carte de credit ayant 1000$
+  -->invoice section1 
+    -->subscription1 : Budget 300$ (for developper team) -->ajouter sur ses ACL les emails des developpeurs
+    -->subscription2 : Budget 100$ (for network team)
+ -->profile2 avec carte de crédit ayant 3000$
+ 
+Azure subscription 1 exists by default.
+
+----any subscription should be a part of :  
+  -a billing account (root : only one in the organization)
+  -a billing profil (invoice and payment methods)
+  -an invoice section (shows the charges incurred that month)
+=================
+support options : 
+
+1-free : online documentation, community support, youtube channel (help and support on azure portal)
+
+2-support plans : "basic for free", developer, standard with levels A,B,C , professional with levels A,B,C 
+
+En cas de besoin, on crée "support request" puis il demande subscription for facturation. 
+
+Advisor : monitoring of my payments and recommendations of microsoft.  
+
+Sandbox : un environnement de test du déploiement de services. 
+
+Azure Marketplace is an online store that hosts applications that are certified and optimized to run in Azure
+ for example, wordpress is an application on the marketplace of azure.
+  
+To add ressources to my website : scall up (s'il y a beaucoup de trafic sur ma web app) 
+To minimize ressources : load balance my web site on other VMs that have the same website.
+
+gérer mon app service via cloud shell
+az webapp stop --ressource-group SFN --name siteSFN
+az webapp start --ressource-group SFN --name siteSFN
+
+liste des ressources groupes : az group list --output table
+liste des ressources : az ressource list --output table
+
+
+==================
+datacenter (availability set) -> HA de la VM sur un rack2 dans le même datacenter
+zone (availability zone) -> HA de la VM sur un rack dans un autre datacenter de la même région, par contre cette région doit supporter l'availability zone.
+region (region pair) --> HA de la VM sur un rack dans une autre région, ex : nord amérique, south america
+Geography : divisé entre Americas, Europe, Middle east and Africa, Asia Pacific
+ 
+--SLA sur azure :
+
+99,9% < non respectée, 10% de moins sur la facture
+99% < non respecté, 25% de moins sur la facture
+95 < non respecté, facture gratuite
+
+supposons de mon projet a : 
+webapp SLA 99,95%
+SQL Database SLA 99,99% 
+
+SLA projet = 99,95 * 99,99 / 100 = 99,94%
+
+===================
+
+azure migrate : permet de migrer des serveurs physiques ou VM depuis vmware/hyperV on protomise vers azure
+
+Solutions de stockage azure : 
+
+semi structured data :
+ -azure data lake storage   (like data imported on facebook ...)
+unstructured data :
+ -azure blob storage, Pour application qui prend en charge le streaming et l’accès aléatoire, prend également en charge Azure Data Lake Storage Gen2 pour les solutions d’analytique d’entreprise Big Data.
+structured data : 
+ -azure sql database, azure cosmos db
+ -azure queue : to store data that is imported from an application like what's app. 
+
+ -azure Disk storage : HDD that we attach to a VM
+ -azure files : share for VMs. 
+==================
+Networking on azure : 
+
+web-app : 
+ mysql (database)
+ backend (app)
+ frontend (web srv)
+
+azure create a virtual network  vnet : range, dns, gateway, firewall (forti or any vendor)
+we can link our on promise datacenter to azure network via VPN site to site
+the VMs that i create in the same region and having the same vnet can communicate directly, else i have to use a routing.
+
+==================
+scal in : augmenter les ressources de mon application
+scal out : duppliquer mon application en deux ou 3 nodes et faire un LB (round roubing, traffic, priority, actif et passif)
+
+Load balancing, APP GW, traffic manager : 
+
+-azure load balancer : only Load Balancing but no filtering.
+
+-Application gateway : layer 7 firewalls : WAF : "filter the trafic and loadbalancing in th same time"
+
+-traffic manager : LB au niveau géographique
+
+load balancer or Application gateway works as a endpoint on one region only.
+
+endpoint1 = application gateway + 3 web apps in region 1
+endpoint2 = application gateway + 3 web apps in region 2
+endpoint3 = application gateway + 3 web apps in region 3
+
+si j'ai 3 endpoints dans 3 régions, je redirige le traffic via traffic manager vers endpoint la plus proche (architecture distribuée sur plusieurs régions)
+
+traffic manager localise la requête via le DNS et redirige vers endpoint la plus proche.
+
+====================
+Security on azure : 
+
+azure security center has two parts : 
+
+-free : given with any subscription 
+-standard : you can add it for more security
+
+====================
+Azure active directory :  (modern authentication: openID) 
+
+-authentication
+-SSO
+-application management
+-B2B : users of another company can access to my applications
+-B2C : login on my applications with public accounts (gmail ...)
+
+-we can join computers win10 to the azure domaine because old authentication is not supported in azure.
+if we want to use kerberos, ldap, GPO ... like the old AD domain and join win7, win8 ... we have to add "active directory domain services" 
+
+MFA  :
+something you know : user/mdp
+something you have : mobile (sms/call)
+something you are : déverrouillage par empreinte ou visage. 
+
+
+symetric encryption : 
+one key localted in the wifi router and users should have it connect on the network.
+
+asymetric encryption : 
+le site https envoie aux utilisateurs sa clé publique pour crypter avec avant d'envoyer le trafic.
+le site https garde chez lui la clé privée (secret)
+le site https utilse la clé privé et la clé publique pour déchiffrer le contenu reçu
+man in the middle ne peut pas déchiffrer car seul le site https qui a la clé privée.
+
+==========================
+protect shared documents : 
+
+azure information protection in O365
+add label : 
+ -files that having credit card should be opened only in my domain by user1,2,3
+
+azure advanced threat protection : ATP
+applied on all ressources on my cloud
+act like IPS and IDS and managed via portal
+
+==========================
+azure policy : 
+
+we can apply rules on the team in my subscription or a ressource group
+->assignments, assign policy
+-->basics : allowed VM SKUs, basic1,2,3,4
+--->apply only on future VMs 
+
+=============================================================================================================================
+
+availability set is free but juste software (in the same DC)
+ fault domain : 2 : la VM sera duppliquée deux fois pour éviter les problèmes hardware.
+ update domain : 5 : La VM sera duppliquée sur 5 rack pour dispo si jamais une maj windows est appliquée rack par rack.
+ use managed disks : prendre en considération tous les disks liés à cette VM.
+
+availability zone is payant but physical (in the same region)
+
+si je veux vérifier mes activations availability set, mettre le service "availability set" dans la recherche azure.
+
+si vous activer availability set lors de la création de la VM, il n'est plus possible de configurer availability zone graphiquement, c'est gérable depuis le shell.
+
+je peux utiliser la même availability set pour plusieurs VMs sauf qu'elles doivent être dans le même resource group.
+
+Lors de la création d'une VM, je peux ajouter sur "advanced" des extentions comme antivirus, powershell...
+
+TP : 
+créer deux VMs web1 et web2 avec availability set.
+installer IIS et y mettre le même site web
+ouvrir le port https sur les deux VMs pour se connecter depuis l'externe
+activer load balancing sur les deux VMs,
+
+ouvrir port sur une VM : 
+networking, add inbound rule autoriser 8080
+dans la VM, binding de la config IIS, ajouter 8080
+
+une ip publique peut être liée à un nom DNS visible sur proprieté .azure.com
+
+Load balance : 
+-l'équilibrage est fait en privé (dans le LAN) ou publique (sur internet), dans notre cas c'est publique.
+-créer un load balancer dans le même ressource groupe des deux VMs
+-SKU : basic limite 2Gega, standard limite 2Téra 
+backend pool : ajouter les ip web1 et web2, associated to availability set.
+health probe : test de disponibilité des nodes
+LB rule : au bout de combien de temps bascler ... 
+
+=====
+
+
+-----------------azure storage accounts : 
+structured data : base de données relationnelle avec enregistrements
+semi structured data : NoSQL, like XML, JSON, YAML
+unstructured data : videos, photos text files, log files ...
+
+Transactional databases are often called OLTP, handle large volumes of data
+-->Product catalog data should be stored in a transactional database
+OLAP have longer response times, handle large and complex transactions
+-->Photos and videos in a product catalog don't require transactional support
+-->For the business data, because all of the data is historical and unchanging, transactional support is not required
+
+ An Azure storage account contains all of your Azure Storage data objects: blobs, files, queues, tables, and disks
+--->A storage account is a container that groups a set of Azure Storage services together
+ provides a unique namespace for your Azure Storage data that is accessible from anywhere in the world over HTTP or HTTPS.
+
+NB : Azure VMs use Azure Disk Storage to store virtual disks. However, you can't use Azure Disk Storage to store a disk outside of a virtual machine.
+
+-for asure virtual machines : 
+azure disk storage : create disk for VMs, HDD or SSD, managed or unmanaged.
+azure file storage : SMB3 network share or NFS 
+
+-Accessible via REST API
+azure blob storage : Binary Large OBject,the unstructured files, such as images, video, music files, backup files, etc
+azure table storage : to store structured NoSQL data, useful if you find Microsoft Azure SQL too expensive.
+azure queue storage : to connect the components of your application, can be accessed from anywhere via authenticated HTTP or HTTPS requests
+==========================================
+
+------Les meileurs services azure : 
+
+Azure Dedicated Host : Serveur physique dédié pour héberger vos machines virtuelles Azure pour Windows et Linux
+
+Azure active directory : annuaire dans le cloud avce SSO et MFA
+
+Azure SQL server, mysql ...
+
+Bureau virtuel Windows : 
+
+Azure Migrate : Détectez, évaluez, dimensionnez et migrez facilement vos machines virtuelles locales vers Azure
+
+Solutions Azure VMware : déplacer l'infra vmware on promise vers azure ou étendre l'infra existante sur le cloud.
+
+app service : applications web et mobile, .NET, .NET Core, Node.js, Java, Python ou PHP
+   app service plan : 
+
+Web Apps : Déploiement continu avec Git, Team Foundation Server, GitHub et DevOps, Prend en charge WordPress, Umbraco, Joomla! et Drupal
+
+Container Instances : Exécutez facilement des conteneurs sur Azure sans gérer des serveurs
+
+azure fuctions : développement d’applications grâce au calcul serverless
+
+azure file sync : get locally the files in azure file shares or an azure VM and keep the folder synchronized.
+                  https://adamtheautomator.com/azure-file-sync/
+
+Fichiers Azure : accessibles via les protocoles SMB et NFS standard. Les partages de fichiers Azure peuvent être montés simultanément sur des déploiements cloud ou locaux de Windows, macOS et Linux.
+
+AAS : Azure Apps services
+      Azure apps services webapps
+
+azure network connectivity
+azure name resolution
+
+azure key vault : "crypter une VM" : to store secrets and keys used for encrypting an Azure Virtual Machine, Azure VM Disk Encryption Extension
+
+azure application gateway : Créez des serveurs web frontaux sécurisés, évolutifs et à haut niveau de disponibilité dans Azure
+
+azure vnet peering
+vnet to vnet  VPN connections (peering mais dans la même region)
+
+azure network security groups
+
+azure network watcher : supervision de ma plateforme azure
+
+azure backups : sauvegarder une VM
+
+DDos protection plan : Protégez vos applications des attaques par déni de service distribué (DDoS)
+
+Express route : Profitez d'une connexion à Azure privée et plus rapide, une bande passante pouvant atteindre 100 Gbits/s pour connecter mon DC on promise avec mon espace azure.
+
+VPN Gateway : une passerelle de réseau privé virtuel utilisée pour l’envoi de trafic réseau entre des réseaux virtuels Azure et des emplacements sur site, ainsi qu’entre des réseaux virtuels au sein d’Azure (VNet-à-VNet).
+
+traffic manager : Orientez le trafic entrant pour une disponibilité et performance élevée, équilibrage de charge.
+
+Load Balancer : offre une haute disponibilité et des performances réseau à vos applications.
+
+Passerelle VPN : établir des VPN IPSEC ou SSL.
+
+WAN virtuel : Connectivité de branche à grande échelle automatisée
+
+Azure Bastion : Accès privé et entièrement géré à vos machines virtuelles azure via RDP/SSH
+
+Azure DNS : Hébergez votre domaine DNS dans Azure
+
+Pare-feu d’applications web Azure : Protégez vos applications web contre les attaques et les vulnérabilités courantes, comme l'injection sql ...
+
+Pare-feu Azure : Sécurité réseau cloud native pour protéger les ressources de votre réseau virtuel Azure
+
+Azure Firewall Manager : Configuration centralisée et gestion de plusieurs instances de Pare-feu Azure, dans l’ensemble des régions et des abonnements Azure.
+
+=================================================
+services réseau sur azure : 
+
+----Connectivité : Virtual network, virtual WAN : connecter des sites dans des régions, express route : on promise vers azure, VPN GAteway / NAT Gateway, azure bastion
+----Protection : azure private link, Network security groups, azure firewall, DDOS protection, virtual network endpoints, web application firewall
+----distributed application : trafic manager, azure loadbalancer, application gateway, CDN, azure front door, internet analyzer
+----Monitoring : network watcher, azure monitor, express route monitor
+
+
+Virtual network ont les proprietés address space, subnets"LAN DMZ ...", régions, routage implicite entre les subnets
+ex : vnet PROD 10.240.0.0/16 ayant des subnets : 10.240.7.0/24 10.240.0.0/24  ..., les vms sont attachées à des subnets.
+ex : vnet PPRD 10.241.0.0/16 ayant des subnets : 10.241.7.0/24 10.241.0.0/24
+
+Les 3 premières adresses du net sont toujours reservées pour passerelle.
+250 adresses/subnets sont possibles
+
+Les VMs sont connectées automatiquement à internet.
+
+==se connecter à azure depuis on prem via : 
+  VPN site to site : IPSEC avec VPN gateway sur azure
+  Express route : LS via un provider vers azure (la plus fiable)
+  VPN point to site : SSL avec VPN gateway sur azure
+
+==connexion inter Vnet :
+ -peering entre site A et site B (activable sur les vnets, max 500 peering par vnet)
+ -vnet to vnet
+ -VPN site to site entre azure site 1 et azure site B
+ -service endpoints
+
+============Design : 
+
+Utiliser la topologie hub and spoke, le hub connecte on promise network, les spokes sont des vnets qui s'attachent au hub au besoin.
+
+az group create --name hub-spoke --location eastus
+
+az deployment group create --resource-group hub-spoke \
+    --template-uri https://raw.githubusercontent.com/mspnp/samples/master/solutions/azure-hub-spoke/azuredeploy.json
+
+utiliser un firewall tiers, azure firewall ou un NSG vers On promise.
+
+Possible de communiquer les spokes à travers le HUB 
+dans le hub : allow gateway transit
+sur les spoke : utiliser remote gateway
+sur les spoke : allow forwarded traffic
+en cas d'azure firewall dans le hub : allow forwarded traffic
+
+===design classique : 
+
+un vnet avec deux subnets 
+deux NSG sur haque subnet
+une VPN gateway
+
+=================================================
+NSG : règles de sécurité des vnets sur azure
+      un NSG peut être associé à un subnet, interface réseau ou VM
+      filtrage niveau 3 et 4
+      200 règles max par NSG
+      chaque elements attaché au subnet se verra appliquer les règles du NSG
+
+ouvrir le port 3389 ou 22 sur la NSG d'un subnet va ouvrir ces ports sur toutes les VMs dedans mais risqué !
+
+Loadbalancer: niveau 4, distribution de flux entrant port forwarding 
+              possible de faire du load balancing cross region : 
+
+flux 5000 --> cross-regionLB -->public LB -->VM1, VM2 ...
+                               plusieurs public LB (par région) sont connecté au cross-region LB
+
+LB publique : équilibre la charge sur des VMs
+LB interne : equilibre le trafic interne sur les VM à base des ip privées.
+
+Azure Bastion : accès RDP ou SSH centralisé via le portail azure
+                pas de publication d'ip publique et ouverture de port 3389, 22 sur internet.
+                il faut créer un subnet AzureBastionSubnet en /27 au niveau du vnet ayant les VM auxquelles onveut accéder.
+
+
+====================================Liste des services azure par catégories : 
+
+
+-Compute
+-Networking
+-Storage
+-Mobile
+-Databases
+-Web
+-Internet of Things (IoT)
+-Big data
+-AI
+-DevOps
+
+===Compute : 
+
+Azure Virtual Machines
+Windows or Linux virtual machines (VMs) hosted in Azure.
+
+Azure Virtual Machine Scale Sets
+Scaling for Windows or Linux VMs hosted in Azure, groupes de machines identiques avec équilibrage de charge, utile pour le calcul, Big Data...
+
+Azure Kubernetes Service
+Cluster management for VMs that run containerized services.
+
+Azure Service Fabric
+Distributed systems platform that runs in Azure or on-premises.
+
+Azure Batch
+Managed service for parallel and high-performance computing applications.
+
+Azure Container Instances
+Containerized apps run on Azure without provisioning servers or VMs.
+
+Azure Functions
+An event-driven, serverless compute service.
+
+===Networking : 
+
+Azure Virtual Network
+Connects VMs to incoming virtual private network (VPN) connections.
+
+Azure Load Balancer
+Balances inbound and outbound connections to applications or service endpoints.
+
+Azure Application Gateway
+Optimizes app server farm delivery while increasing application security.
+
+Azure VPN Gateway
+Accesses Azure Virtual Networks through high-performance VPN gateways.
+
+Azure DNS
+Provides ultra-fast DNS responses and ultra-high domain availability.
+
+Azure Content Delivery Network
+Delivers high-bandwidth content to customers globally.
+
+Azure DDoS Protection
+Protects Azure-hosted applications from distributed denial of service (DDOS) attacks.
+
+Azure Traffic Manager
+Distributes network traffic across Azure regions worldwide.
+
+Azure ExpressRoute
+Connects to Azure over high-bandwidth dedicated secure connections.
+
+Azure Network Watcher
+Monitors and diagnoses network issues by using scenario-based analysis.
+
+Azure Firewall
+Implements high-security, high-availability firewall with unlimited scalability.
+
+Azure Virtual WAN
+Creates a unified wide area network (WAN) that connects local and remote sites.
+
+===Storage : 
+
+Azure Blob storage
+Storage service for very large objects, such as video files or bitmaps.
+
+Azure File storage
+File shares that can be accessed and managed like a file server (like one drive)
+
+Azure Queue storage
+A data store for queuing and reliably delivering messages between applications like whats'app
+
+Azure Table storage
+Table storage is a service that stores non-relational structured data (also known as structured NoSQL data) in the cloud, providing a key/attribute store with a schemaless design.
+
+These services all share several common characteristics:
+
+Durable and highly available with redundancy and replication.
+Secure through automatic encryption and role-based access control.
+Scalable with virtually unlimited storage.
+Managed, handling maintenance and any critical problems for you.
+Accessible from anywhere in the world over HTTP or HTTPS.
+
+===Databases : 
+
+Azure Cosmos DB
+Globally distributed database that supports NoSQL options.
+
+Azure SQL Database (like SQL server on promise)
+Fully managed relational database with auto-scale, integral intelligence, and robust security.
+
+Azure Database for MySQL (Like Mysql on promise)
+Fully managed and scalable MySQL relational database with high availability and security.
+
+Azure Database for PostgreSQL
+Fully managed and scalable PostgreSQL relational database with high availability and security.
+
+SQL Server on Azure Virtual Machines
+Service that hosts enterprise SQL Server apps in the cloud.
+
+Azure Synapse Analytics
+Fully managed data warehouse with integral security at every level of scale at no extra cost.
+
+Azure Database Migration Service
+Service that migrates databases to the cloud with no application code changes.
+
+Azure Cache for Redis
+Fully managed service caches frequently used and static data to reduce data and application latency.
+
+Azure Database for MariaDB
+Fully managed and scalable MariaDB relational database with high availability and security.
+
+===WEB : 
+
+Azure App Service
+Quickly create powerful cloud web-based apps.
+ 
+Azure Notification Hubs
+Send push notifications to any platform from any back end.
+
+Azure API Management
+Publish APIs to developers, partners, and employees securely and at scale.
+
+Azure Cognitive Search
+Deploy this fully managed search as a service.
+
+Web Apps feature of Azure App Service
+Create and deploy mission-critical web apps at scale.
+
+Azure SignalR Service
+Add real-time web functionalities easily.
+
+===IOT : 
+
+IoT Central
+Fully managed global IoT software as a service (SaaS) solution that makes it easy to connect, monitor, and manage IoT assets at scale.
+-->Collecting data and update settings or software IOT remotely
+-->create a quickl web based management portal 
+
+Azure IoT Hub
+Messaging hub that provides secure communications between and monitoring of millions of IoT devices.
+-->collecting data from IOT devices via sensors only.
+-->IOT Hub communicate with IOT devices by sending and receiving messages
+
+IoT Edge
+Fully managed service that allows data analysis models to be pushed directly onto IoT devices, which allows them to react quickly to state changes without needing to consult cloud-based AI models.
+
+Azure sphere
+IOT with highest degree of security
+
+===Big data : 
+
+Azure Synapse Analytics
+Run analytics at a massive scale by using a cloud-based enterprise data warehouse that takes advantage of massively parallel processing to run complex queries quickly across petabytes of data.
+
+Azure HDInsight
+Process massive amounts of data with managed clusters of Hadoop clusters in the cloud.
+
+Azure Databricks
+Integrate this collaborative Apache Spark-based analytics service with other big data services in Azure.
+
+===AI : 
+
+Azure Machine Learning Service
+Cloud-based environment you can use to develop, train, test, deploy, manage, and track machine learning models. It can auto-generate a model and auto-tune it for you. It will let you start training on your local machine, and then scale out to the cloud.
+
+Azure ML Studio
+Collaborative visual workspace where you can build, test, and deploy machine learning solutions by using prebuilt machine learning algorithms and data-handling modules.
+
+===DevOps : 
+
+Azure DevOps
+Use development collaboration tools such as high-performance pipelines, free private Git repositories, configurable Kanban boards, and extensive automated and cloud-based load testing. Formerly known as Visual Studio Team Services.
+
+Azure DevTest Labs
+Quickly create on-demand Windows and Linux environments to test or demo applications directly from deployment pipelines.
+
+===Application services : 
+
+azure key vault
+azure bot service
+azure cognitive services
+--> search APIs, add features and value to apps that are otherwise IaaS-based.
+
+
+====================
+
+tests sur sandbox : 
+
+==================
+
+sandbox : Pour tester un service pendant 4h maximum sans facturation. 
+temporary subscription that's added to your Azure account (with the name MICROSOFT LEARN SANDBOX). This temporary subscription allows you to create Azure resources for the duration of a Learn module. Learn automatically cleans up the temporary resources for you after you've completed the module.
+
+ ->suivre le tutoriel docs.microsoft.com pour activer sandbox
+   ensuite cliquer sur log on azure portal pour accéder à l'environnement sandbox
+
+--Create website hosted on azure : (app service)
+    create ressource, wordpress, create 
+  le site aura le domaine .azurewebsites.net 
+  app name : sfnwebsite
+  ressource group : use existing
+  database : Mysql in App (database integrée ou bien "azure database for mysql" si je veux créer une base mysql sur un serveur.
+  Créer l'app service plan (le conteneur qui acceuillera mon site web)
+  valider
+
+--créer une base de données SQL server : 
+    Azure SQL Database : the latest stable version of the Microsoft SQL Server database engine
+   Create a resource > Databases > SQL database
+   database name : SFN
+   server : soufiane.database.windows.net
+   networking/connectivity method : public endpoint
+   use existing data : sample
+   create
+   ->on the serveur, firewalls, allow azure services and ressources to access this server : YES.
+   
+   sur la base créer, aller à query editor, lancer une requête select.
+
+  "Azure SQL Managed Instance" est meilleure qu'Azure SQL database : 
+  Tailwind Traders 
+  migration of SQL server on promise to the cloud "DMS"  
+  native backup and restore
+  
+--
+
+--
+create VM via Powershell : 
+
+New-AzVm `
+    -ResourceGroupName "TestResourceGroup" `
+    -Name "test-wp1-eus-vm" `
+    -Location "East US" `
+    -VirtualNetworkName "test-wp1-eus-network" `
+    -SubnetName "default" `
+    -SecurityGroupName "test-wp1-eus-nsg" `
+    -PublicIpAddressName "test-wp1-eus-pubip" `
+    -OpenPorts 80,3389
+--
+create VM via azure CLI : 
+
+az vm create \
+    --resource-group TestResourceGroup \
+    --name test-wp1-eus-vm \
+    --image win2016datacenter \
+    --admin-username jonc \
+    --admin-password aReallyGoodPasswordHere
+
+--> possible d'executer un code de création de VM depuis azure client SDK : code C#, code JAVA ...
+
+Azure Backup is a backup as a service offering that protects physical or virtual machines no matter where they reside: on-premises or in the cloud.
+
+
+==========
+
+Point-to-site virtual private networks The typical approach to a virtual private network (VPN) connection is from a computer outside your organization, back into your corporate network. 
+Site-to-site virtual private networks A site-to-site VPN links your on-premises VPN device or gateway to the Azure VPN gateway in a virtual network.
+Azure ExpressRoute For environments where you need greater bandwidth and even higher levels of security, Azure ExpressRoute is the best approach. ExpressRoute provides dedicated private connectivity to Azure that doesn't travel over the internet.
+
+
+Connect branch offices : use point to site virtual private network.
+connect on promise DC to azure : use site to site Virtual private network
+link virtual networks : virtual network peering
+
+Policy-based VPNs : 
+Policy-based VPN gateways specify statically the IP address of packets that should be encrypted through each tunnel
+
+Route-based VPNs : 
+Connections between virtual networks
+Point-to-site connections
+Multisite connections
+Coexistence with an Azure ExpressRoute gateway
+
+
+Deploy VPN gateways : 
+
+Connect on-premises datacenters to virtual networks through a site-to-site connection with gateway to pass via internet
+Connect individual devices to virtual networks through a point-to-site connection with gateway to pass via internet
+Connect virtual networks to other virtual networks through a network-to-network connection.
+
+https://docs.microsoft.com/en-us/learn/modules/azure-networking-fundamentals/azure-vpn-gateway-fundamentals
+
+Deploy Express route : 
+ExpressRoute uses the Border Gateway Protocol (BGP) routing protocol
+Express route trafic is not encrypted  
+
+-Modèles de connectivité: 
+CloudExchange  : connect my DC that is located in an ISP  to azure.
+Point-to-point Ethernet connection :  point-to-point Ethernet link
+Any-to-any connection : connect à WAN to Azure

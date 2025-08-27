@@ -1,0 +1,199 @@
+we associate locks with subscription, resource group or ressources
+
+two types of locks : 
+ read only lock, prevent any change on the object.
+ delete locks, prevent deletion
+
+when moving ressources, both source group and target group are locked.
+
+we can move to a resource group, subscription or region.
+
+onglet "usage + quotas" : the resource limits of you subscription fixed by azure (you can increase it by creating a support request).
+
+Éléments du template ARM : 
+schema	Une section obligatoire qui définit l’emplacement du fichier du schéma JSON qui décrit la structure des données JSON. Le numéro de version que vous utilisez dépend de l’étendue du déploiement et de votre éditeur JSON.
+contentVersion	Une section obligatoire qui définit la version de votre modèle (par exemple 1.0.0.0). Vous pouvez utiliser cette valeur pour documenter les modifications importantes apportées à votre modèle pour être sûr de déployer le modèle approprié.
+apiProfile	Une section facultative qui définit une collection de versions d’API pour les types de ressources. Vous pouvez utiliser cette valeur pour éviter d’avoir à spécifier les versions d’API pour chaque ressource dans le modèle.
+parameters	Une section facultative où vous définissez des valeurs fournies lors du déploiement. Ces valeurs peuvent être fournies par un fichier de paramètres, par des paramètres de ligne de commande ou dans le portail Azure.
+variables	Une section facultative où vous définissez des valeurs utilisées pour simplifier les expressions de langage de gabarit.
+functions	Une section facultative où vous pouvez définir des fonctions définies par l’utilisateur qui sont disponibles dans le modèle. Les fonctions définies par l’utilisateur peuvent simplifier votre modèle quand des expressions compliquées y sont utilisées de façon répétée.
+resources	Une section obligatoire qui définit les éléments réels que vous voulez déployer ou mettre à jour dans un groupe de ressources ou un abonnement.
+output	Une section facultative où vous spécifiez les valeurs qui seront retournées à la fin du déploiement.
+
+PowerShell 7.0.6 LTS, PowerShell 7.1.3, or higher is the recommended version of PowerShell for use with the Azure Az PowerShell module
+
+version powershell : $PSVersionTable.PSVersion
+
+Check des modules PowerShell : Get-Module
+
+Install module azure : 
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+Install-Module -Name Az -Scope CurrentUser -Repository PSGallery
+
+Connect-AzAccount
+Get-AzContext cmdlet to determine which subscription is active
+Get-AzResourceGroup 
+Get-AzResource
+
+
+Accédez à votre dossier de base dans Cloud Shell.
+cd $HOME\clouddrive
+
+Créez un fichier texte nommé ConferenceDailyReset.ps1.
+touch "./ConferenceDailyReset.ps1"
+
+Ouvrez l’éditeur intégré, puis sélectionnez le fichier ConferenceDailyReset.ps1.
+code "./ConferenceDailyReset.ps1"
+
+y mettre le contenu suivant : 
+
+param([string]$resourceGroup)
+$adminCredential = Get-Credential -Message "Enter a username and password for the VM administrator."
+For ($i = 1; $i -le 3; $i++)
+{
+    $vmName = "ConferenceDemo" + $i
+    Write-Host "Creating VM: " $vmName
+    New-AzVm -ResourceGroupName $resourceGroup -Name $vmName -Credential $adminCredential -Image UbuntuLTS
+}
+
+executer avec : ./ConferenceDailyReset.ps1 learn-3305ecf6-78b1-46c2-82a3-0927dfe60c85
+
+NSGs has à priority : a number between 100 and 4096. Rules are processed in priority order, with lower numbers processed before higher numbers, 
+
+Azure creates the default rules in each network security group that you create. 
+
+We add azure CLI via the install of an msi
+Login on CLI : az login
+parameter can you add to most CLI commands to get concise, formatted output : "table"
+az group list --output table
+
+We can user PowerShell, Azure CLI or the Azure portal from windows Linux or Mac. 
+
+-Créer une webapp : 
+create a service plan
+Create à Web app oh this service plan 
+
+URL : http://webapp-mslearn123.azurewebsites.net
+
+->deploy code from a GitHub repository to the web app (PHP code for example to modifier the content of my website) 
+az webapp deployment source config --name $AZURE_WEB_APP --resource-group $RESOURCE_GROUP --repo-url "https://github.com/Azure-Samples/php-docs-hello-world" --branch master --manual-integration
+
+======= Les accès azure : rôles classiques, RBAC et azure AD : 
+
+
+gérer azure via le portail Azure ou via les API Azure ARM et ASM
+
+-Les rôles Azure historiques « Classiques »  (azure ASM)
+    Administrateur de compte (Account Administrator)
+    Administrateur de Service (Service Administrator)
+    Co-Administrateur (Co-Administrator)
+
+  --> avec ce modèle classique vous avez tout ou rien (All-or-Nothing), pas possible de déléguer par exemple la gestion des VMs à un groupe ...
+  --> on applique les rôles classiques sur un abonnement, un groupe de ressource ou une ressource sur IAM / Administrateurs classiques
+
+-Les rôles « RBAC »  : 
+ 
+  les rôles Azure RBAC sont dédiés à l’accès et gestion des ressources Azure uniquement telles que les VMs Azure, Bases de données SQL Clusters HDI, Services Réseaux (VNET, Subnet, Gateway VPN, NSG, LB…)
+    --> on applique les rôles RBAC sur un abonnement, un groupe de ressource ou une ressource sur IAM / ajouter une attribution de rôle
+
+  les 4 rôles RBAC les plus importants du RBAC qui s'appliquent sur un abonnement, un groupe de ressource ou une ressource : 
+ 
+    Propriétaire (Owner) : accès à la ressource et permet l'accès à d'autres personnes.
+    Contributeur (Contributeur) : Accès à la ressource mais ne peut pas ajouter d'autres personnes
+    Lecteur (Reader) : lecture seule
+    Administrateur de l’accès utilisateur (User Access Administrator) : Gestion de l’accès utilisateur aux ressources Azure
+  
+  en plus de ces 4 rôles, il existent d'autres rôles plus précis, par ex : Azure VM Contributor
+
+   si je donne à un user le rôle contributeur sur un abonnement, il va gérer l'ensemble des ressources dans cet abonnnement 
+   si je donne à un user le rôle Azure VM Contributor sur un abonnement, il va gérer uniquement les VMs de cet abonnement 
+   si je donne à un user le rôle lecteur sur la ressource azure AD, il va accéder à azure AD uniquement et afficher les utilisateurs, les groupes ... 
+
+On peut créer un rôle personnalisé : 
+ Un Custom Role est créé sur la base d’un fichier JSON, exemple : 
+     créer un Custom Role permettant uniquement le démarrage, arrêt et redémarrage des VMs Azure.
+
+-Les rôles Azure AD : presque 56 rôles azure AD
+ 
+ utilisés pour gérer les ressources de l’annuaire Azure AD, exemple : 
+     --créer ou modifier des comptes utilisateurs Azure
+     --attribuer des rôles d’administration à d’autres personnes
+     --gérer l’appartenance aux groupes Azure AD
+     --réinitialiser les mots de passe des utilisateurs
+
+     Les 3 rôles principaux d'azure AD : 
+   
+      -Administrateur général (Global Administrator) : 
+      -Administrateur d’utilisateurs (Users Administrator) : 
+      -Administrateur de facturation (Billing Administrator) : 
+
+     pour gérer les rôles azure AD : Azure active directory / Rôles et Administrateurs
+
+azure AD est par défaut Free Trial 
+pour utiliser azure AD P2, aller sur licenses, activer premium P2 (pour utiliser les groupes dynamiques ...)
+
+
+===============================
+
+-créer un abonnement avec mon email, je serai automatiquement Account Administrator et Service Administrator
+-je peux déclarer des coadministrateurs au niveau IAM / Administrateurs classiques.
+
+Les Administrateurs de Services et les Co-administrateurs sont équivalents au rôle « Owner /Propriétaire » du nouveau modèle RBAC (Azure ARM) et offrent un accès total au niveau de l’abonnement
+
+=====
+
+
+=====
+AZ 104
+
+ 🔹 Manage Azure Entra ID Identities
+ 🧪 https://lnkd.in/diDaDxjX
+ 🔹 Manage Subscriptions and RBAC
+ 🧪 https://lnkd.in/dmuqpxUJ
+ 🔹 Manage Governance via Azure Policy
+ 🧪 https://lnkd.in/di3iBw6h
+ 🔹 Manage Azure Resources by using the Azure Portal
+ 🧪 https://lnkd.in/d9V2h2xd
+ 🔹 Manage Azure resources by using Azure Resource Manage Templates
+ 🧪 https://lnkd.in/dGnVX6dM
+ 🔹 Manage Azure Resources by using Azure PowerShell
+ 🧪 https://lnkd.in/dGS_V9St
+ 🔹 Manage Azure resources by using the Azure CLI
+ 🧪 https://lnkd.in/dqvrkGhY
+ 🔹 Implement Virtual networking
+ 🧪 https://lnkd.in/d6yejKdB
+ 🔹 Implement intersite Connectivity
+ 🧪 https://lnkd.in/dCGARJFp
+ 🔹 Implement Traffic management
+ 🧪 https://lnkd.in/dWJDZ4HD
+ 🔹 Manage Azure Storage
+ 🧪 https://lnkd.in/dbmGjkTi
+ 🔹 Manage Virtual Machines
+ 🧪 https://lnkd.in/drk6_WPK
+ 🔹 Implement Azure Web apps
+ 🧪 https://lnkd.in/dhGefkn9
+ 🔹 Implement Azure Container Instances
+ 🧪 https://lnkd.in/dHn4dmaK
+ 🔹 Implement Azure Kubernetes Service
+ 🧪 https://lnkd.in/dQQ6s5dp
+ 🔹 Backup Virtual Machines
+ 🧪 https://lnkd.in/dx6VzgsU
+ 🔹 Implement Monitoring
+ 🧪 https://lnkd.in/dTGeM6fU
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

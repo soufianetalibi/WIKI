@@ -1,0 +1,69 @@
+# Variables
+$ResourceGroup = "MyResourceGroup"
+$Location      = "EastUS"
+$VNetName      = "MyVNet"
+$SubnetName    = "MySubnet"
+$IPName        = "MyPublicIP"
+$NicName       = "MyNic"
+$VMName        = "MyVM"
+$AdminUser     = "azureuser"
+
+# 1. Créer un groupe de ressources
+New-AzResourceGroup -Name $ResourceGroup -Location $Location
+
+# 2. Créer un réseau virtuel et un sous-réseau
+$VNet = New-AzVirtualNetwork `
+    -ResourceGroupName $ResourceGroup `
+    -Location $Location `
+    -Name $VNetName `
+    -AddressPrefix "10.0.0.0/16"
+
+Add-AzVirtualNetworkSubnetConfig `
+    -Name $SubnetName `
+    -AddressPrefix "10.0.1.0/24" `
+    -VirtualNetwork $VNet
+
+$VNet | Set-AzVirtualNetwork
+
+# 3. Créer une IP publique
+$PublicIP = New-AzPublicIpAddress `
+    -ResourceGroupName $ResourceGroup `
+    -Name $IPName `
+    -Location $Location `
+    -AllocationMethod Dynamic `
+    -Sku Basic
+
+# 4. Créer une carte réseau (NIC)
+$Subnet = Get-AzVirtualNetworkSubnetConfig -Name $SubnetName -VirtualNetwork $VNet
+
+$Nic = New-AzNetworkInterface `
+    -ResourceGroupName $ResourceGroup `
+    -Name $NicName `
+    -Location $Location `
+    -Subnet $Subnet `
+    -PublicIpAddress $PublicIP
+
+# 5. Créer une VM Ubuntu
+$Credential = Get-Credential -Message "Entrez le mot de passe pour l’utilisateur $AdminUser"
+
+$VMConfig = New-AzVMConfig -VMName $VMName -VMSize "Standard_B1s" |
+    Set-AzVMOperatingSystem -Linux -ComputerName $VMName -Credential $Credential |
+    Set-AzVMSourceImage -PublisherName "Canonical" -Offer "UbuntuServer" -Sku "18.04-LTS" -Version "latest" |
+    Add-AzVMNetworkInterface -Id $Nic.Id
+
+New-AzVM -ResourceGroupName $ResourceGroup -Location $Location -VM $VMConfig
+
+# 6. Ouvrir le port SSH (22)
+$NSG = New-AzNetworkSecurityGroup -ResourceGroupName $ResourceGroup -Location $Location -Name "${VMName}-NSG"
+
+$RuleSSH = New-AzNetworkSecurityRuleConfig -Name "Allow-SSH" `
+    -Protocol "Tcp" -Direction "Inbound" -Priority 1000 -SourceAddressPrefix "*" `
+    -SourcePortRange "*" -DestinationAddressPrefix "*" -DestinationPortRange 22 -Access "Allow"
+
+$NSG.SecurityRules.Add($RuleSSH)
+$NSG | Set-AzNetworkSecurityGroup
+
+# Associer NSG à la NIC
+Set-AzNetworkInterface -NetworkInterface $Nic -NetworkSecurityGroup $NSG
+
+Write-Output "✅ Déploiement terminé !"

@@ -2,12 +2,20 @@
 je peux interroger azure via :
 
  1. Portail Azure
- 2. Azure PowerShell (Connect-AzAccount)
- 3. Azure CLI (az login)
+ 2. Azure PowerShell (Connect-AzAccount)  
+ 3. Azure CLI (az login) 
  4. Cloud Shell (le shell sur le portail)
  5. Azure REST API (avec curl, je récupère un token tout d'abord puis j'interroge azure avec ce token) => authentification manuelle 
  6. SDK dans un langage X ( ex azure-mgmt-* dans python...) ==> le SDK s'authentifie et interroge azure, ==> authentification automatique  
 
+Sous azure powershell je peux lancer une commande directe ou un script .ps1
+Sous azure CLI je peux lancer une commande directe ou un script .sh
+
+->avec une commande powershell ou CLI, je peux lancer le déploiement d'un ARM template : template.json, parameters.json
+  CLI → az deployment group create ...
+  PowerShell → New-AzResourceGroupDeployment ...
+
+=======
 
 je peux m'authentifier sur azure avec : 
  -Mon compte Azure, rapide pour dev/test mais pas adapté pour un script automatique
