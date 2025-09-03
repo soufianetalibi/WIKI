@@ -8,6 +8,8 @@ git config --global user.name "Soufiane Talibi"
 git config --global user.email "Soufiane.talibi@gmail.com"
 
 
+
+
 1------create a new repository on the command line : 
 
 
@@ -36,6 +38,12 @@ git push -u origin main
 
 
 git remote add origin https://github.com/soufianetalibi/WIKI.git
+
+
+git add .  
+
+
+git commit -m "Mise à jour"
 
 
 git branch -M main
