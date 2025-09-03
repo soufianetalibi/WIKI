@@ -37,6 +37,9 @@ git push -u origin main
 1-----Push an existing repository from the command line
 
 
+git remote -v
+
+
 git remote add origin https://github.com/soufianetalibi/WIKI.git
 
 
