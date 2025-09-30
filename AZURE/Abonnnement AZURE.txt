@@ -37,7 +37,14 @@ la fonction a un plan app service : FranceCentralLinuxDynamicPlan
 
  cette application web a un plan app service nommé : ASP-webapp-a92f
 
+ -Azure ACI : =============================================================================================
 
+  az group create --name RG-app-ACI-visiteurs --location francecentral
+  az container create --resource-group RG-app-ACI-visiteurs --name mon-app-visiteurs --image souflouf89/mon-app-visiteurs:latest --cpu 1 --memory 1 --restart-policy Always --ports 3000 --os-type Linux --dns-name-label mon-app-visiteurs-dns --location francecentral
+
+  puis voir sur l'URL : http://mon-app-visiteurs-dns.francecentral.azurecontainer.io:3000
+
+=========================
  -Azure service health :  nommée Alertes AZURE qui envoie les alertes azure à mon email
  -Azure policy : bloque la création des VMs volumineuses
  -cost management : budget fixé à 10 euros avec notification par mail

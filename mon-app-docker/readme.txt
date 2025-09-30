@@ -88,3 +88,14 @@ Stats API : http://localhost:3000/api/stats
 Visiteurs : http://localhost:3000/api/visiteurs
 
 Note importante : Les données (visiteurs, messages) sont stockées en mémoire, donc elles seront perdues quand vous arrêtez le conteneur. Pour persister les données, il faudrait ajouter une vraie base de données (MongoDB, PostgreSQL, etc.).
+
+====
+
+  Pour déployer depuis dockerHub vers azure ACI : 
+  
+  az group create --name RG-app-ACI-visiteurs --location francecentral
+  az container create --resource-group RG-app-ACI-visiteurs --name mon-app-visiteurs --image souflouf89/mon-app-visiteurs:latest --cpu 1 --memory 1 --restart-policy Always --ports 3000 --os-type Linux --dns-name-label mon-app-visiteurs-dns --location francecentral
+
+  puis voir sur l'URL : http://mon-app-visiteurs-dns.francecentral.azurecontainer.io:3000
+
+
