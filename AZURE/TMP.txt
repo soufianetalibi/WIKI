@@ -1,4 +1,4 @@
-Abonnement Azure avec paiement à l’utilisation : facturation chaque mois
+﻿Abonnement Azure avec paiement à l’utilisation : facturation chaque mois
 Contrat Entreprise Azure : permet d’acheter des licences logicielles et des services cloud dans le cadre d’un contrat unique ( pour les grandes entreprises)
 
 Les tags : 
@@ -165,3 +165,11 @@ Abonnnements :
 -E3 : 20$
 -E5 : 35$
 -Microsoft 365 apps for entreprise
+
+=================================================
+
+comment connecter une application à azure via azure AD : 
+
+1. App Registration : déclarer une application, Cela génère un client_id et un secret
+2. Service Principal : l’identité concrète de cette application, l'objet utilisé pour donner les droits (le SP se crée automatiquement avec l'app registration)
+3. accorder les droits RBAC au SP de l'application.

@@ -1,4 +1,4 @@
-
+﻿
 Azure Stack HCI : virtualisation locale mais connectée à azure, un OS de virtualisation ayant HyperV où je crée uniquement des VMs : only IaaS
 
 Azure Stack Hub : C’est une appliance matérielle + logicielles des partenaires Microsoft pour installer azure dans mon datacenter.
@@ -36,4 +36,4 @@ docker run -d -p 80:80 mcr.microsoft.com/windows/servercore/iis
 
 mais je peux lancer uniquement des app windows : .NET, IIS, PowerShell
 
-=====================================================================================
+====================================================================================

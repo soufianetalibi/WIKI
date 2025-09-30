@@ -73,7 +73,7 @@ print(data["message"])  # ca va m'afficher le retour
 
 ======tester l'accès à azure via APIs :
 
-1-Créer une app registration et l'autoriser sur l'abonnement
+1-Créer une app registration et autoriser son SP sur l'abonnement
 2-Se connecter via un script powershell ou python pour avoir le token puis envoyer des requêtes avec le token reçu.   (Token d'abord ensuite envoyer la requête)
    ou bien le plus propre est d'interroger l'API azure avec l'un des SDK (ex SDK python) pour interroger azure via      (token abstrait, plus simple à employer)
  

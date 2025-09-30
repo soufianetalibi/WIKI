@@ -1,3 +1,15 @@
+﻿
+ASP.NET core 8 est le backend web moderne qui s'exécute côté serveur et se connecte à des BDD, services cloud, fichiers, API ... 
+               il peut générer du html, json, xml … (par exemple un Endpoint /blobs revoie un json)
+               possible de le lier un frontend React, angular, HTML/CSS/JS pour construire une Webapp complète avec frontend stylé.
+
+ équivalent d'ASP.NET core : SpringBoot, SpringMVC, (JAVA) 
+                             Express.js, NestJS,    (Node.js)
+                             Django, Flask          (python)
+                             Ruby                   (Ruby)
+                             Laraval, Symphony      (PHP)
+
+==========
 
 .NET :  usage -> Applications métiers internes
 

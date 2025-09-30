@@ -1,4 +1,4 @@
-
+﻿
 Cisco Meraki : une gamme des équipements (Switches MS, Gateway-SDWAN MX, AcessPoint MR, NAC ) mais only cloud managed.  (utile pour PME)
    sinon il y a du Cisco classique gérable on-prem :  
             cisco catalyst
@@ -12,11 +12,6 @@ Juniper : Switches Entreprise L2/L3 EX Series, switches datacenters (QFX Series,
 HPE Aruba : une gamme des équipements comme Meraki  mais hybride (AP, Switches, NAC ClearPass, SDWAN EdgeConnect, Branch Gateways), équipements cloud managed avec aruba central ou on-prem managed directement.
        
 Netgear et Dlink : Particuliers, PME, petites écoles
-
-
-
-Différence entre SD-Branch et SD-WAN : 
-
 
 [Siège entreprise]───(Internet/MPLS)────[Filiale A]─── Wi-Fi, Switch, AP
                                          │
@@ -34,21 +29,21 @@ SD-Branch = Gérer toute l'infrastructure d'une "ville" (routes, électricité, 
 Pipeline : une suite des étapes : 
 
 Exemple : Pipeline de données (Data Pipeline)
-Étape 1 : Extraction des données (depuis une base de données, un fichier, etc.)
-Étape 2 : Transformation des données (nettoyage, formatage…)
-Étape 3 : Chargement dans une base de données ou un outil d’analyse (ETL : Extract, Transform, Load)
+ Étape 1 : Extraction des données (depuis une base de données, un fichier, etc.)
+ Étape 2 : Transformation des données (nettoyage, formatage…)
+ Étape 3 : Chargement dans une base de données ou un outil d’analyse (ETL : Extract, Transform, Load)
 
 En DevOps / CI/CD :
-Un pipeline CI/CD (Intégration Continue / Déploiement Continu) automatisé :
+ Un pipeline CI/CD (Intégration Continue / Déploiement Continu) automatisé :
 
-1-Le test du code
-2-La compilation
-3-Le déploiement sur un serveur
+ 1-Le test du code
+ 2-La compilation
+ 3-Le déploiement sur un serveur
 
  tu développes un site web en PHP. Tu veux que :
-À chaque fois que tu pousses du code sur GitHub :
-Le code soit testé automatiquement
-Puis déployé sur ton serveur DEV (par exemple via FTP ou SSH)
+  À chaque fois que tu pousses du code sur GitHub :
+  Le code soit testé automatiquement
+  Puis déployé sur ton serveur DEV (par exemple via FTP ou SSH)
 
  Tu peux faire un push automatique vers le serveur web DEV pour visualiser 
   si DEV OK, lancer le push auto vers le serveur PPRD
@@ -85,7 +80,6 @@ jobs:
 
 Les variables SERVER_HOST, SERVER_USER, SERVER_PASS seront configurés dans chaque repository "Settings > Secrets and variables > Actions"
 
-
 l'action "Git Push" -> envoie la MAJ vers le repository 
 
 Pipeline CI/CD du fichier deploy.yml -> envoie la MAJ du repository vers un serveur distant
@@ -120,6 +114,12 @@ v=spf1 a mx ip4:185.74.203.12 ip4:40.89.165.135 ip4:169.239.99.62 ip4:185.74.203
 
 Les serveurs MAIL/EDGE qui sortent sur internet avec ces IP publiques utilisent le SPF castel-afrique.com
 Ces serveurs doit être configurés à envoyer vers le smarthost "castelafrique-com01e.mail.protection.outlook.com", à voir sur get-sendconnector
+
+======
+
+https://dnschecker.org/
+
+
 
 ======
 

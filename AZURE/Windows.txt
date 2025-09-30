@@ -1,4 +1,4 @@
-Ports à ouvrir sur un serveur AD : 
+﻿Ports à ouvrir sur un serveur AD : 
 
 RDP 3389
 SMB 445
@@ -58,10 +58,6 @@ Nouvautés :
  DNS-Over-HTTPS : chiffrer les requêtes DNS, celà doit être activé sur le client WS 2022 et le serveur DNS (par ex si je fixe le DNS google, ce dernier permet cette chiffrement)
   lister les serveurs qui communiquent avec moi en DnsOverHttps : get-DnsClientDohServerAddress
  
-
-
-
-
 Ajouter un Windows local à AzureAD : Paramètres > Comptes > Accès professionnel ou scolaire, se connecter à AzureAD (dsregcmd /status -> AzureAdJoined:YES)
 Ajouter un Windows local à AzureADDS : avoir une cnx entre Vnet ADDS et réseau local du client (via VPN ...)
                                        sur client, changer son DNS par les IP ADDS, Propriétés > Paramètres système avancés, saisir le domaine ADDS de façon classique.
@@ -85,9 +81,6 @@ Certificat : signature numérique ayant :
                 -délivré par une CA publique ou privée
                 -possède une date d'émission et validité
                 -possible de révoquer (arrêter sa validité)
-
-
-
 
 LAPS : Local Administrator Password Solution
 
