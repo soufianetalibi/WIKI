@@ -1,0 +1,99 @@
+﻿
+===========================================
+Créer l'iotHub et les 5 devices
+envoyer des messages virtuels depuis un script python
+===================================================
+
+az login
+az group create --name IoTHubRG --location westeurope
+az iot hub create --resource-group IoTHubRG --name MonIoTHub2025 --sku F1 --partition-count 2
+
+# Créer les devices
+az iot hub device-identity create --hub-name MonIoTHub2025 --device-id DEV-001
+az iot hub device-identity create --hub-name MonIoTHub2025 --device-id DEV-002
+az iot hub device-identity create --hub-name MonIoTHub2025 --device-id DEV-003
+az iot hub device-identity create --hub-name MonIoTHub2025 --device-id DEV-004
+az iot hub device-identity create --hub-name MonIoTHub2025 --device-id DEV-005
+
+az iot hub list --output table
+az iot hub device-identity list --hub-name MonIoTHub2025 --output table
+
+# Récupérer les connection strings
+az iot hub device-identity connection-string show --hub-name MonIoTHub2025 --device-id DEV-001
+az iot hub device-identity connection-string show --hub-name MonIoTHub2025 --device-id DEV-002
+az iot hub device-identity connection-string show --hub-name MonIoTHub2025 --device-id DEV-003
+az iot hub device-identity connection-string show --hub-name MonIoTHub2025 --device-id DEV-004
+az iot hub device-identity connection-string show --hub-name MonIoTHub2025 --device-id DEV-005
+
+-->ajouter ces connections string dans le script python "azure_iot_python_script.py"
+
+executer le script : python azure_iot_python_script.py
+
+écouter par ex sur DEV-001 pour voir les messages reçues : az iot hub monitor-events --hub-name MonIoTHub2025 --device-id DEV-001
+
+installer azure ioT explorer pour visualiser facilement les données collectées sur mon ioT Hub.
+
+==============================
+Déployer un Dashboard React sur Azure Static Web Apps : 
+==============================
+
+voici la structure du frontend REACT : 
+
+iot-dashboard/
+├── src/
+│   ├── App.tsx                    # Votre fichier iot_hub_dashboard.tsx renommé
+│   └── main.tsx
+├── public/
+│   └── index.html
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── .gitignore
+
+==> setup_project_script.sh : script qui va créer automatiquement l'arborescence : 
+
+chmod +x setup-project.sh
+./setup-project.sh
+
+cp iot_hub_dashboard.tsx iot-dashboard/src/App.tsx
+
+cd iot-dashboard
+npm run build  (il doit pas y avoir d'erreur)
+npm run dev
+
+==>le Dashboard sera accessible en local
+
+===========Poussez ce site react sur GitHub :
+
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/soufianetalibi/iot-dashboard.git
+git push -u origin master
+
+Déployez sur Azure (Via le portail) :
+
+Allez sur portal.azure.com
+Créez une "Static Web App"
+Name : iot-dashboard-app
+Plan type : Free
+Source : GitHub
+Organization : Votre username GitHub
+Repository : iot-dashboard
+Branch : master
+Configuration :
+Build Preset : React
+App location : /
+Api location : (laissez vide)
+Output location : dist
+Cliquez sur "Create"
+
+C'est tout ! Azure va builder la static webapp et déployer automatiquement
+
+
+
+
+
+
+
+

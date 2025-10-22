@@ -1,0 +1,138 @@
+Déployer des json (template, parameters) via 
+ -azure portal 
+ -via powershell : new-AzRessourcegroupDeployement 
+
+associer des NIC à un NSG 
+
+associer une PIP à une NIC
+
+Internal resolution : créer "Private DNS zones" : soufiane.ma
+                                 -->créer virtual network links pour lier le DNS privé avec mon Vnet.
+								 -->sur l'une des VMs, nslookup vm1.soufiane.ma sera connue sur le DNS privé avec son IP (en local)
+
+External resolution : créer "DNS zones"  : test.org
+                                           créer un record set, name : vm1(.test.org) --> 13.92.24.81
+										   to check from azure powershell : nslookup vm1.test.org ns1-03.azure-dns.com va traduire en IP publique.
+										   
+Network watcher : connection troubleshoot from a source to destination.
+
+vnet peering : vnets in the same region
+global peering : vnets on diffrent regions 
+
+peering is not transitive, it should be direct between vnets
+
+allow forwarded traffic : acceptation du flux qui n'est pas originaire du vnet.	
+gateway transit : allow a vnet HQ to be transitive but we need a configured Virtual network gateway on it. (we can also use a firewall/	
+
+Virtual network gateway allow to connect to the vnet with SSL and IPSEC, this ressource require a GatewaySubnet.
+  a public IP is assigned to this VPN gateway.
+  configure point to site for SSL access
+  configure site to site for onpromise network
+
+il est possible aussi de connecter Vnet1 avec Vnet2 via des VPNGateway sur chaqu'un. (create a connection on connections)
+
+il est possible de connecter un Vnet à un LAN onpromise : 
+ 1-VPNGateway ->connections, add, site to site IPSEC
+ 2-local network gateway : représente l'on-promise LANs, 
+
+Hub ans spoke : HQVnet connected to branch1Vnet ans branch2Vnet, the branches can talk throught the HQ, the HQ become gateway transit.
+
+un virtual WAN : permet de regrouper les Vnets, express route, point to site, site to site dans un WAN virtuel dédié. 
+
+update management : créer "automation account", ceci crée son app automatiquement sur azureAD
+                                                vérifier son app si autorisé sur la souscription ayant les VMs à patcher, IAM, rôle  : contributeur
+												les MAJ necessaires linux windows seront envoyés aux VMs.
+
+utiliser azure update manager comme un WSUS pour MAJ windows linux sur cloud et on promise.
+
+
+ASR : azure site recovery : Replication 
+ -créer un recovery service vaults, enable site recovery then enable replication
+
+======================================================================================
+
+
+Rôles classiques : 
+-Administrateur de Compte   (1 par compte azure : gère les abonnements du compte, facturation )
+-Administrateurs de Service (1 par abonnement azure : gère les ressources comme owner sur RBAC, peut ajouter des co-administrateurs )
+-Co-Administrateur (max 200 par abonnement)
+ --> lors des premières version azure, le créateur de l'abonnement et déclaré automatiquement admin de compte et admin de service, ce dernier peut ajouter des admins de services ou co-administrateurs.
+     l'admin de compte/service est visible sur les proprietés de la souscription
+
+->problème : all or nothing, tous les co-administrateurs ont un accès total au ressources.
+
+Rôles RBAC : Rôles dédiés à l'accès au ressources 
+ -owner : accès total et ajout de contributeur
+ -contributeur : crée et gère les ressources mais n'ajoute personne
+ -lecteur 
+ -administrateur de l'accès utilisateur
+  VM Contributor
+  Sentinel Contributor
+  Azure Sentinel Reader
+  Azure Security Admin
+  Azure Security Reader
+
+Rôles Azure AD : 
+  -global administrator : super user dans le tenant et peut elever son privilège pour devenir owner d'une ressource (celui qui déploie azure AD est auto global admin)
+  -administrateur de facturation : gère les abonnements azure
+
+
+
+default Directory
+ primary domain : intelcia.onmicrosoft.com
+ tenant ID : XXXXXX 
+ subscription : ID, mon rôle (account admin) 
+
+
+ global administrator is an Azure AD built-in role who manage all features in AzureAD
+ Owner is an RBAC role who has full access to to ressources.
+ 
+ global administrators can elevate their access to manage subscriptions and mgmt groups. 
+
+
+======================================
+Public Load balancing :  
+
+1-créer availability set "AS1" 
+2-créer deux VMs avec pip et les intégrer dans l'AS1 lors de la création.
+3-créer un load balancer public, configure frontend IP, backend pool and load balancing rules.
+
+=======================================
+azure firewall : 
+
+
+SNAT : from trusted to untrusted : A vers B changer la source par C 
+DNAT : from untrusted to trusted : B vers A changer la destination par C
+Application rule : Layer 7 FQDN,URL and web protocoles.
+
+=============
+Accès SSL sur la VPN via SSL certificate (SSTP): 
+ 1- générer un certificat root
+ 2- générer un certificat child
+ 3- exporter le certificat root en root.cer
+ 4- exporter le certificat child en child.pfx
+ 
+ uploader root.cer sur la vpn gateway ensuite télécharger le VPNClient
+ sur le client installer child.pfx puis executer le VPNclient.
+
+Methode pour se connecter en SSL sur VPN Gateway: 
+-SSTP (SSL)
+-OPENVPN
+
+
+============================
+bastionHost
+DDoS protection
+Firewall
+
+mstsc /v:192.168.1.10 (accès RDP depuis CMD)
+
+
+
+
+
+
+
+
+ 
+ 

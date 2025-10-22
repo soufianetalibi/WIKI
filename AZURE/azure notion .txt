@@ -1,0 +1,196 @@
+
+ENTRA-ID : AD SaaS, protocoles : OAuth 2.0, OpenID Connect, SAML 
+
+AzADDS : Service managé qui reçoit une projection partielle des objets d'Entra ID, il ressemble à un AD on promise.
+         LDAP, Kerberos, NTLM, GPOs, etc
+         deux AD/DNS virtuels 10.0.0.4 et 10.0.0.5 
+
+les objets dans EntraID qui vont apparaître sur AzADDS :
+  -les users full cloud (créé dans Azure AD)
+  -les users Synchronisé via AD Connect
+  -Groupe de sécurité statique full cloud  (les grp dynamiques ou O365 ne remontent pas)
+  -Groupe de sécurité sur AD local synchronisé via ADConnect
+
+Les objets crée sur Azure ADDS (users, groupes, machines inscrites dans AzADDS) ne remonte jamais sur EntraID
+
+Avec ADConnect je peux synchroniser vers EntraID : 
+ les users 
+ les groupes
+ les machines (utile pour hybrid join)
+
+====
+
+  Azure AD Join (Entra ID) : device Join à ENTRA-ID directement, s'effectue via internet, pas besoin d'aller au réseau entreprise.
+  
+  -commande pour vérifier : 
+
+   dsregcmd /status
+
+    AzureAdJoined : YES  → la machine est jointe à Entra ID
+    DomainJoined  : NO  → la machine n'est pas jointe à un domaine local (AD DS)
+
+Hybrid Azure AD Join : la machine est domain joinée à AD DS local + enregistrée dans Entra ID  (sur ENTRAID : Entra hybrid joined)
+➜ Scénario courant en entreprise hybride (avec AD local + Microsoft 365)
+   Combine GPO local + SSO cloud
+   
+1-Machine Windows est joint à un domaine local (via AD DS)
+2-Azure AD Connect est configuré pour :
+  synchroniser les objets ordinateurs
+  faire l’enregistrement automatique des postes
+  La machine devient automatiquement visible dans Entra ID
+  → statut : "Hybrid Azure AD Joined"
+
+  commande pour vérifier sur la machine : 
+
+  dsregcmd /status
+
+    AzureAdJoined : YES  → la machine est jointe à Entra ID
+    DomainJoined  : YES  → la machine est jointe au domaine local (AD DS)
+
+======================
+    Pour l'AzADDS, je peux y joindre des machines à conditions qu'elles pingent les IP DNS mon Azure ADDS (exemple : VM dans le même Vnet que mon AzADDS)
+
+    je peux joindre aussi une VM sur azure sur mon AzADDS, elle doit pinger les IP AzADDS (10.0.0.4 et 10.0.0.5)
+       je peux joindre aussi des machines locales si ces machines sont connectées au vnet du AzADDS via un VPN IPSEC.
+    Ensuite je peux créer des GPO et les appliquer … comme un AD local
+    mais ils ne vont jamais apparaître sur EntraID
+
+=====
+
+12 mois gratuits de services premium comme :
+
+B1S VM Linux/Windows
+
+SQL Database 250 Go
+
+Azure Functions
+
+Key Vault, Service Bus, etc.
+
+======================================
+Azure Storage Account — Gratuit (5 Go blob + 250k requêtes/mois)
+Permet de stocker fichiers, images, JSON, etc.
+
+Accès via REST, SDK, AzCopy, etc.
+
+➡️ Pratique pour stocker du contenu statique ou des sauvegardes.
+=======================================
+Azure App Service (Web App) — Gratuit Tier F1
+Héberge un site ou une API sans VM
+
+Langages : .NET, Java, Node.js, Python, PHP
+
+Offre gratuite F1 :
+
+1 Go de stockage
+
+60 minutes/jour de CPU
+
+Nom d’hôte en *.azurewebsites.net
+
+➡️ Parfait pour tester un site, une API Flask, un backend Node.js, etc.
+
+===========================================================
+
+🖼️ Frontend : Portfolio statique
+Static Web Apps	Site HTML/React/Vite (contient un formulaire et à la validation envoie le msg au backend)
+
+  index.html (portfolio simple + formulaire)
+  script.js (envoi du formulaire vers Azure Function)
+
+📮 Backend : Azure Function (API POST /api/contact)
+Créer une Azure Function (HTTP Trigger) pour traiter les messages reçues
+  ->Elle écrit les msg dans un Azure Blob Storage
+  -> envoie un mail de notification (SendGrid)
+
+index.js : Fonction Azure qui utilise nodemailer + SendGrid
+function.json : Déclaration du trigger HTTP
+package.json : Dépendances pour déploiement auto (inclut nodemailer)
+
+
+📊 Monitoring : Application Insights
+Automatiquement lié à la Function
+Logs, erreurs, performance
+
+Pour tester : 
+Accède à ton site via https://<nom>.azurestaticapps.net
+Envoie un message via le formulaire → reçu par mail +stocké dans azure blob+visible dans Azure Monitor
+
+================================
+
+Backend classique Node.js (Express, etc.)	
+ Tu déploies un serveur qui tourne en continu
+ Tu dois gérer l’hébergement et le scaling
+ Coût fixe (VM, container)
+
+Azure Functions (serverless)
+ Tu déploies du code qui s’exécute à la demande
+ Azure gère le scaling  automatiquement
+ Coût basé sur l’usage réel
+
+
+sur azure app web : 
+
+1-App Web : hébergement pour ton application web (Node.js, .NET, PHP, etc.), donc backend ET frontend ensemble si tu veux
+          c’est une VM/container qui tourne en permanence 
+
+2-App web statique : Héberge uniquement des fichiers statiques (HTML, CSS, JS).
+                   Pas de backend ni serveur, juste le front
+                   ->je peux la lier à azure functions -> un backend serverless (trigger HTTP) 
+                     sur la page static, je clic sur envoyer, -->appel azure functions pour -aller stocker dans une BD 
+                                                                                            -envoie mail 
+                                                                                            -autres actions
+
+3-App Web + Base de données : Un template qui combine une app web du cas 1 + une base de données (souvent SQL Azure).
+
+==========
+
+c'est quoi un webhook : un point de terminaison HTTP (généralement une URL) que ton application expose pour recevoir des données ou des événements depuis un   système externe avec GET, POST.
+-azure function avec http trigger est un webhook.
+-un backend peut contenir une partie webhook
+
+======================
+
+Storage account : 
+
+New-AzStorageAccount -ResourceGroupName "commun" -Name "storagesouflouf" -Location "francecentral" -SkuName "Standard_LRS" -Kind "StorageV2"
+
+tout Storage Account Azure est publiquement accessible par son URL, mais les données (blobs, fichiers...) sont privées
+
+https://storagesouflouf.blob.core.windows.net/
+
+Les données à l’intérieur (blobs d'un container, fichiers d'un partage ) seront privées jusqu’à ce que je les expose (avec SAS token ou container public)
+
+Activer Blob Storage :
+ créer un container "mesblobs"
+ s'ajouter le rôle "Storage Blob Data Contributor" sur IAM du storage account.
+ y téléverser des blobs (fichiers)
+ rendre un fichier uploadé accessible depuis le web en lecture seule pour 1h (SAS Token):
+   $expiry = (Get-Date).AddHours(1)
+   $sas = New-AzStorageBlobSASToken -Container "mesblobs" -Blob "Linux systemd.gif" -Context $ctx -ExpiryTime $expiry -Permission r -FullUri
+   Write-Output $sas
+ 
+ 
+File Storage (Azure Files) :
+ créer un partage
+ monter comme lecteur z:
+
+ Mais l'accès est via internet.
+
+Un Private Endpoint permet d’accéder à un Storage Account via une IP privée dans le VNet, sans sortir sur Internet.
+  -->désactiver l'accès public : --allow-blob-public-access false
+  -->activer l'option : Accès via réseaux privés uniquement
+
+Détails du storage account : 
+ Get-AzStorageAccount -ResourceGroupName "commun" -Name "storagesouflouf"
+
+Location           : francecentral
+SkuName            : Standard_LRS
+Kind               : StorageV2
+AccessTier         : Hot
+
+
+
+  
+
+

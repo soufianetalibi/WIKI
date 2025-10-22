@@ -1,0 +1,50 @@
+
+
+Logging sur azure : 
+
+Diagnostic settings : permet aux ressources platforme azure d'envoyer des logs.
+Application insights : permet d'exploiter en temps réel les logs applicatifs puis envoyer vers un stockage.
+Azure monitor : agent qui collecte des métriques des VMs puis envoyer vers un stockage.
+Log analytics : Espace de stockage permanent des logs
+
+NetworkWatcher : monitoring réseau entre les ressources Azure (Wireshark + Ping + Traceroute + Flow Analyzer)
+                            Connection Monitor : Détecter une coupure réseau entre VMs ...
+                            NSG Flow Logs : Savoir si un trafic a été bloqué
+                            Topology View : Visualiser les liens entre ressources
+                            IP Flow Verify : Tester si une règle NSG bloque le trafic
+                            Next Hop : Comprendre le routage
+                            Packet Capture : pcap en temps réel des paquets sur une NIC
+                            Connection Troubleshoot : Ping / traceroute amélioré
+
+====Diagnostic settings : 
+les VMs, NSG, Firewall, LB, storage account … stockent les logs via "Diagnostic settings" vers les cibles :  
+                                                                                         -Log Analytics Workspace (pour analyse avec Kusto)
+                                                                                         -Storage acount (pour archiver)
+                                                                                         -Event Hub (vers SIEM …)
+
+====Application insights : 
+les Azure Functions, App Services / Web Apps, Containers / Kubernetes utilisent l'APM "Application insights" pour voir les traces des requêtes, temps de réponse …
+    Application insights permet par la suite de stocker les données dans un Log Analytics
+
+Azure monitor : un agent AMA qui s'ajoute dans la VM et envoie les logs des métriques vers un log analytics
+
+
+-Dans un log analytics : 
+
+Quelles ressources envoient les logs : 
+
+AzureDiagnostics
+| summarize Count = count() by ResourceGroup, Resource
+| order by Count desc
+
+-graphique de la taille des logs : 
+
+Usage
+| summarize VolumeGB = sum(Quantity)/1024 by bin(TimeGenerated, 1d)
+| render timechart
+
+-Les logs applicatifs : 
+
+AppRequests
+| summarize Requests = count() by cloud_RoleName
+| order by Requests desc

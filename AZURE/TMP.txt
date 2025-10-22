@@ -1,0 +1,175 @@
+﻿Abonnement Azure avec paiement à l’utilisation : facturation chaque mois
+Contrat Entreprise Azure : permet d’acheter des licences logicielles et des services cloud dans le cadre d’un contrat unique ( pour les grandes entreprises)
+
+Les tags : 
+Chaque balise se compose d’un nom et d’une valeur. 
+ Par exemple, le nom Environnement et la valeur Production ou Développement.
+
+Tous les abonnements d’un groupe d’administration héritent automatiquement des conditions (policy) appliquées à ce groupe d’administration
+ Exemple -->appliquer des stratégies à un groupe d’administration afin de limiter les régions disponibles pour la création de machines virtuelles
+ Exemple -->Spécifier les types de ressource que votre organisation peut déployer
+ Exemple -->Spécifier un ensemble de références SKU de machine virtuelle que votre organisation peut déployer
+ --> Azure policy permet de définir ces stratégies.
+
+la définition d’initiative : contient une ou plusieurs policy.
+Une étendue détermine la ressource ,le regroupement de ressources, abonnement ou management group auquel on affecte la définition d'initialive.
+
+=======Azure AD
+
+Azure AD utilise SAML, Oauth, OpenIS, WS-federation for the could : O365, azure apps, azure resources.
+Azure AD utilise Kerberos, NTLM for the on promise : on promise apps
+
+identity : user or application
+account : An identity that has data associated with it
+
+Azure AD uses the REST API over HTTP and HTTPS, it cannot be queried through LDAP and doesn't use Kerberos authentication.
+
+Azure AD includes federation services
+
+Azure AD users and groups are created in a flat structure, and there are no Organizational Units (OUs) or Group Policy Objects (GPOs)
+
+Azure AD has 4 editions : Free, Microsoft 365 Apps, Premium P1, and Premium P2
+
+Premium P2 : provide the features
+                Identity Protection
+                Identity Governance
+Premium P1 : provide features of Premium 2 and : 
+                Hybrid Identities
+                Advanced Group Access Management
+                Conditional Access 
+
+Azure Active Directory Microsoft 365 Apps is included with O365.
+
+To get a device under the control of Azure AD : 
+ -  Registering a device to Azure AD enables you to manage a device’s identity            
+ -  Joining a device is an extension to registering a device, registering and changes the local state of a device. 
+
+Enabling Self-service Password Reset (SSPR) gives the users the ability to bypass the helpdesk and reset their own passwords.
+
+==
+un user sur azure AD peut être défini de trois manières : 
+
+-identité cloud : user qui existe uniquement dans azure AD.
+-identité synchronisée avec l'annuaire : user dans un AD local et synchronisé dans azure (via AD connect).
+-invité : user externe à azure,  des comptes d’autres fournisseurs de services cloud et les comptes Microsoft
+          -->Ce type de compte est utile lorsque des fournisseurs ou prestataires externes ont besoin d’accéder à vos ressources Azure. Une fois que le travail de ces collaborateurs est terminé, vous pouvez supprimer le compte et tous les accès associés.
+
+Vous devez être Administrateur général pour gérer les utilisateurs.
+Les utilisateurs supprimés peuvent être restaurés pendant 30 jours.
+Des informations de connexion et un journal d’audit sont disponibles.
+
+Les groupes dans azure AD : 
+
+Groupes de sécurité : pour les stratégies de sécurité d'accès au ressources.
+Groupes Microsoft 365 : accès à des éléments partagés : boîte aux lettres, calendrier, fichiers, site SharePoint.
+
+Ajout de membres à des groupes avec 3 façons : 
+
+-Affecté : le user reçoit immediatement l'autorisation du groupe.
+-utilisateur dynamique : Si le membre répond aux exigences des règles d’appartenance, il est ajouté. Si le membre ne répond plus aux exigences des règles, il est supprimé.
+-Appareil dynamique : utiliser des règles de groupe dynamique pour ajouter et supprimer automatiquement des appareils.
+
+=== les rôles : 
+
+-->Un rôle est un JSON file qui contient (allowable permissions (Actions), denied permissions (NotActions) à assigner à un scope (subscriptions, resource groups or resources))
+-->Les rôles Azure s’appliquent aux ressources Azure. Les rôles Azure AD s’appliquent aux ressources Azure AD comme les utilisateurs, les groupes et les domaines.
+we can assign a rôle azure to : management group, subscription, resource group or azure resource.
+     Security principal (user)  -->  Role definition (action, not action) --->  scope (target object) --> Role assignment  
+
+il faut différencier entre troix types de rôles sur azure : 
+
+Rôles d’administrateur d’abonnements classique : au départ d'azure, l’accès aux ressources était géré avec seulement par 3 rôles : administrateur de comptes, administrateur de services et coadministrateur.
+Rôles RBAC Azure : Gérer l’accès aux ressources Azure (un système d’autorisations plus récent que le classique)
+Rôles Azure AD : Gérer l’accès aux ressources Azure Active Directory seulement.
+
+***Rôles AZURE (sur acces control, IAM) :  
+
+Le rôle propriétaire accorde un accès total pour gérer toutes les ressources, notamment la possibilité d’attribuer des rôles dans Azure RBAC.
+Le rôle contributeur accorde un accès total pour gérer toutes les ressources, mais ne peut pas attribuer de rôles
+Le rôle Lecteur peut afficher toutes les ressources, mais ne peut apporter aucune modification.
+
+VM1, VM2 et VM3, autoriser user1 à modifier les paramètres sur la machine VM3 mais pas les autres.
+ --> Affecter l’utilisateur au rôle Contributeur sur la machine VM3.
+
+Example 1: Assign a user as an administrator of an Azure subscription
+https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal-subscription-admin
+
+Example 2: "assign role to resource group"
+go to IAM : Access control, Add role assignment : to assign roles to grant access.
+
+activity log : permet de voir les logs des changements sur Azure RBAC.
+
+***Rôles AZURE AD : 
+
+Global administrator : Peut gérer tous les aspects d’Azure AD et des services Microsoft qui utilisent des identités Azure AD, attribue les rôles.  
+Security administrator : lecture des informations de sécurité et rapports, gère la configuration sur azure AD et O365.
+user administrator : gère les users et groupes et reset des mdp.
+
+
+======= Storage account : 
+
+*Disk : persistent block storage for Azure IaaS virtual machines
+*Azure Files : fully managed file shares in the cloud for virtual machines, multiple VMs can share the same files with RW. (partage SMB 3.0 ou 2.1)
+*Azure Containers Blob and Azure Data Lake Store : Unstructured data, Blobs are highly scalable (binary data, such as a documents or pictures, videos ...), REST-based cloud object store. Data Lake Store is Hadoop Distributed File System (HDFS) as a service
+   types de blobs : 
+          - page blobs (for VM disk files that we upload to attach to a VM azure)
+          - block blobs (for media picture, video and backups)
+          - Append blobs (pour les logs)
+*Azure Queue service is used to store and retrieve messages (temporary store for asynchronous exchange of messages)
+*structured data on tables non relational : Tables, Cosmos DB, and Azure SQL DB
+
+Storage access type : 
+ hot : used frquently every day
+ cool : used at least 30 days
+ archive : used at least 180 days
+
+standard : HDD
+Premium : SSD
+
+create a storage account
+ account kind : version2, version1, blobstorage "LRS, GRS, RA-GRS"    | for replication and access tiers
+ network connectivity : public or private endpoint
+ Routing preference : microsoft network or internet routing
+ data protection : recovery and tracking
+
+ --> in a created storage account, we can create every type of storage that we need ( files blob queue ...)
+
+default replication option : Read-access geo-redundant storage (RA-GRS)
+lowest cost storage account : Locally redundant storage (LRS)
+Types of storages : 
+-Storage : 
+--LRS : If a datacenter-level disaster occurs, all replicas may be lost or unrecoverable. 
+--ZRS : replicates your data across three storage clusters in a single region.
+--GRS/RA-GRS : replicates your data to a secondary region, data is first replicated with locally redundant storage (LRS) and then to another region.
+                GRS : data is available to be read only if Microsoft initiates a failover from the primary to secondary region.
+                RA-GRS : Microsoft provides you with the option to read from the secondary region.
+--GZRS/RA-GZRS : combines ZRS and GRS, Data is replicated across three Azure availability zones in the primary region and also replicated to a secondary geographic region
+
+
+
+
+
+
+====O365 : 
+
+Azure AD
+exchange online
+sharpoint online
+security and compliance
+teams online 
+Microsoft office 
+Yammer
+
+Abonnnements : 
+-E1 : 12$
+-E3 : 20$
+-E5 : 35$
+-Microsoft 365 apps for entreprise
+
+=================================================
+
+comment connecter une application à azure via azure AD : 
+
+1. App Registration : déclarer une application, Cela génère un client_id et un secret
+2. Service Principal : l’identité concrète de cette application, l'objet utilisé pour donner les droits (le SP se crée automatiquement avec l'app registration)
+3. accorder les droits RBAC au SP de l'application.

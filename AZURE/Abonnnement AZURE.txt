@@ -1,0 +1,169 @@
+netstat -ano
+netstat -aon | findstr LISTENING
+
+ -Entra ID : 
+
+ domaine Microsoft : soufianetalibigmail.onmicrosoft.com
+ domaine personnalisé : couldsky.com
+
+  soufiane.talibi@gmail.com : MicrosoftAccount (créateur de l'abonnement "compte invité") 
+  admin@couldsky.com : compte full cloud, administrateur général sur EntraID et owner et l'abonnement
+
+ app registration / SP  : "github-actions-sp" -> contributeur sur l'abonnement, me permet de faire des actions sur azure via gitHUB 
+
+ -Azure DNS : ========================================================================================
+
+ j'ai deux zones DNS privées liées à mon VNET : 
+
+  privatelink.blob.core.windows.net (utilisée par le private endpoint du storage account monblobfree2025
+  
+  soufiane.local : windows.soufiane.local --> VM windows
+                   linux.soufiane.local --> VM linux
+
+ -VNET : =================================================================================
+     
+       VNET :      VM-LinuxVNET
+           SUBNETS  VM-LinuxSubnet
+                    VM-WindowsSubnet
+                    SR-Backend 
+
+Avec la sécurité suivante : 
+
+Source   	 Destination	        Port	        Action
+Internet	 VM-WindowsSubnet	80, 443,3389    Autorisé
+VM-WindowsSubnet SR-Backend     	443	        Autorisé
+SR-Backend	 Internet	         ??             Bloqué	
+Internet	 SR-Backend	         ??             Bloqué
+
+ -Azure function : ============================================================================
+
+Pour tester : 
+
+https://agefunctiondemo1234.azurewebsites.net/api/AgeCalculator
+
+https://agefunctiondemo1234.azurewebsites.net/api/AgeCalculator?dob=09/12/1989
+
+curl "https://agefunctiondemo1234.azurewebsites.net/api/AgeCalculator?dob=09/12/1989"
+
+la fonction est liée à un log analytics : DefaultWorkspace... qui stocke les appels de la fonction...
+la fonction a un storage account qui stocke le code
+la fonction a un plan app service : FranceCentralLinuxDynamicPlan
+
+ -Storage account : ======================================================================================
+
+  nom : monblobfree2025 avec un container blob : monblobfree2025.file.core.windows.net/blobs    "blobs" qui contient des fichiers .txt .pdf ...
+                        avec un  partage SMB :   monblobfree2025.file.core.windows.net/partage
+
+  ==> accessible depuis internet : monblobfree2025.blob.core.windows.net
+  ==> accessible depuis point de terminaison privé : monblobfree2025.privatelink.blob.core.windows.net
+
+  Test-NetConnection -ComputerName monblobfree2025.file.core.windows.net -Port 445
+      
+--Se connecter au container blob : 
+
+msiexec /i https://aka.ms/installazurecliwindows
+az login 
+az storage blob list --account-name monblobfree2025 --container-name mesblobs --auth-mode login
+az storage blob list --account-name monblobfree2025 --container-name mesblobs --auth-mode login --query "[].{Name:name, Size:properties.contentLength}" --output table
+
+ 
+ -App service : ===========================================================================================
+
+  lien : blobwebapp-auddejh6gya9f7d5.francecentral-01.azurewebsites.net
+
+  c'est une application web avec le backend ASP.NET qui se connecte au storage monblobfree2025/blobs et affiche le contenu : 
+
+  URL pour interroger: https://blobwebapp-auddejh6gya9f7d5.francecentral-01.azurewebsites.net/blobs  
+
+ cette application web a un plan app service nommé : ASP-webapp-a92f
+
+ -Azure ACI : =============================================================================================
+
+  az group create --name RG-app-ACI-visiteurs --location francecentral
+  az container create --resource-group RG-app-ACI-visiteurs --name mon-app-visiteurs --image souflouf89/mon-app-visiteurs:latest --cpu 1 --memory 1 --restart-policy Always --ports 3000 --os-type Linux --dns-name-label mon-app-visiteurs-dns --location francecentral
+
+  puis voir sur l'URL : http://mon-app-visiteurs-dns.francecentral.azurecontainer.io:3000
+
+ -Eventgrid ->logicApps =========================================================================================
+
+  Dès d'un fichier est uploadé sur monblobfree2025/blobs, eventgrid déclenche le http trigger de la logic apps
+      la logic apps envoie un mail automatique à soufiane.talibi@gmail.com
+
+=========================
+ -Azure service health :  nommée Alertes AZURE qui envoie les alertes azure à mon email
+ -Azure policy : bloque la création des VMs volumineuses
+ -cost management : budget fixé à 10 euros avec notification par mail
+
+===================================================================================================
+   Tâches de l'admin système AZURE : 
+====================================================================================================
+
+Contrôler la consommation Azure (VM, stockage, réseau).
+
+-Sauvegardes (Azure Backup, snapshots de VM)
+
+-updates : 
+MAJ des VMs automatique par l'OS (Windows update/Linux repo)
+MAJ pilotée par Azure Update Management ou Azure Update Manager intégré à Azure Arc
+MAJ pilotée par un outil externe :  WSUS / SCCM / Intune / Ansible ...
+ou Automanaged VM (Azure applique les MAJ automatiquement)
+
+-Vérifier la sécurité réseau (NSG, firewall, Azure Security Center).
+
+-Supervision des alertes dans Azure Monitor, logs d’activité, log analytics
+
+-Rapports d’activité (qui s’est connecté, MFA, comptes désactivés)
+
+-Revue des rôles administratifs (principle of least privilege)
+
+-intune : enrôler les PC, smartphones …, installer MAJ et Apps, politique de conformité (OS à jour, MFA active, antivirus OK ...), 
+
+=============================================================================
+
+ 1-Entra ID
+
+C’est le répertoire principal pour l’identité des utilisateurs, groupes et appareils.
+
+Contient des informations comme :
+
+DisplayName, UserPrincipalName, Mail, CompanyName, JobTitle…
+
+Géré via :
+
+ Get-MsolUser (MSOnline)  --> Connect-MsolService
+
+ Get-AzureADUser (AzureAD)  --> Connect-AzureAD
+
+ Get-MgUser (Microsoft Graph)  --> Connect-MgGraph -Scopes "User.Read.All"
+
+ 2-Exchange Online
+
+C’est la base des objets de messagerie : boîtes aux lettres, contacts externes, groupes de messagerie.
+
+Contient des informations comme :
+
+RecipientType (UserMailbox, MailUser, MailContact…)
+
+RecipientTypeDetails (SharedMailbox, RoomMailbox…)
+
+Paramètres de messagerie (taille, quota, délégation…)
+
+Géré via :
+
+ Connect-ExchangeOnline
+ Get-Recipient, Get-Mailbox, Get-MailContact…
+ Get-Recipient -Identity "soufiane.talibi@castel-afrique.com" | Select DisplayName, Company
+ Get-MailboxStatistics -Identity "soufiane.talibi@castel-afrique.com" | Select DisplayName, TotalItemSize, ItemCount, StorageLimitStatus
+
+===================================================================================
+
+1?? Azure AD Join + Intune (100% cloud) 
+ Les postes (Windows 10/11, mobiles) sont rejoints directement à Azure AD.
+ Gérés 100% par Intune (pas besoin de serveurs AD locaux). ->cloud first
+
+2?? Hybrid Azure AD Join + Intune (AD local + Azure AD)
+ Les postes sont rejoints à Active Directory local ET synchronisés vers Azure AD via Azure AD Connect.
+
+3?? Azure AD Registered
+ Les appareils ne sont pas “rejoints” mais seulement enregistrés pour appliquer des règles intune sur quelques apps pro (Outlook, teams, OneDrive)
+ 

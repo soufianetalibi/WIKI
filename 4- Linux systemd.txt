@@ -1,0 +1,128 @@
+﻿1. Infos système générales
+
+
+uname -a              # Version du noyau et archi
+lsb_release -a        # Détails sur la version Ubuntu
+hostnamectl           # Nom de la machine, OS, kernel
+
+
+2. CPU
+
+
+lscpu                 # Infos sur processeur(s) et architecture
+nproc                 # Nombre de CPU logiques
+top                   # Utilisation CPU en temps réel
+htop                  # Version améliorée de top (apt install htop)
+mpstat 1              # Charge CPU par cœur (apt install sysstat)
+
+
+3. RAM
+
+
+free -h               # RAM totale, utilisée et libre
+vmstat 1              # Mémoire et CPU en temps réel
+top ou htop           # Affiche aussi l’utilisation mémoire par processus
+
+
+4. Disque
+
+
+df -h                 # Espace disque utilisé / libre
+du -sh /chemin        # Taille d’un dossier
+lsblk                 # Liste des disques et partitions
+mount                 # Systèmes de fichiers montés
+
+
+5. Réseau
+
+
+ip a                  # Adresses IP
+ss -tulpn             # Ports ouverts et processus associés
+netstat -tulnp        # Alternative (apt install net-tools)
+ping google.com       # Tester la connectivité
+curl ifconfig.me      # Voir ton IP publique
+sudo lsof -i -P -n    # Toutes les communications "listen,established..." (très utile)
+
+6. Services
+
+
+Ubuntu utilise systemd :
+
+
+systemctl status nom_service     # Voir l’état d’un service
+systemctl start nom_service      # Démarrer un service
+systemctl stop nom_service       # Arrêter un service
+systemctl restart nom_service    # Redémarrer un service
+systemctl enable nom_service     # Activer au démarrage
+systemctl disable nom_service    # Désactiver au démarrage
+systemctl list-units --type=service --state=running  # Lister services actifs (Services actifs gérés par systemd)
+
+
+7. Processus
+
+top / htop          # Surveillance en temps réel
+ps aux              # Lister tous les processus (les processus Linux brut)
+ps aux | grep nginx # Chercher un processus spécifique
+kill PID            # Tuer un processus
+pstree -p | grep Soufiane # les processus lancés par la session du user.
+pstree -p | grep systemd  # les processus lancés par systemd
+iostat -x 1         #temps de réponse CPU et disque, valeurs peuvent augmenter et revenir à 0.00 et non pas être fixe à une valeur.
+lsof -i → montre quels processus utilisent quels ports
+tcpdump -i eth0 → capture des paquets sur l’interface eth0
+
+---vérifier une interface est saturée, s'il y  des erreurs sur un disque réseau : 
+ip -s link
+sar -n DEV 1
+RX/TX packets → nombre de paquets envoyés/reçus
+errors/dropped → paquets perdus ou erreurs
+
+
+
+
+On démarre le service nginx : sudo systemctl start nginx
+On liste les processus : ps -ef | grep nginx (ou bien : pidof nginx)
+PID principal "master process" de ngnix : systemctl show -p MainPID --value nginx
+PID principal de NGINX et ses enfants : systemctl show -p ExecMainPID,ControlPID,Tasks --value nginx (ou : pstree -p | grep nginx)
+
+
+
+apt update && apt upgrade -y    # Mettre à jour le système
+dpkg -l                         # Liste des paquets installés
+dpkg -l | grep nginx
+dpkg -L nginx                   #voir le chemin d'installation
+sudo systemctl enable nginx     #démarrer automatiquement au boot
+
+
+paquet --> service  --> processus :
+
+
+
+-on installe un paquet qui crée un service, ce dernier démarre un ou plusieurs processus (nginx, mysql, ssh)
+
+
+-Certains paquets installent uniquement des programmes que tu lances à la main (vim, curl, git)
+
+8. Logs
+
+
+journalctl -xe              # Logs système récents
+journalctl -b               # Logs depuis le dernier boot
+journalctl -u nom_service   # Logs d’un service précis
+tail -f /var/log/syslog     # Logs système en direct
+tail -f /var/log/auth.log   # Connexions SSH et authentifications
+last
+
+
+====Démarrage linux : 
+
+1-L’ordinateur démarre et le BIOS/UEFI initialise le matériel (CPU, RAM, disques…), choix d'un disque pour le boot, lancer le bootloader(GRUB)
+
+
+2-GRUB charge le noyau Linux (vmlinuz) et le ramdisk initial (initrd ou initramfs) en mémoire.
+
+
+3-Le noyau Linux s’initialise : Detecte le matériel, Monte le système de fichiers root (racine /), Lance le premier processus utilisateur : /sbin/init, sur linux moderne le /sbin/init est un lien vers systemd qui se lance avec le PID 1.
+
+
+4-systemd lit les fichiers unit, démarre les services, lance le niveau d'exécution "le mode cible" 
+

@@ -1,0 +1,68 @@
+
+sur un vnet 10.246.222.0/24 :  
+Nous avons un subnet 10.246.222.32/27
+la première IP est la passerelle 
+la 2 et 3 IP sont les DNS
+La 4 éme IP : 10.246.222.36 : Réservé par Azure
+à partir de la 5 éme on peut allouer à des VMs.
+
+Ex subnet : 10.246.222.32/27
+          passerelle : 10.246.222.33
+          DNS : 10.246.222.34 et 10.246.222.35
+          10.246.222.36 : Réservé par Azure (usage futur)
+          IP à allouer une VM : de .37 à .62
+          Broadcast du subnet : 10.246.222.63 
+
+=>celà s'applique sur chaque subnet crée dans ce vnet.
+
+
+- Sponsored subscriptions : CSP : fournisseur de solutions cloud
+- Enterprise subscriptions : EA : Contrat Entreprise
+- Pay as you go
+- Azure for Students subscription (100$ per month for 12 months)
+
+Connect-AzAccount
+
+Get-AzSubscription
+
+$context = Get-AzSubscription -SubscriptionId {Your subscription ID}
+Set-AzContext $context
+
+Set-AzDefault -ResourceGroupName [sandbox resource group name]
+
+
+--Déployer une ressource azure depuis une URL ayant un code .json : 
+
+Ex : storage account : 
+
+$resourceGroupName = Read-Host -Prompt "Enter the Resource Group name"
+$location = Read-Host -Prompt "Enter the location (i.e. centralus)"
+$templateUri = "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.storage/storage-account-create/azuredeploy.json"
+New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateUri $templateUri -Location $location
+
+--Déployer à partir d'un fichier .json en local ou sur le cloudshell : 
+
+$templateFile="azuredeploy.json"
+$today=Get-Date -Format "MM-dd-yyyy"
+$deploymentName="blanktemplate-"+"$today"
+New-AzResourceGroupDeployment `
+  -Name $deploymentName `
+  -TemplateFile $templateFile
+
+==Déplacer des ressources Azure vers un nouveau groupe de ressources ou un nouvel abonnement : 
+
+Les abonnements source et de destination doivent exister dans le même locataire Microsoft Entra : 
+
+(Get-AzSubscription -SubscriptionName <your-source-subscription>).TenantId
+(Get-AzSubscription -SubscriptionName <your-destination-subscription>).TenantId
+
+avant de déployer un type de ressource, son fournisseur doit être chez moi à l'état registred : 
+
+Get-AzResourceProvider -ListAvailable | Select-Object ProviderNamespace, RegistrationState
+
+pour inscrire un fournisseur de ressources : Register-AzResourceProvider -ProviderNamespace Microsoft.Batch
+
+-->selectionner les ressources sur le portail puis choisir move to another subscription.
+
+Migrer une VM depuis l'esx local vers azure : azure migrate.
+Migrer une base SQL server vers azure : Azure Database Migration Service (DMS)

@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Variables
+RESOURCE_GROUP="MyResourceGroup"
+LOCATION="eastus"
+VNET_NAME="MyVNet"
+SUBNET_NAME="MySubnet"
+IP_NAME="MyPublicIP"
+NIC_NAME="MyNic"
+VM_NAME="MyVM"
+ADMIN_USER="azureuser"
+
+# 1. Créer un groupe de ressources
+az group create --name $RESOURCE_GROUP --location $LOCATION
+
+# 2. Créer un réseau virtuel et un sous-réseau
+az network vnet create \
+  --resource-group $RESOURCE_GROUP \
+  --name $VNET_NAME \
+  --subnet-name $SUBNET_NAME
+
+# 3. Créer une IP publique
+az network public-ip create \
+  --resource-group $RESOURCE_GROUP \
+  --name $IP_NAME \
+  --sku Basic \
+  --allocation-method Dynamic
+
+# 4. Créer une carte réseau (NIC)
+az network nic create \
+  --resource-group $RESOURCE_GROUP \
+  --name $NIC_NAME \
+  --vnet-name $VNET_NAME \
+  --subnet $SUBNET_NAME \
+  --public-ip-address $IP_NAME
+
+# 5. Créer une VM Ubuntu
+az vm create \
+  --resource-group $RESOURCE_GROUP \
+  --name $VM_NAME \
+  --nics $NIC_NAME \
+  --image UbuntuLTS \
+  --admin-username $ADMIN_USER \
+  --generate-ssh-keys \
+  --size Standard_B1s
+
+# 6. Ouvrir le port SSH (22)
+az vm open-port --port 22 --resource-group $RESOURCE_GROUP --name $VM_NAME
+
+echo "✅ Déploiement terminé !"
+

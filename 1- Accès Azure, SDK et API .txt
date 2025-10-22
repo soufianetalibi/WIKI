@@ -1,0 +1,123 @@
+﻿
+je peux interroger azure via :
+
+ 1. Portail Azure
+ 2. Azure PowerShell (Connect-AzAccount)  
+ 3. Azure CLI (az login) 
+ 4. Cloud Shell (le shell sur le portail)
+ 5. Azure REST API (avec curl, je récupère un token tout d'abord puis j'interroge azure avec ce token) => authentification manuelle 
+ 6. SDK dans un langage X ( ex azure-mgmt-* dans python...) ==> le SDK s'authentifie et interroge azure, ==> authentification automatique  
+
+Sous azure powershell je peux lancer une commande directe ou un script .ps1
+Sous azure CLI je peux lancer une commande directe ou un script .sh
+
+->avec une commande powershell ou CLI, je peux lancer le déploiement d'un ARM template : template.json, parameters.json
+  CLI → az deployment group create ...
+  PowerShell → New-AzResourceGroupDeployment ...
+
+=======
+
+je peux m'authentifier sur azure avec : 
+ -Mon compte Azure, rapide pour dev/test mais pas adapté pour un script automatique
+ -Service Principal, créer une application SP azure AD, (Subscription_ID, appId → CLIENT_ID, password → CLIENT_SECRET, tenant → TENANT_ID)
+
+Exemple d'utilisation des SDK : 
+
+SDK sur python vers API vmware 
+SDK sur Java vers API AWS
+SDK sur Node.js vers  l’API d’OpenAI
+
+==============================================================================================
+
+Le SDK d'un langage "Y" se branche sur l'API d'une application "X"    : résultat --> interroger l'application et récupérer des infos.
+
+Par ex : 
+    Le SDK azure-mgmt-* de Python (PyPI) se branche sur "ARM API d'azure"  : résultat --> le programme Python pour faire des actions sur azure (créer VM, lister les ressources ...) 
+    
+je peux utiliser aussi un plugin qui va interroger une API azure : 
+ 
+Le plugin centreon-plugin-Cloud-Azure peut contacter l'API Azure Monitor, cette dernière se base en arrière plan sur l'ARM API  : résultat  --> voir CPU, RAM, disque, etc
+
+NB: 
+le plugin n'est pas un SDK, le SDK est toujours dans le cadre d'un langage
+généralement le plugin est uniquement pour superviser
+
+===== Créer une API sur python avec son Framework fastapi
+
+pip install fastapi uvicorn
+====main.py
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/hello")
+def read_hello():
+    return {"message": "Bonjour !"}
+=======================================
+
+Pour tester : uvicorn main:app --reload
+
+curl http://127.0.0.1:8000/hello va retourner "message": "Bonjour !"
+
+ou bien déclencher l'API depuis un programme python : 
+
+pip install requests
+====invoke.py
+import requests
+
+response = requests.get("http://127.0.0.1:8000/hello")
+data = response.json()
+print(data["message"])  # ca va m'afficher le retour
+==============================================
+
+======tester l'accès à azure via APIs :
+
+1-Créer une app registration et autoriser son SP sur l'abonnement
+2-Se connecter via un script powershell ou python pour avoir le token puis envoyer des requêtes avec le token reçu.   (Token d'abord ensuite envoyer la requête)
+   ou bien le plus propre est d'interroger l'API azure avec l'un des SDK (ex SDK python) pour interroger azure via      (token abstrait, plus simple à employer)
+ 
+Sur Entra-ID, créer une App registration, nom : AzureAPIClient, 
+  -Application (client) ID
+  -Directory (tenant) ID
+  -Copie la valeur générée (client_secret)
+  
+Sur l'abonnement, IAM, ajouter le rôle lecteur ou contributeur, l'attribuer à : application AzureAPIClient
+  -Récupérer subscriptionId de cet abonnement. 
+
+Pour le script qui va interroger l'API azure, si c'est via un SDK, la gestion du token est abstraite et l'appel de la requête est simplifié 
+                                              si c'est sans SDK, la gestion du token est manuelle, ce dernier est récupérer ensuite employé pour envoyer la requête
+
+Exemple d'SDK vers l'API azure :
+            -Azure SDK python (PyPI)
+            -Azure SDK Java (Maven)
+            -Azure SDK .NET (NuGet)
+            -Azure SDK JS (npm)
+            -AWS SDK for Node.js
+            
+ Par ex, Azure SDK python permet d'interroger l'API azure facilement dans un script .py
+
+ Par ex, pyvmomi est le vmware SDK Python qui permet d'interroger l'API ESXi,Vcenter facilement dans un script .py
+
+ Donc le rôle du SDK dans un langage de programmation est de simplifier l’accès à une API, interagir facilement avec une plateforme ou un service
+
+Pour info : Azure SDK for Java # SDK JDK, les deux sont des SDK liés à JAVA
+  Maven : plan de construction, pom.xml appelle les librairies/SDKs nécessaires 
+  JDK : Kit complet de DEV qui contient le compilateur javac, la JVM, LIB standard ..., tu ne peux pas coder en Java sans JDK.
+
+Maven : c'est un outil de build et gestion des dépendances dans le projet Java déclarés dans pom.xml (par exemple Maven appel le SDK azure ...), puis Maven compile le projet avec JDK pour finir avec un .jar à executer. 
+
+=================================================
+
+Azure Functions : créer du code exécuté à la demande, exposée via URL
+Azure API Management sert à exposer, sécuriser, gérer, surveiller et versionner tes APIs et envoyer vers un backend.
+
+ User --> API Management --> Azure functions 
+                         --> App Service
+                         --> Logic Apps
+                         --> Containers
+                         --> VMs ou serveurs physiques
+
+Tant que ton backend expose une API HTTP/HTTPS, tu peux le connecter à Azure API Management.
+
+=======================================================================================================

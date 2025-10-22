@@ -1,0 +1,80 @@
+
+Soit un vnet 10.246.222.0/24 :
+  
+Nous avons un subnet 10.246.222.32/27
+ la première IP est la passerelle 
+ la 2 et 3 IP sont les DNS
+ La 4 éme IP : 10.246.222.36 : Réservé par Azure
+ à partir de la 5 éme on peut allouer à des VMs.
+
+Ex subnet : 10.246.222.32/27
+          passerelle : 10.246.222.33
+          DNS : 10.246.222.34 et 10.246.222.35
+          10.246.222.36 : Réservé par Azure (usage futur)
+          IP à allouer une VM : de .37 à .62
+          Broadcast du subnet : 10.246.222.63 
+
+=>cela s'applique sur chaque subnet crée dans ce vnet.
+
+
+un subnet publique : permet aux VMs de sortir sur internet librement 
+                     permet d'attacher une IP publique à une VM pour y accéder depuis internet (SSH, RDP, 80, 443 …)
+
+un subnet privé : permet aux VMs de rester privées, elles sortent uniquement via une NAT Gateway partagée.
+
+
+  Une NAT Gateway est une ressource qu'on crée et on attache à un SR privé pour lui permettre de sortir à internet 
+      elle nécessite une IP publique et toutes les VMs du SR privé sortent vers internet via cette IP
+      point fort : pas d'ip publique directe sur les VMs
+
+     il faut configurer azure bastion pour accéder aux VMs car le SSH/RDP n'est pas exposé par IP publique.
+
+==============
+
+Par défaut les subnets du même vnet communiquent librement entre eux.
+
+
+Deux subnets ? ?? pas de sécurité 
+Deux subnets + règles de filtrage + contrôle d’accès ? Sécurité réelle
+
+EX : 
+vnet-commun:      10.0.0.0/16
+ Frontend-subnet  10.0.0.0/24
+ Backend-subnet   10.0.10.0/24
+
+Source   	Destination	Port	Action
+Internet	Frontend Subnet	80, 443	? Autorisé
+Frontend Subnet	Backend Subnet	443	? Autorisé
+Backend Subnet	Internet	??      Bloqué	
+Internet	Backend Subnet	??      Bloqué
+
+
+Backend Subnet peut contenir :
+           Bases de données azure (un private Endpoint sur le subnet backend)
+           storage account  (un private Endpoint sur le subnet backend)
+           API sur App service (un private Endpoint sur le subnet backend)
+           VM privée
+            
+=====================================================================================================
+---Solution pratique pour la PROD : 
+
+HUB Virtual Network : 10.0.0.0/16 qui contient : 
+     -Bastion subnet : 10.0.0.0/27
+     -Firewall subnet :  10.0.1.0/27
+     -NAT Gateway ayant une IP publique attachée
+
+SPOKE Virtual Network : 10.1.0.0/16 qui contient : 
+     -Subnet privé (10.1.1.0/24) avec VMs Linux/Windows (sans IP publique)
+                                      Sortent sur internet via la NAT Gateway
+
+
+un peering vnet entre le HUB et SPOKE
+le firewall pour sécuriser les flux
+
+======================================================================================================================
+
+Private Endpoints (Recommended) – Keep Azure services accessible only from your connected subnet (No public IP!)
+
+Ecrypt data at rest (en repos)
+Encrypt data in transit use HTTPS and TLS
+

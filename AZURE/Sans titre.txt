@@ -1,0 +1,253 @@
+﻿
+Cisco Meraki : une gamme des équipements (Switches MS, Gateway-SDWAN MX, AcessPoint MR, NAC ) mais only cloud managed.  (utile pour PME)
+   sinon il y a du Cisco classique gérable on-prem :  
+            cisco catalyst
+            cisco ISR/ASR   (ISR pour agences et PME, ASR pour backbones et FAI)
+            cisco nexus     ( gamme pour datacenters et virtualisation)
+            cisco ASA/Firepower
+            cisco ISE : NAC
+
+Juniper : Switches Entreprise L2/L3 EX Series, switches datacenters (QFX Series, Routeurs MX, ACX, PTX), SD-Branch, 
+
+HPE Aruba : une gamme des équipements comme Meraki  mais hybride (AP, Switches, NAC ClearPass, SDWAN EdgeConnect, Branch Gateways), équipements cloud managed avec aruba central ou on-prem managed directement.
+       
+Netgear et Dlink : Particuliers, PME, petites écoles
+
+[Siège entreprise]───(Internet/MPLS)────[Filiale A]─── Wi-Fi, Switch, AP
+                                         │
+                                         └──[Filiale B]─── Wi-Fi, Switch, Contrôle d'accès
+
+SD-WAN : gère le lien entre siège ↔ filiales A,B et l'ensemble est géré par un orchestrateur.
+
+SD-Branch : gère chaque filiale A ou B (SD-WAN, SD-LAN, SD-Security, SD-WiFi, Téléphonie IP ...) et l'ensemble des filiales est géré par un orchestrateur.
+
+SD-WAN = Optimiser les "routes" entre les villes
+SD-Branch = Gérer toute l'infrastructure d'une "ville" (routes, électricité, sécurité, communications, etc.)
+
+===============================================================================
+
+Pipeline : une suite des étapes : 
+
+Exemple : Pipeline de données (Data Pipeline)
+ Étape 1 : Extraction des données (depuis une base de données, un fichier, etc.)
+ Étape 2 : Transformation des données (nettoyage, formatage…)
+ Étape 3 : Chargement dans une base de données ou un outil d’analyse (ETL : Extract, Transform, Load)
+
+En DevOps / CI/CD :
+ Un pipeline CI/CD (Intégration Continue / Déploiement Continu) automatisé :
+
+ 1-Le test du code
+ 2-La compilation
+ 3-Le déploiement sur un serveur
+
+ tu développes un site web en PHP. Tu veux que :
+  À chaque fois que tu pousses du code sur GitHub :
+  Le code soit testé automatiquement
+  Puis déployé sur ton serveur DEV (par exemple via FTP ou SSH)
+
+ Tu peux faire un push automatique vers le serveur web DEV pour visualiser 
+  si DEV OK, lancer le push auto vers le serveur PPRD
+   si PPRD OK, lancer le push auto vers le serveur PROD
+    
+il y aura 3 repository (DEV, PPRD PROD)
+
+Exemple du fichier .github/workflows/deploy.yml qui sera présent dans les 3 repository : 
+
+name: Déploiement automatique
+on:
+  push:
+    branches:
+      - main  # Déclenche le pipeline à chaque push sur la branche main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Récupérer le code
+      uses: actions/checkout@v3
+
+    - name: Vérifier la syntaxe PHP
+      run: php -l index.php
+
+    - name: Déployer via SSH
+      uses: appleboy/scp-action@v0.1.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        password: ${{ secrets.SERVER_PASS }}
+        source: "."
+        target: "/var/www/html/mon-site"
+
+Les variables SERVER_HOST, SERVER_USER, SERVER_PASS seront configurés dans chaque repository "Settings > Secrets and variables > Actions"
+
+l'action "Git Push" -> envoie la MAJ vers le repository 
+
+Pipeline CI/CD du fichier deploy.yml -> envoie la MAJ du repository vers un serveur distant
+
+NB : il est possible d'utiliser Gitpages à la place du serveur distant pour ce qui est web statique "HTML/CSS/JS" uniquement (affichage web sur Git) 
+
+Git action : versioning de mon repository
+======================
+
+La BI sur azure : 
+
+Azure DataFactory : ETL qui récupère les données des sources (https://adf.azure.com)
+
+datalake : ingestion des données tel qu'elles sont sur la source
+
+synapse : datawarehouse
+
+PowerBI : visualiser les données 
+
+Microsoft Fabric est une nouvelle solution qui comporte 
+
+=========================
+
+https://mxtoolbox.com/
+
+Chaque domaine a plusieurs info à récupérer : MX Lookup, DNS lookup, SPF record, 
+                 
+exemple de castel-afrique.com (SPF record lookup)
+
+Statut SPF : 
+v=spf1 a mx ip4:185.74.203.12 ip4:40.89.165.135 ip4:169.239.99.62 ip4:185.74.203.12 ip4:41.159.13.115 ip4:65.181.122.52 ip4:65.181.127.140 ip4:102.68.63.66 include:spf.protection.outlook.com include:_spf.general.transactional-mail-a.com -all
+
+Les serveurs MAIL/EDGE qui sortent sur internet avec ces IP publiques utilisent le SPF castel-afrique.com
+Ces serveurs doit être configurés à envoyer vers le smarthost "castelafrique-com01e.mail.protection.outlook.com", à voir sur get-sendconnector
+
+======
+
+https://dnschecker.org/
+
+
+
+======
+
+=je peux chercher par mon IP publique aussi pour vérifier s'elle est déclarée sur le SPF d'un domaine.
+
+
+PTR : DNS inverse (1.2.3.4 -> mail.exemple.com), Aider les serveurs de réception à vérifier que l’IP d’envoi correspond bien à un domaine connu (utile contre les spams).
+
+MX : Indique quel serveur gère les e-mails pour un domaine (héberge les BAL d'un domaine)
+
+SPF : Qui est autorisé à envoyer des mails via mon domaine
+      Enregistrement TXT dans le DNS qui liste les IP publiques autorisées à envoyer des emails avec le nom de mon domaine (anti-spoofing) 
+
+DKIM : signature des emails 
+      clé publique dans un enregistrement TXT DNS pour signer numériquement les e-mails, le serveurs destination vérifie que le mail n'a pas été modifié
+
+DMARC : Politique en cas d’échec SPF/DKIM 
+       politique DNS qui indique aux serveurs de réception quoi faire si SPF et/ou DKIM échouent, --> mise en quarantaine.. 
+
+TXT : Conteneur de données (SPF, DKIM, autres infos)
+
+=========================================================================
+
+PIM : s'assigner des rôles dont je suis éligible de façon temporaire pour exécuter un travail, il peuvent être des rôles Entra ID ou RBAC azure : 
+
+
+     Entra ID : 
+      -Global Administrator
+      -exchange administrator
+      -teams administrator
+      -user administrator
+      …
+
+     RBAC Azure : 
+      -owner
+      -contributor
+      -reader
+      -Virtual Machine Contributor : 	Gère uniquement les VM (créer, démarrer, arrêter...)
+      -Virtual Machine Administrator Login : Se connecter via RDP ou SSH (Azure AD) en tant qu'admin.
+      -Virtual Machine User Login : Se connecter via RDP ou SSH (Azure AD), mais sans droits admin.
+      -Storage Account Contributor
+      -Network Contributor
+      ... 
+
+
+-->Enfin, on peut créer des groupes affecter ces rôles AAD ou RBAC aux groupes ou users directement.       
+
+Exemples: 
+  -un global administrator est un super user dans M365 sur EntraID liée à l'abonnement O365 (Utilisateurs, groupes, apps, rôles AAD), exchange, teams,OneDrive ...
+
+  -un owner sur un abonnement est un super user 
+  -un reader sur la ressource EntraID peut voir les utilisateurs
+  
+  --prérequis pour se connecter à une VM depuis un poste client et via azure AD : 
+  pour la VM > Onglet "Identity" > "Login with Azure AD" = ✅ Activé
+  pour le poste client : doit être AD Join OU Hybrid Join  (à vérifier avec la cmd dsregcmd /status)
+                              AD join : PC "cloud only", joint directement à AAD
+                              Hybrid Join : PC dans un domaine AD synchronisé via AD connect
+         
+ NB : Un PC qui n’est pas joint à Azure AD ne pourra pas se connecter via AAD, même s'il est connecté à Internet.
+      mais il peut se connecter à une VM azure avec un user mdp déclaré localement dans la VM (donc hors Azure AD)
+=================
+
+Kuberneties is a PaaS that scale out your web servers hosted in virtualized containers.
+
+
+Compute IaaS                  VM
+Managed runtime Paas          (azure App service)
+Containerized workloads CaaS  (azure AKS, AWS ECS)
+Containers serverless PaaS    Azure container apps
+Cloud functions FaaS          Azure functions, AWS Lambda
+=====================
+
+il n'existe pas que les VMs pour le ressources compute : 
+
+-container : l'application légère et ses dépendances s'executent dans un runtime .
+
+-containers serverless : Tu ne gères ni VM, ni orchestrateur, Déploiement simple via image Docker ou .yaml, utile pour microservices légers ou moyens, 
+                         Azure Container Apps, AWS Fargate, Google Cloud Run
+                         prend en charge les app .yaml comme un docker-compose on promise
+
+-Containerized workloads CaaS : utile pour microservices complexes (plusieurs microservices qui constituent une application)
+                         (AKS, EKS, GKE)
+
+                         
+-serverless computing : run application code, l'application est divisée en fonctions appelées suite à un événement.
+                        Tu ne gères aucune infra ni conteneur, j'écris juste le code source à executer.
+                        AWS Lambda, Azure Functions, Google Cloud Functions
+
+
+Les conteneurs partagent le noyau du même système d’exploitation 
+               incluent uniquement les dépendances de l'application ( Tools, runtime )
+               encapsule l'application et ses dépendances dans une image docker par ex, donc l'environnement d'exécution ne change pas.
+               démarrent en qq seconds par rapports VMs (qq minutes)
+               azure ACI et AKS sont idéales pour les microservices, charges de travail temporaires
+
+
+
+=======================================================================================
+
+https://dev.azure.com/ : portail devops sur azure, équivalent à GitHub pour la CI/CD ...
+
+private Endpoint : NIC virtuelle dans un vnet qui permet et VM, conteneurs de se connecter à un service azure ( azure storage, SQL database …) via ip privée.
+
+Private Link : Le service réseau global qui interconnecte les VNets ou réseaux sur site avec : 
+                  Des services Azure PaaS (comme Azure SQL Database, Azure Storage, etc.).
+                  Des services partenaires ou personnalisés hébergés dans Azure (via Private Link Service).
+
+=====comment faire : 
+
+-private DNS zone : privatelink.database.windows.net
+  --->ensuite lier avec mon vnet sur Virtual network links
+ 
+
+-créer un Subnet dédié : PrivateEndpointSubnet  (désactiver l'option privateEndpointNetworkPolicies)
+ ressource cible : l'ID de ressource de mon serveur Azure SQL
+ groupe de sous ressources : sqlServer
+
+-créer une private Endpoint, c'est une sorte de NIC privée dans un sous réseau du vnet, cette interface sera connectée à la ressource azure SQL database.
+
+Azure va créer automatiquement un enregistrement A dans la zone DNS : myserver.database.windows.net --> 10.0.1.5
+
+ajouter une règle de parfeu sur la ressource azure SQL database pour autoriser le subnet 10.0.1.X ou uniquement l'ip privé utilisé pour accéder à la ressource azure.
+
+=============================================================================================
+
+audit de sécurité : Analyse documentaire, respect des procédures.
+Pentest : exploitation des failles, simulation d'attaques réelles.
+
+
+

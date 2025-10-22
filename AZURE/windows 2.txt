@@ -1,0 +1,1122 @@
+ingénieur poste de travail 
+ingénieur système
+ingénieur réseau
+ingénieur cybersecurity (SIEM,EDR,IPS/IDS,parfeux,audit)
+ingénieur DEVOPS (CI/CD intégrations de code et déploiement continu vers staging puis PROD, Docker, Kubernetes,ansible, terraform ...),  
+ingénieur cloud
+ingénieur base de données
+ingénieur IA/BI/BigDATA
+
+===================================================
+
+**MS-DOS : monotâche, mono-user
+**Windows NT : new technology multitâche préemptif, muti-users, multiprocesseur
+
+Windows Server 2003 -> Windows XP 64B          : NT 5.2 
+Windows Server 2008 -> Windows VISTA           : NT 6.0
+Windows Server 2008 R2 -> Windows 7            : NT 6.1
+Windows Server 2012 -> Windows 8               : NT 6.2 
+Windows Server 2012 R2 -> Windows 8.1          : NT 6.3
+Windows Server 2016 -> Windows 10 1507/1607    : NT 10.0
+Windows Server 2019 -> Windows 10 1809/LTSC    : NT 10.0
+Windows Server 2022 -> Windows 11 21H2/22H2    : NT 10.0
+Windows Server 2025 -> Windows 11 24H2         : NT 10.0
+
+dernière version windows 11 : 24H2, build 26100.4946
+dernière version windows server 2025
+
+windows 64 Bits : il faut utiliser du matériel 64bits et des logiciels 64 bits.
+
+Noyau windows : ntoskrnl.exe
+
+ma version powershell : $PsVersionTable  
+ma version .NET Framework :  Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name version -EA 0 | Where { $_.PSChildName -Match '^(?!S)\p{L}'} | Select PSChildName, version
+
+Dernier .Net framework : 4.8.1
+Derniere version Powershell : 7.5.2
+
+execution powershell : 
+Set-ExecutionPolicy -ExecutionPolicy
+ AllSigned : Allows execution of scripts that have been digitally signed in local and remote.
+ RemoteSigned : Allows local scripts to run regardless of signature, and requires trusted digital signatures only for remote scripts (le plus utilisé)
+ Unrestricted : Allows both local and remote scripts to run, regardless of signature (à éviter)
+
+=====Désactiver l'auto longon : 
+Quand la machine est redémarrée, si l'auto logon est actif, une session s'ouvre automatiquement (déconseillé)
+
+
+=====
+
+port ouvertes / applications : netstat -abno
+
+installer ETWMonitor.exe : monitor SMB RDP and RPC access.
+
+réparer les fichiers systèmes corrompus : sfc /scannow
+
+corriger les images systèmes du WinSxS : DISM /Online /Cleanup-image /Restorehealth
+
+restaurer windows : rstrui.exe
+
+réparer les erreurs de disque : chkdsk C: /F /R
+
+nettoyage de disque : cleanmgr
+
+DirectX est une bibliothèque de pilotes de périphériques pour faciliter le travail des programmeurs de jeux vidéo et d’applications multimédias, le jeu doit être compatible DirectX pour profiter au Max des ressources systèmes.
+dxdiag est un outil qui permet de visualiser les ressources machine.
+
+firemware : micrologiciel intégré dans le hardware.
+ BIOS ou EFI est le firemware executé par le CPU sur un ordinateur
+
+
+liste des sessions sous windows : query session 
+                                 (ou : qwinsta /server:localshost)
+
+Liste des processus de la session ID 80 : qprocess /id:80
+
+un accès console directe aura la session ID : 1
+
+killer la session 2 : rwinsta /server:localhost 2
+
+Liste des ports ouverts , état et processus : netstat -abno | more
+
+Tous les ports en écoute : netstat -ano |findstr /i "listening"
+
+tous les ports avec PID : netstat -aon
+
+trouver un port : netstat -ano | findstr ":3389"
+
+ Les ports : 
+
+389 : LDAP
+636 : LDAPS (over SSL)
+135 : RPC initial puis la communication est établie sur random 49152->65535 (pour 2008R2 et supérieur)
+53 : DNS
+445 : SMB
+88 : kerberos
+137, 138, 139 : netbios
+
+Tasklist /SVC (tous les processus et services qui les lancent)
+
+chemin executable d'une image d'un PID : (exemple de l'image : powershell_ise)
+Get-Process powershell_ise | Format-List Path
+
+Liste des chemins d'executables : 
+Get-Process | Select-Object -ExpandProperty Path
+
+Nom de l'image du PID 42872 et la session qui l'a lancé (user en RDP ...)
+tasklist /fi "pid eq 42872"
+
+
+les variables d'environnement : 
+dir env:
+======
+est ce que la MAJ via serveur WSUS est activé : 
+HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate\AU /v UseWUServer (doit être 1)
+
+serveur wsus utilisé : reg query HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate /v WUServer
+=======
+
+net localgroup Administrators #Who is inside Administrators group
+Get-LocalGroupMember Administrators | ft Name, PrincipalSource
+whoami /all #Check  the privileges
+
+qwinsta : les sessions
+
+dir C:\Users
+Get-ChildItem C:\Users
+
+politique des mdp : net accounts
+
+
+journaux : 
+# IIS
+C:\inetpub\logs\LogFiles\*
+#Apache
+Get-Childitem –Path C:\ -Include access.log,error.log -File -Recurse -ErrorAction SilentlyContinue
+
+créer un service pour un exe : 
+sc create newservicename binPath= "C:\windows\system32\notepad.exe"
+sc start newservicename
+
+======
+logs des nouveaux services crée sur le système : 
+
+Get-WinEvent -FilterHashtable @{ LogName='System'; Id='7045';} | Format-List TimeCreated,Message
+
+logs de création d'un nouvel utilisateur : 
+
+Get-WinEvent -FilterHashtable @{ LogName='Security'; ID=4720 }  | Format-List -Property TimeCreated, Message
+
+extraction des logs d'accès RDP : 
+
+get-winevent -logname "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational" | Export-Csv c:\users\soufiane.talibi\Desktop\rdp_connection_log.txt  -Encoding UTF8
+
+activer WinRM : 
+Get-Service WinRM
+
+
+=========
+route print
+Get-NetRoute -AddressFamily IPv4 | ft DestinationPrefix,NextHop,RouteMetric,ifIndex
+
+
+
+Lancer cmd à distance : 
+Winrs -r:I100DOMC101 cmd
+
+Admin système PS : 
+   systeminfo (informations système)
+   wmic qfe list (les MAJ installées)
+   Remove all Items that start with Archive in current Directory
+      Get-ChildItem | Where-Object Name -Like 'Archive*' | ForEach-Object { Remove-Item -LiteralPath $_.Name}
+   Import from a CSV with Name header Write Name
+      Import-csv .\Computers.csv | ForEach-Object { Write-host "$($_.Name)"}
+   Remove all items in Downloads folders for all users with local profile
+      ls c:\Users\*\Downloads -Recurse -Directory | REMOVE-ITEM -Recurse
+   Vider toutes les corbeilles : rd /s c:\$Recycle.Bin  
+   Get all files in a folder and subfolders
+      get-childitem -file -path "c:\Temp" -Recurse -Name | Split-path -Leaf
+
+Date d'installation (ou dernier upgrade) de windows : systeminfo | find /i "Date"
+
+Chemin des logs windows : 
+C:\Windows\System32\winevt\Logs
+
+Supprimer tous les logs windows : 
+wevtutil el | Foreach-Object {wevtutil cl "$_"}
+
+Audit sur la machine windows : 
+secpool
+gpedit.msc
+
+===
+Redémarrage à distance : Restart-Computer -force –computer BJ01DOMC103 –Credential CASTEL\TALIBI01
+
+Voir les logs warrning, Errors des dernières 24h à distance sur des serveurs windows : 
+get-eventlog -computername "s100domc101" -entrytype Warning,Error -logname system -After (Get-Date).AddDays(-1)
+
+Commande très utile : (Audit arrêt serveur)
+Get-EventLog System | `
+        Where EventId -in 41,1074,1076,6005,6006,6008,6009,6013 | `
+        Format-Table TimeGenerated,EventId,UserName,Message -AutoSize -wrap
+
+Audit arrêt démarrage de services sur 2 jours : 
+
+Get-EventLog System | -After (Get-Date).AddDays(-2)`
+        Where EventId -in 7036 | `
+        Format-Table TimeGenerated,EventId,UserName,Message -AutoSize -wrap
+
+Event ID 7040 - covers Service start type change (eg disabled, manual, automatic)
+Event ID 7036 - covers Service start/stop
+
+ Trace de déinstallation software : 
+Get-EventLog -LogName Application -Source MSIInstaller | Where-Object {$_.EventID -eq '1034'} | Format-Table
+ Trace d'installation software :
+Get-EventLog -LogName Application -Source MSIInstaller | Where-Object {$_.EventID -eq '11707'} | Format-Table
+
+A
+=====
+Create random password via powershell : 
+
+$passwordClair = -join ((65..90) + (97..122) + (48..57) | Get-Random -Count 15 | % {[char]$_})
+Write-host $passwordClair
+
+================
+
+vérifier si un user est verrouillé : 
+
+Get-ADUser -Identity 'username' -Properties LockedOut | Select-Object Name,Lockedout
+
+Débloquer le compte : 
+
+Unlock-ADAccount -Identity 'username'
+
+chercher tous les comptes verouillés : 
+
+Search-ADAccount -lockedout | Select-Object Name, SamAccountName
+
+Débloquer tous les comptes verouillés : 
+
+Search-ADAccount -Lockedout | Unlock-AdAccount
+
+-Activer l'audit de verouillage des comptes sur GPO : 
+advanced audit policy configuration
+logon/logoff
+audit account lockout
+
+1-Chercher les logs des comptes bloqués sur le PDC du domaine : 
+$pdce = (Get-ADDomain).PDCEmulator
+Get-WinEvent -ComputerName $pdce -FilterHashTable @{'LogName' ='Security';'Id' = 4740}
+
+2-Voir plus de détails sur les comptes verrouillés et la machine source du verrouillage : 
+
+$pdce = (Get-ADDomain).PDCEmulator
+$filter = @{'LogName' = 'Security';'Id' = 4740}
+$events = Get-WinEvent -ComputerName $pdce -FilterHashTable $filter
+$events | Select-Object @{'Name' ='UserName'; Expression={$_.Properties[0].value}}, @{'Name' ='ComputerName';Expression={$_.Properties[1].value}} 
+
+
+Voir le dernier log 4740 : 
+Get-EventLog -LogName Security -InstanceId 4740 -Newest 1
+
+============
+
+Search-ADAccount -AccountExpired
+Search-ADAccount -AccountDisabled
+Search-ADAccount -AccountInactive
+
+# Suppression de la non expiration du mot de passe
+Get-ADUser -Filter * -SearchBase "OU=USERS_TEST,DC=lab,DC=intra" | Set-ADUser -PasswordNeverExpires $False
+# Suppression de l impossibilité de changer le mot de passe
+Get-ADUser -Filter * -SearchBase "OU=USERS_TEST,DC=lab,DC=intra" | Set-ADUser -CannotChangePassword $False
+# On force le changement du mdp
+Get-ADUser -Filter * -SearchBase "OU=USERS_TEST,DC=lab,DC=intra" | Set-ADUser -ChangePasswordAtLogon $True
+
+==================================================
+
+recherche des fichiers .txt modifiés 3 days ago : 
+get-childitem c:\pstbak\*.* -include *.txt | Where-Object { $_.LastWriteTime -lt (get-date).AddDays(-3)} 
+
+fichiers des 30 derniers jours : 
+Get-ChildItem | Where-Object {$_.LastWriteTime -lt (Get-Date).AddDays(-30)}   
+
+fichiers volumineux :
+Get-ChildItem | Where-Object {$_.Length -gt 100MB}
+===============================
+
+activer USB : 
+ HKLM/System/CurrentControlSet/Services recherche la clef USBSTOR
+ Modifie la valeur DWORD Start de 3 à 0
+
+Vérifier mes apprtenances : whoami /groups
+
+fichier SAM  sur system32 : contient les users et mots de passe
+
+
+Le SID du compte administrateur local ou domaine se termine toujours par 500
+Le SID du compte invité local ou domaine se termine toujours par 501
+Krbtgt (SID se termine par 502) est un user critique dans l'AD, il est désactivé par défaut, permet de crypter et signer les tickets kerberos.
+
+voir les SID : Get-CimInstance win32_useraccount | Format-Table domain,name,sid
+
+
+net user /active:no  -->désactiver user
+net user /active:yes -->activer user
+net accounts :voir les critères de mdp.
+net localgroup administrators : voir les users du groupe admin.
+
+Audit policy : l'audit sur event viewer
+user rights : sur l'OS (GPO)
+
+La Base de registre (ou registre) : Base de données de windows où sont stockés les paramètres de votre ordinateur (système et applications).
+"user.dat" - contenant les paramètres utilisateur
+"system.dat" - contenant les paramètres système
+Microsoft a conservé les fichiers "system.ini" et "win.ini" pour assurer la compatibilité avec les programmes fonctionnant sous Windows 3.1.
+
+Le problème majeur de cette base de registre est que, suite à l'installation d'un programme, il se crée plusieurs clés dans divers endroits de la base de registre. Cependant, à la désinstallation, les clés sont effacées (dans le meilleur des cas) mais l'arborescence reste. Lorsque vous installez de nombreux programmes et que vous les effacez, le système ralentit. Il faut au bout d'un certain temps réinstaller Windows.
+
+Avant de faire une modification critique, il vaut mieux la sauvegarder pour restaurer en cas de problème.
+
+Base de registre : 
+ HKLM : local machine
+ HKU  : users
+ HKCU : current user (moi même)
+ HKCC : config du hardware
+ HKCR : config du software
+
+en cmd, lister les HKLM : reg query HKLM
+
+------Partage ( SMB )
+
+net view : voir tous les partages de mon LAN
+net view \\server1 : (les partage du serveur)
+
+------Gestion des services : SC
+
+sc query state=all (voir tous les services)
+sc config : démarrage auto avec le boot ...
+sc start spooler : démarrer le service spooler
+
+------WMI 
+WMI (Windows management instrumentation) est un système de gestion interne de Windows qui permet de contrôler et surveiller les ressources systèmes.
+C'est une base de données avec des différents services Windows et peut gérer à ordinateur à distance.
+dossier : C:\Windows\System32\wbem
+
+Exemple : 
+wmic os get name
+wmic os get version
+wmic os get OSArchitecture
+wmic os list brief  (info sur l'OS, build number, serial number, version)
+wmic bios get BIOSVersion,Manufacturer,Name
+wmic printer list status
+WMIC OS WHERE Primary=TRUE CALL Reboot (redémarrer l'OS avec wmic)
+
+-le service WINMGMT devrait être démarré pour utiliser WMIC.
+
+-WMIPRVSE ET WMIAPSRV.EXE (WMI PROVIDER HOST)
+-->ils sont liés aux interrogations WMI par des applications (supervision ...)
+
+Les logs WMI : 
+WMI possède des journaux propres à lui même qui peuvent donner des indications : c:\windows\system32\wbem\logs\wmiprov.log
+
+Vérification de l’état WMI
+winmgmt /verifyrepository
+
+Correction des erreurs
+winmgmt /salvagerepository
+
+Faire un reset au WMI : (mais on va perdre certaines classes SCCM par exemple ...)
+winmgmt /resetrepository
+
+------Gestion des processus : WMIC process
+
+wmic process call create calc.exe (démarrer la calculatrice)
+
+------Gestion des tâches : schtasks
+
+schtasks : voir tous les schedules.
+
+------ utilitaire msconfig : 
+mode de démarrage 
+ DÉMARRAGE NORMAL : charger tous les pilotes
+ DÉMARRAGE EN MODE DIAGNOSTIC : sans echec : Les pilotes et les services de bases sont chargés.
+
+=======================================================
+
+gpedit.msc (stratégies de groupe locales)
+
+récupérer les GPO appliquées : 
+
+gpresult /H "%USERPROFILE%\GpResult.htm" /F (Explorer %USERPROFILE%)
+
+Les GPO appliquées sur une personne : 
+
+gpresult /user domain\login /H c:\GpResult.htm (ou bien lancer rsop.msc)
+
+forcer les GPO : gpupdate /force
+
+il est possible de forcer toutes les GPO du domaine depuis le serveur AD sur la console GP (groupe policy management).
+====================
+
+NTUSER.DAT : fichier de configuration de la session utilisateur, fichier caché dans la session de chaque user.
+
+Lorsque NTUser.dat est endommagé, Windows ne pourra pas charger le profil de l’utilisateur.
+Windows charge alors un profil temporaire.
+
+
+lors du premier accès à la machine, windows copie le fichier ntuser.dat de "ALL USERS" vers le dossier utilisateur
+ "C:\Documents and Settings / All Users / ntuser.dat" fichier par défaut.
+ensuite l'utilisateur le modifie en fonction de ses personnalisations.
+==================
+
+--3 methodes pour réparer windows : 
+1-booter avec cd windows, essayer la réparation du démarrage (automatique) 
+2-booter avec cd windows, avec invite de commande faire "bootrec /rebuildbcd"
+3-booter avec cd windows, avec invite de commande faire
+     "bcdedit /export c:\BCD_Backup"
+     revenir sur c: et accéder au dossier boot
+     "attrib bcd -s -h -r"
+     "ren c:\boot\bcd bcd.old"
+     "bootrec /RebuildBCD"
+
+Réparer windows10 : 
+https://blog.juansorroche.com/windows-10-reparer-boot-uefi-en-invite-de-commandes
+
+
+========
+Service de déploiment windows WDS : 
+
+PXE autorise les services DHCP et TFTP à être installés sur deux serveurs différents, de manière à pouvoir s'inscrire sans perturbation dans une infrastructure réseau existante. Un para­métrage supplémentaire du serveur DHCP est dans ce cas nécessaire pour rediriger les clients vers le serveur TFTP.
+
+========
+Workfolders : 
+
+installer sur le serveur :  IIS Hostable Web Core
+Install-WindowsFeature Web-WHC
+
+avoir un groupe sur l'AD "workfolders" qui regroupe les users de cette solution.
+
+http://woshub.com/configure-work-folders-windows-server-2016/
+
+=== sur le client 
+
+a client connects to a server through a secure HTTPS protocol. In the test environment this requirement may be ignored by running the following command on the client:
+
+Reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WorkFolders /v AllowUnsecureConnection /t REG_DWORD /d 1
+
+puis ajouter le dossier de travail sur le client avec : http://ip_server
+
+chez le client windows 10, le dossier workfolder est dans : %USERPROFILE%  (size of this folder cannot exceed 10 GB)
+
+After the client is connected to the server, the Work Folders directory is created. If the files in the Work Folders have not changed, the client syncs with the file server every 10 minutes. The changed files are synchronized immediately. Also, if there are any changes, the server automatically notifies other clients and prompts them to update their data from the central server. (Thus, the changes should appear on all connected devices as soon as possible.)
+
+You can see the sync status, errors, the amount of free space available on the server in the same element in the Control Panel. --> si les dossiers sont synchro ou pas.
+
+--> il est possible de configurer les workfolders chez les clients par GPO : 
+
+User Configuration\Policies\Administrative Templates\Windows Components\Work Folders, then double click Work Folders.
+
+double-click Specify Work Folders settings.
+activer l'option
+mettre l'URL : http://ip_server
+
+============
+
+
+Activer windows : (permanent sur win7 et temporaire sur win8 et win10)
+slmgr -rearm
+
+Voir la clé wifi enregistrée : 
+netsh wlan show profiles WLAN_TALIBI key-clear
+
+====ajouter machine à l'AD en offline : 
+
+Sur l'AD : 
+djoin /provision /domain soufiane.ma /machine WINDOWS7 /savefile c:\WINDOWS7.txt
+
+sur la machine : 
+copier le savefile sur C:\WINDOWS7.txt de la mchine windows7.
+faire la cmd : 
+djoin /requestODJ /loadfile C:\WINDOWS7.txt /windowspath %SystemRoot% /localos
+
+--> il sera ajouté au domaine au prochaine redémarrage.
+
+Liste des applications installées : 
+Get-WmiObject -Class Win32_Product | Select-Object -Property Name (en local) 
+Get-WmiObject -Class Win32_Product | Select-Object -Property Name -ComputerName "MonServeur" (pour un hôte distant)
+
+
+Liste des partages sur un serveur : 
+Get-WmiObject -Class "Win32_Share" -NameSpace "root\CIMV2" -ComputerName "MonServeur"
+
+Accéder au shelld'un hôte distant via winRM : Enter-PSSession -ComputerName <machine cible>
+
+Vérifier winRM sur une hôte : 
+Get-Service WinRM
+-->si c'est pas running, il vous faudra installer Windows Management Framework 4.0 package.
+
+Configurer WinRM pour un accès distant : 
+Se connecter à la machine
+Ouvrir une session Powershell
+Saisir : Enable-PSRemoting
+Saisir ‘T’
+Pour autoriser un seul hôte : Set-Item WSMan:\localhost\Client\TrustedHosts <host name or IP address>
+Pour autoriser tous les hôtes : Set-Item WSMan:\localhost\Client\TrustedHosts *
+Exécuter en ligne de commande: winrm quickconfig puis winrm set winrm/config/service/auth ‘@{Basic= »true »}’
+Exécuter en ligne de commande: winrm set winrm/config/service ‘@{AllowUnencrypted= »true »}’
+Redémarrer WinRM : Restart-Service winrm
+Pour vérifier la configuration WinRM : winrm get winrm/config 
+
+Afin de se connecter à distance, il est nécessaire de faire partie du groupe Administrators (ou Remote Management Users pour Windows 2012 et supérieur)
+
+Sur Windows 2012 et supérieur, il est nécessaire d’ajouter une clé de registre sur l’ordinateur distant pour que les groupes Administrators et Remote Management Users aient le droit de se connecter via Remote Powershell :
+Dans le nœud : HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system
+Il faut ajouter la clé DWord : LocalAccountTokenFilterPolicy avec la valeur 1.
+
+====== Activer winRM en GPO : 
+
+Activation : 
+Configuration ordinateur /Stratégies /Modèles d'administration / Composants Windows/Gestion à distance de Windows (WinRM)/Service WinRM
+Autoriser la gestion de serveurs à distance via WinRM Activé
+
+Vous devrez également modifier le service WinRM pour le mettre en démarrage automatique : 
+Configuration ordinateur /Stratégies / Paramètres Windows / Paramètres de sécurité / Services système
+Gestion à distance de Windows (Gestion WSM) (Mode de démarrage : Automatique)
+
+Il vous faudra également ajouter une règle dans le pare feu de Windows afin d'autoriser les connexions entrantes : 
+Configuration ordinateur /Stratégies / Paramètres Windows / Paramètres de sécurité / Pare-feu Windows avec sécurité avancée / Règles de trafic entrant
+Gestion à distance de Windows (HTTP-Entrée)
+
+Il est également possible d'utiliser d'autoriser la connexion a des comptes restreints en ajoutant les personnes dans le groupe local : « Utilisateurs de gestion à distance »
+
+============
+
+Le rôle NPS : agit comme serveur radius 
+
+Le rôle accès à distance : permet d'installer DIRECT ACCESS ( avec ou sans VPN ) 
+========
+
+Update drivers :3dp chip lite, or driver easy
+Scan : malwarebytes
+Cmd : sfc /scannow
+Chkdsk /f
+Clear software install
+Update bios en cherchant s'il y a des maj pour sa carte mère :
+wmic baseboard get product,Manufacturer,version,serial number
+
+wmic path Win32_OperatingSystem get CSDVersion,Manufacturer,Name,OperatingSystemSKU,OSArchitecture,Version /value
+
+wmic path Win32_BIOS get BIOSVersion,Manufacturer,Name /value
+
+wmic path Win32_Processor get Manufacturer,Name,SocketDesignation /value
+
+wmic path Win32_PhysicalMemory get Capacity,FormFactor,Manufacturer,PartNumber,SerialNumber /value
+
+wmic path Win32_NetworkAdapter where "MACAddress is not Null" get Description,ServiceName /value
+
+wmic path Win32_VideoController get Name /value
+
+wmic path Win32_DiskDrive get InterfaceType,Manufacturer,MediaType,Model,SerialNumber,Size /value
+
+================
+
+Utiliser script PS pour plus d'informations : Tous les ports, PID, application 
+
+Get-ExecutionPolicy
+
+Set-ExecutionPolicy Unrestricted
+
+Restricted : aucun script ne peut être exécuté. PowerShell est utilisable uniquement en mode interactif.
+AllSigned : seuls les scripts signés peuvent être exécutés.
+RemoteSigned : les scripts téléchargés depuis Internet doivent être signés pour être exécutés. Les scripts présents sur votre poste de travail ne sont pas concernés et peuvent être exécutés.
+Unrestricted : pas de restrictions. Les scripts peuvent être exécutés.
+
+==== Executer une action sur plusieurs machines : 
+
+$MesMachines = "BF00ISO101,BF00MOS101" -split "," 
+foreach ($UneLigne in $MesMachines){
+invoke-command {
+
+stop-Service -Name wuauserv
+
+    } -computer $UneLigne   
+    } 
+
+======================
+
+-----Convertir un programme (.exe) en service Windows : 
+
+http://blogmotion.fr/systeme/convertir-un-programme-exe-en-service-windows-72
+
+=========
+
+AD CS : 
+
+https://www.it-connect.fr/adcs-creer-une-autorite-de-certification-racine-sous-windows-server/
+
+
+utilité du ADCS : 
+-->executer seulement les scripts signés
+https://www.it-connect.fr/comment-signer-un-script-powershell/
+
+-->passer le web server en HTTPS
+https://www.supinfo.com/articles/single/7538-adcs-active-directory-certificate-services
+
+
+ADCS : 
+installer le rôle : 
+Add-WindowsFeature Adcs-Cert-Authority -IncludeManagementTools
+
+cocher autorité de certification (rôle de base -->signer des scripts powershell)
+cocher aussi Certification Authority Web Enrollment (si je veux créer des certificats pour serveurs web, esxi -->passer en https)
+
+choisir autorité de certification d'entreprise (dans un domaine)
+
+choisir Autorité de certification racine  (le premier serveur ADCS)
+
+créer une clé privée (necessaire pour l'autorité de certification afin de générer et emettre des certificats)
+
+Terminer, le rôle ADCS set installé, configuré.
+
+--->La console "autorité de certification" permet de voir les certificats délivrés, révoqués ... et des modèles de certificats.
+
+--->sur la console MMC, certificats, je peux faire la demande de certificats  (que je peux par la suite exporter puis déployer sur les clients)
+   --> une fois qu'une demande est faite, ce cetificat s'affiche sur l'autre console au niveau de "certificats délivrés"
+
+=======================
+
+GPO à modifier : 
+1-DC policy :
+
+  stratégies locales (pour auditer les actions)
+
+  Attribution de droits utilisateurs
+  -Accès réseau aux serveurs AD seulement : les groupes administrateurs et bureau à distance.
+  -ajouter des stations au domaine : administrateurs 
+  -arrêter le système : groupes par défaut
+  -forcer l'arrêt à partir d'un système distant : groupes par défaut
+  -gérer le journal d'audit : administrateurs
+  -ouvrir une session en tant que tâche
+  -permettre l'ouverture d'une session locale
+
+-------Titre et Message d'avertissement à l'ouverture et fermeture de session : 
+
+Configuration ordinateur », « Paramètres Windows », « Paramètres de sécurité », « Stratégies locales » et « Options de sécurité ».
+
+Ouverture de session interactive : contenu du message pour les utilisateurs essayant de se connecter.
+Ouverture de session interactive : titre du message pour les utilisateurs essayant de se connecter.
+
+Exemple de message : Bienvenue, merci d'utiliser votre session sur soufiane.ma pour des raisons professionnelles
+Exemple de titre : Bienvenue au domaine SOUFIANE.MA
+
+============================
+	
+net time /querysntp
+
+=====================
+
+déploiment logiciel MSI : https://pbarth.fr/node/253
+
+source de l'install doit être un chemin réseau. (\\ad.soufiane.ma\partage)
+ sur le partage, autorisations : droit lecture pour utilisateurs authentifiés
+ sur les droits NTFS : droit lecture et execution pour utilisateurs authentifiés
+
+Publié : cette méthode ne fonctionne qu'avec des stratégies ciblant des utilisateurs et met à disposition l'application. L'utilisateur choisit s'il souhaite l'installer ou non.
+           --> Le client doit aller sur le panneau de confguration/obtenir un programme et l'installer.
+Attribué : cette méthode permet de forcer l'installation pour un utilisateur ou pour un ordinateur sans action ni confirmation de l'utilisateur.
+           --> Pas d'action requise côté client.
+
+sur la GPO, paramètre ordinateur, install logiciel : seule la méthode attribué est possible.
+sur la GPO, paramètre utilisateur, install logiciel : seule la méthode attribué est possible.
+
+Fixer wallpaper :
+
+https://www.it-connect.fr/copier-et-deployer-un-fond-decran-par-gpo/
+
+Préférence, paramètre windows, fichier
+
+Source : \\ad.soufiane.ma\partage\SFRBackground.jpg
+Destination : C:\Windows\Web\Wallpaper\Corporate\SFRBackground.jpg
+
+====================
+
+Empêcher l'execution d'executables .exe ... : 
+
+Paramètres ordinateurs, Modèles d'administration, puis développez Système. En dessous de la commande Paramètres, faites défiler la liste et double-cliquez sur l'une des deux options suivantes :
+Si vous souhaitez limiter certaines applications, cliquez sur « Exécuter uniquement les applications Windows spécifiées ». ex: iexplorer.exe, calc.exe, chrome.exe, notepad.exe ... 
+Si vous souhaitez bloquer certaines applications, cliquez sur « Ne pas exécuter les applications Windows spécifiées ». Passez à l'étape 5, si vous choisissez ceci.
+
+=====================
+Masquer le lecture C : 
+
+Configuration utilisateur / Stratégies / Modèles d’administration / Composants Windows / Explorateur de fichiers, cliquer sur Dans Poste de travail, masquer ces lecteurs spécifiés 1.
+
+Exculure les admins sur une GPO : 
+
+aller sur la stratégie et sur l’onglet Délégation 1 et cliquer sur Avancé 2.
+Sélectionner Admins du domaine 1 et cocher la case 2 pour refuser l’application de la stratégie. Ensuite cliquer sur Appliquer 3 et OK 
+
+====empêcher l'ouverture de session locale : 
+
+Configuration ordinateur / Paramètres Windows / Paramètres de sécurité / Stratégies locales / Attribution des droits utilisateur. Ouvrir par un double clic le paramètre Permettre l’ouverture d’une session locale 1.
+
+--> Sélectionner Utilisateurs 1 et cliquer sur le bouton Supprimer 
+
+====liste des services sur regedit : 
+
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services
+
+(possible de supprimer un service à partir de la regedit)
+
+=======installer un relai SMTP : 
+
+https://rdr-it.com/installation-configuration-serveur-smtp-windows-server/
+Empêcher les installations : 
+
+Config ordi > Modèle d'administration > Composants Windows / Windows Installer ----- Désactiver Windows Installer > Toujours
+----- Interdire les installations par les utilisateurs > Masquer l'installation par l'utilisateur
+
+====================================================
+
+Problème sur le RPC : 
+
+Le service "Appel de procédure distante (RPC)" (RpcSs) doit être démarré.
+Le service "Lanceur de processus serveur DCOM" (DcomLaunch) doit être démarré.
+vérifier si le serveur écoute sur le port DCOM 135
+autoriser ce port sur le firewall windows : netsh firewall set service RemoteAdmin enable
+
+Problème sur les commandes wmic : 
+
+Le service "Infrastructure de gestion Windows" (Winmgmt) doit être démarré.
+Le Pare-feu Windows (ou autre) peut également bloquer la connexion WMI. 
+
+
+intérroger la base WMI à distance : (se base sur le protocole RPC)
+
+wmic /NODE:"win10.soufiane.ma" /USER:"administrateur" bios get serialnumber
+
+sans user et mdp : 
+
+wmic /NODE:"win10.soufiane.ma" bios get serialnumber
+
+--> à condition que le parfeu soit désactivé ou vous autorisez l'application WMI. 
+
+
+Désactiver l'UAC sur un serveur : (ne plus demander d'authentification par réseau)
+désactiver l'UAC pour l'accès à distance uniquement (recommandé). Pour cela, ouvrir la base de registre distante via "regedit", puis ouvrir "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\system". Créer (si non existante) la valeur DWORD suivante : LocalAccountTokenFilterPolicy et lui affecter la valeur 1. Pour réactiver l'UAC pour l'accès à distance, il suffira de supprimer cette valeur, ou de lui affecter la valeur 0
+
+
+==============winRM
+WinRM, Windows Remote Management, repose sur du HTTP ou HTTPS
+winRM n'utilise plus le RPC comme wmic et peut donc passer plus facilement les firewalls
+• HTTP : 5985
+• HTTPS : 5986
+
+Vérifier si le service winRM est actif 
+Get-Service WinRM
+Enable-PSRemoting
+ Autorisation d’écoute sur l’IP de la machine et de loopback
+   Remove-WSManInstance winrm/config/Listener -SelectorSet @{Address="*";Transport="http"}
+   New-WSManInstance winrm/config/Listener -SelectorSet @{Address="*";Transport="http"}
+   Redémarrage du service winRM
+
+A faire sur la machine de Management : 
+Autorisation du serveur Remote (Dans le cas ou ils ne sont pas dans le même domaine)
+Set-Item WSMan:\localhost\Client\TrustedHosts <IP_Remote_Server>
+
+Activer winRM via GPO : 
+https://rdr-it.com/gpo-activation-et-configuration-de-winrm-gestion-a-distance/
+
+Configuration ordinateur / Stratégies / Modèle d’administration / Composants Windows / Gestion à distance de Windows (WinRM) / Service WinRM 1 pour accéder au paramètres
+Faire un double clic sur Autoriser la gestion de serveur à distance via WinRM 1 pour éditer le paramètre.
+Activer le paramètre, configurer les adresses IP autorisés à se connecter (* permet d’autoriser toutes les adresses IP), cliquer sur Appliquer et OK.
+ensuite : 
+Configuration ordinateur / Préférences / Paramètres du panneau de configuration / Services
+Dans la zone centrale, faire un clic droit puis aller sur Nouveau 1 et cliquer sur Service 2.
+Passer le démarrage du service à Automatique (début différé) 1 puis cliquer sur le bouton Parcourir (…) 2 pour sélectionner le service.
+Choisir le service Gestion à distance de Windows (Gestion WSM) – WinRM
+Configurer l’action du service en sélectionnant Démarrer le service
+
+Autoriser winRM sur le le parfeu via GPO : 
+
+Computer Configuration / Policies / Windows Settings / Security Settings / Windows Firewall with Advanced Security
+une “Inbound Rule” pour autoriser le groupe “Windows Remote Management”.
+Predefinded : windows remote management
+
+Pour tester : 
+
+Accéder à la ligne de commande d'un serveur distant via winRM : 
+Enter-PSSession -ComputerName serveur.soufiane.ma -Credential soufiane\administrateur
+
+===faire une commande sur plusieurs serveurs via winRM : 
+
+$session = New-PSSession -cn <Server01>,<Server02> -cred <Domain>\<Username>
+Invoke-Command -Session $session -ScriptBlock {<Command_to_Propagate>}
+
+==================================================
+
+Créer un compte local à distance sur une machine via GPO
+
+==================================================
+
+Activer le RDP sur toutes les machines du domaine : 
+
+Computer Configuration
+Administrative Templates…
+Windows Components
+Remote Desktop Services
+Remote Desktop Session Host
+Connections
+Double cliquez ensuite sur l’objet “Allow users to connect remotely by using Remote Desktop Services…”.
+
+--Problème RDP sur une machine distante, réactiver la période de grâce : 
+
+-renew RDS grace period : 
+
+To renew RDS grace period, you need to find the following registry key and delete it.
+“HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\RCM\GracePeriod”
+
+Before you can delete the registry key, you need to change ownership. You can do that by following these steps:
+
+Right-Click on the key "GracePeriod".
+Click on “Permissions”.
+Click on “Advanced”.
+Click on “Owner”.
+Select “Administrators”.
+Click on “Apply”
+You can now delete the key. Reboot the server and you now have a new grace period.
+
+==========================
+
+Configuration utilisateur / Stratégies / Modèles d’administration / Composants Windows / Explorateur de fichiers, cliquer sur Dans Poste de travail, masquer ces lecteurs spécifiés 1.
+
+Exculure les admins : 
+
+aller sur la stratégie et sur l’onglet Délégation 1 et cliquer sur Avancé 2.
+Sélectionner Admins du domaine 1 et cocher la case 2 pour refuser l’application de la stratégie. Ensuite cliquer sur Appliquer 3 et OK 
+
+====empêcher l'ouverture de session locale : 
+
+Configuration ordinateur / Paramètres Windows / Paramètres de sécurité / Stratégies locales / Attribution des droits utilisateur. Ouvrir par un double clic le paramètre Permettre l’ouverture d’une session locale 1.
+
+--> Sélectionner Utilisateurs 1 et cliquer sur le bouton Supprimer 
+
+====liste des services sur regedit : 
+
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services
+
+(possible de supprimer un service à partir de la regedit)
+
+===================================================== 
+
+Configuration utilisateur / Stratégies / Modèles d’administration / Composants Windows / Explorateur de fichiers, cliquer sur Dans Poste de travail, masquer ces lecteurs spécifiés 1.
+
+Exculure les admins : 
+
+aller sur la stratégie et sur l’onglet Délégation 1 et cliquer sur Avancé 2.
+Sélectionner Admins du domaine 1 et cocher la case 2 pour refuser l’application de la stratégie. Ensuite cliquer sur Appliquer 3 et OK 
+
+====empêcher l'ouverture de session locale : 
+
+Configuration ordinateur / Paramètres Windows / Paramètres de sécurité / Stratégies locales / Attribution des droits utilisateur. Ouvrir par un double clic le paramètre Permettre l’ouverture d’une session locale 1.
+
+--> Sélectionner Utilisateurs 1 et cliquer sur le bouton Supprimer 
+
+====liste des services sur regedit : 
+
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services
+
+(possible de supprimer un service à partir de la regedit)
+
+==
+=====installer un relai SMTP : 
+
+https://rdr-it.com/installation-configuration-serveur-smtp-windows-server/
+
+==============
+
+
+le noyau de Windows (ntoskrnl.exe) charge le gestionnaire de session windows smss.exe
+
+SEARCHINDEXER.EXE : Ce processus système de Windows est lié à l’indexations des fichiers et Windows Search.
+Windows créé un indexe des fichiers (documents, image, vidéo, fichier musique, etc) qui est utilisé lors de la recherche de fichiers.
+Cela permet d’accélérer la recherche en utilisant cet indexe au lieu d’effectuer systématiquement une recherche sur le disque dur entier.
+
+rundll32.exe est un processus légitime de Windows qui permet de charger un fichier DLL.
+
+
+Userinit.exe est le processus exécuté par winlogon.exe au démarrage de la session utilisateur.
+Le processus userinit.exe se charge d’exécuter les scripts de session, établir les connexions réseaux puis lancer explorer.exe avec le bureau de Windows.
+
+winlogon est en charge de l’ouverture de session utilisateurs Windows
+
+wscript.exe se lance à l’exécution d’un script VBS ou JavaScript.
+Il est possible de désactiver Windows Script Host, ce qui permet d’améliorer sensiblement la protection de l’ordinateur contre les logiciels malveillants.
+
+WMIPRVSE ET WMIAPSRV.EXE (WMI PROVIDER HOST) : Liés aux interrogations WMI par des applications comme gestionnaire de tâches ...
+
+
+Lorsque NTUser.dat d'un utilisateur est endommagé, Windows ne pourra pas charger le profil de l’utilisateur, Windows charge alors un profil temporaire.
+
+Lorsque la base de registre de la machine est incohérente, les sessions peuvent être ouvertes avec un profil temporaire:
+
+liste des profils sur la regedit : 
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList
+
+pour connaitre mon SID : whoami /user
+
+Pour réinitialiser ma session : 
+Sur la regedit, chercher mon  SID dans : HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList
+Cliquez dessus puis à droite, mettez RefCount à 0
+puis mettez State à 0
+Fermez puis relance la session utilisateur.
+
+
+Cherchez le SID correspondant à votre utilisateur.
+Si vous voyez le même avec un bak à la fin :
+Supprimer la clé avec le SID
+Faites un clic droit sur celui avec bak puis renommer
+retirer le .bak à la fin.
+
+
+Restauration windows : 
+Touche Windows + R
+tapez rstrui.exe et OK.
+
+
+Programme d’installation pour les modules Windows : trustedInstaller.exe : permet d'installer les MAJ windows
+Windows Module Installer Worker : tiworker.exe : suite au démarrage de l'installation d'une MAJ par trustedInstaller.exe, tiworker.exe nettoie le dossier WinSxS de Windows
+
+
+=================
+ Active directory : 
+
+vérifier l'état de santé de l'AD : 
+ DCDiag /a /i /q /f:c:\temp\%Computername%Erreur.txt
+
+état de santé des réplications d'un serveur AD :
+ repadmin /showrepl I100REP101
+
+
+Les fichiers utilisés par Active Directory
+• NTDS.DIT (Correspond à la base elle même)
+• Edb*.log (Correspond au journaux de transactions)
+• Edb.chk (Fichier de point de contrôle, qui permet de suivre les données écrites dans la base)
+• edbres0001.jrs – edbres0002.jrs (Fichier de réservation d’espace disque pour les transactions d’une taille de 10 Mo chacun) (Res1.log et Res2.log sous Windows 2000 et 2003)
+Par défaut tous ces fichiers sont placés dans: %systemroot%\NTDS
+
+Lors d'une MAJ : 
+1-Ecriture dans le log Edb.log
+2-Ecriture dans la base NTDS.DIT
+3-MAJ du fichier de contrôle Edb.chk
+
+
+-Défragmentation de la base Active Directory (hors ligne):
+
+Arrêter "service de domaine Active Directory"
+
+Ouvrez une Invite de commandes et lancez NTDSUTIL
+
+dans NTDSUTIL, tapez: Compact to c:\CompactAD
+
+ensuite copier la base NTDS.DIT compactée vers votre emplacement de stockage de votre base Active Directory.
+
+copy c:\CompactAD\NTDS.DIT c:\BaseAD\NTDS.DIT /Y
+
+Supprimer les anciens logs ( le moteur va créer de nouveau logs)
+
+del c:\LogsAD\*.log
+
+démarrer "service de domaine Active Directory"
+
+s'il y a d'autres serveurs AD : 
+Forcer la réplication depuis un serveur AD déjà en service pour actualiser la base
+
+----Les 5 rôles FSMO : 
+
+-Contrôleur de schema : MAJ du schéma AD et le réplique avec tous les AD. (un seul par forêt)
+-Maitre de nommage domaine : gère la création et suppression de domaines et approbations. (un seul par forêt)
+-Maitre RID : donne de nouveaux pools RID aux serveurs AD si jamais un AD epuise son pool à 80%. (un seul par domaine)
+-Emulateur PDC :  changement de mot de passe, NTP, verouillage des comptes. (un seul par domaine)
+-Maitre d'infrastructure : MAJ des objets SID intre-domaines, ex : user x du domaine A ajouté dans le groupe y du domaine B, (un seul par domaine)
+
+RID : identifiant relatif unique au sein de chaque SID
+SID : identifiant de sécurité d'un système, user ou groupe.
+      Certains SID sont identiques sur tous les systèmes (SID du compte administrateur ....) 
+      wmic useraccount get name,sid
+      WMIC useraccount where name="TALIBI01" get sid
+
+KCC est un algorithme de réplication entre les AD à vérifier sur site et services.
+Le dossier SYSVOL est répliqué entre les AD via DFS-R
+
+
+=======================
+Methodes d'authentification sur l'AD : 
+NTLMv2 : communication en trois temps, hache le mdp, vulnérable, utilisée comme solution secondaire sur microsoft. 
+Kerberos : communication en deux temps, chiffre le mdp, utilisée comme solution primaire sur microsoft. (avantage : ne pas faire transiter le mot de passe à chaque authentification : ticket kerberos)
+
+LM et NTLM v1 doivent être désactivés.
+LLMNR/NETBIOS/mDNS qui font des broadcast sur le LAN, il faut les désactiver.
+utiliser smbv2
+Désactiver le RC4, et toutes les versions SSL, utiliser TLS v1.2 ou TLS v1.3
+
+
+Kerberos est utilisé par défaut chez microsoft, NTLM est un renfort il est utilisé au cas où le kerberos ne réussit pas à authentifier un user.
+Kerberos authentifie le user et le KDC crée un ticket à ce client valide généralement 8h, au bout de ce temps, il sera renouvellé.
+==================================================
+Processus DNS : 
+
+PC demande l'ip de www.google.fr : 
+consultation du fichier hosts en local
+PC -> Local DNS Server (i100domc101.castel.afrique configuré sur l'ipconfig du pc)
+Local DNS Server-> ROOT_DNS_SERVER ( exemple : a.root-servers.net )
+ROOT_DNS_SERVER -> TLD_DNS ( .fr )
+TLD_DNS -> FINAL_DNS ayant l'enregistrement ( google.fr )
+
+--voir et vider la cash DNS de mon pc : 
+ipconfig /displaydns
+ipconfig /flushdns
+
+si un redirecteur est configuré sur mon DNS local, mon serveur DNS le contacte toujours en premier s'il n'a pas la réponse sur sa base ou dans le cache.
+si le redirecteur n'est pas configuré, mon serveur DNS contacte directement les indications de racine "ROOT_DNS_SERVER" (A, B ...M) pour avoir l'info et la mettre dans le cache.
+
+Voir le cache DNS de mon serveur DNS local : 
+sur la console DNS, affichage, affichage détaillé
+->une ligne recherches mises en cache s'ajoute avec racine . et ses sous domaines
+-> je peux voir ce cache sur mon serveur avec : Show-DnsServerCache > dns_cache.txt
+   --> supprimer tous le cache : Clear-DnsServerCache
+   --> config du cache : Get-DnsServerCache
+--> je peux supprimer un cache si je veux pas qu'il soit utilisé par mes clients DNS.
+
+========================================
+
+
+========
+Tester un port à distance (client telnet ou portquery): 
+
+pour télécharger portQryV2.exe : https://www.microsoft.com/en-us/download/confirmation.aspx?id=17148
+
+telnet 192.168.1.1 445
+PortQryV2.exe -n 192.168.1.1 -e 445 (affiche aussi le service en écoute)
+
+=====
+ check if TLS 1.2 is enabled : 
+If the registry key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Client\DisabledByDefault is present, the value should be 0.
+If the registry key HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.2\Client\Enabled is present, value should be 1.
+
+
+=========
+
+Comment se passe le démarrage de windows : 
+
+==Démarrage windows en bref : 
+
+    1-BIOS / UEFI (firemware)
+    2-Windows boot manager (lancé par le firemware), présent sur le disque, il cherche les OS dans la BCD.
+    3-BCD (base de données des OS installés)
+    Démarrage du kernel : ntoskrnl.exe, 1 seul dans l'OS, son PID est 4
+    démarrage du smss.exe, 1 seul dans l'OS,il est le père de tous les processus, PID 560
+    création de la session 0 : noyau  (csrss.exe and wininit.exe) et la session 1 users (csrss.exe and winlogon.exe) : il existe 2 csrss.exe dans l'OS.
+    -->ouverture de session par un utilisateur avec winlogon.exe LogonUI.exe lsass.exe et Userinit.exe
+    
+==Démarrage windows en détails : 
+
+Firemware : Programme sur la ROM d'un hardware
+            
+BIOS MBR : se base sur le MBR stocké dans le disque, limite de 2TB max supportée sur le disque pour booter avec, 4 partitions max.
+UEFI GPT : plus récent que le BIOS, se base sur le GPT stocké dans le disque, interface graphique, 128 partitions possible
+
+  un disque dur avec MBR ne peut pas booter avec l'UEFI et vis versa.
+
+booting old way : BIOS  -> MBR -> Boot loader -> Kernel -> OS
+booting new way : UEFI  -> EFI boot loader -> Kernel -> OS
+
+Un hardware récent peut avoir seulement UEFI ou les deux BIOS/UEFI et nous pouvons activer celui qu'on veut
+
+vérifier le firemware : MSInfo32, vérifier la valeure mode bios.
+
+BCD : système d'amorçage de windows
+ -->il a remplacé l'ancien système de démarrage (bootstrap -> ntldr -> boot.ini -> ntoskrnl.exe ...)
+    il est constitué de deux composants : ( à voir sur la cmd : bcdedit -v) 
+         1-gestionnaire de démarrage (Windows Boot Manager)
+         2-chargeur de démarrage (windows boot loader)
+
+   1- Le gestionnaire de démarrage du BCD "boot manager" est appelé par le MBR sur "C:\bootmgr" ou UEFI sur "\EFI\Microsoft\Boot\bootmgfw.efi"
+      ce gestionnaire (windows boot manager) lie la BCD
+
+   2-Le chargeur de démarrage se trouve dans le cas du MBR sur c:\boot\BCD et dans le cas de l'UEFI sur c:\EFI\Microsoft\Boot\BCD,
+     il appelle winload.exe (ou winload.efi) c'est le windows boot loader
+     winload charge le kernel, ntoskrnl.exe et les pilotes matériels.
+     le kernel lance smss.exe 
+     smss.exe démarre le mode noyau 'win32k.sys' et les modes utilisateur 'winsrv.dll' et 'csrss.exe' : Session 0 and Session 1
+              -->Session zero triggers and starts csrss.exe and wininit.exe processes. Session 1 triggers and starts csrss.exe and winlogon.exe
+              SMSS.exe is created by the system and it’s SID number is: S-1–5–18 (NT AUTHORITY\SYSTEM) Druring boot process it is created and executed.
+              csrss.exe : There must be only two instances in process tree, one with session 0 and one with session 1.
+     smss.exe crée pagefile.sys
+     smss.exe lie la regedit et modifie windows selon cette base
+     démarrage des services avec services.exe
+     ssms.exe lance csrss.exe, ce dernier gère les fenêtres et le graphique windows
+     ssms.exe démarre winlogon.exe, Userinit.exe est aussi initialisé 
+     smss.exe lance LSASS, ce dernier gère la liste des groupes et droits utilisateurs, applique GPO.
+     une fois la session est ouverte avec le winlogon.exe LogonUI.exe lsass.exe, Userinit.exe lance le service explorer.exe et tous les .exe de la session utilisateur.  
+
+taskhost.exe : execute les services DLL comme svchost puisque les DLL ne sont pas des .exe à executer directement.
+svchost.exe : gère plusieurs services DLL en groupe, les services DLL se base sur des fichiers DDL pour s'executer.
+Winmgmt.exe :  Il correspond au service WMI qui permet de minuter par exemple des ressources sur la machine (mémoire, disque ...)
+LogonUI.exe sends username and password information to the lsass.exe and lsass.exe verify and authenticate users by connecting the Active Directory for checking the validition of credentials by using ntds.dit or use Security Account Manager aka SAM.
+
+========
+BIOS -> POST -> Look for MBR in the partition
+UEFI -> load .efi files in the ESP (EFI system partition)
+
+Whether the firmware is BIOS or UEFI, Bootmgr.exe file is run
+Bootmgr.exe reads the BCD
+the boot process continues with Winresume.exe
+This allows the computer to read the Hiberfil.sys
+Winload.exe file is loaded
+Winload.exe runs Ntoskrnl.exe
+SMSS (session manager subsystem) read the registry and start winlogon 
+
+HKEY_CURRENT_USER : currently logged in user
+HKEY_USERS : all user accounts
+HKEY_CURRENT_CONFIG : current hardware profile

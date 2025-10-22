@@ -1,0 +1,169 @@
+﻿
+----WES-NG, utilitaire python qui vérifie les MAJ manquantes : 
+
+git clone https://github.com/bitsadmin/wesng.git
+cd wesng
+pip3 install chardet
+python wes.py --update
+systeminfo > systeminfo.txt
+python wes.py systeminfo.txt
+
+----installer les MAJ qui manquent avec PowerShell : 
+
+1-module PSGallery : Install-Module -Name PSWindowsUpdate -Force
+2-lister les mises à jour disponibles : Get-WindowsUpdate
+3-installer toutes les mises à jour : Install-WindowsUpdate -AcceptAll -AutoReboot
+
+----
+
+  Install-WindowsFeature -Name UpdateServices,UpdateServices-UI -IncludeManagementTools
+  wsusutil postinstall CONTENT_DIR=D:\WSUS
+Sur la console : 
+ Tools > Windows Server Update Services
+        -->choisir les produits, classifications, manuelle ou planifiée 
+ Options > Synchronizations > Synchronize Now (la première synchronisation)
+ une fois la synchronisation est terminée, passer à l'approbation : 
+        --> Updates > All Updates > Unapproved > Approve for Install
+ 
+ pour détecter des clients :
+  via GPO local  (gpedit.msc) ou de domaine sur l'AD (GPM)
+  Configuration ordinateur > Modèles d’administration > Composants Windows > Windows Update
+  Set the intranet update service for detecting updates: http://NomDuServeurWSUS:8530
+  Set the intranet statistics server: http://NomDuServeurWSUS:8530
+  Automatic Updates detection frequency → 6 heures
+  Allow Automatic Updates immediate installation → Activé
+   sur le poste client : 
+     gpupdate /force
+     wuauclt /reportnow
+     wuauclt /detectnow
+
+  *suivi : Computers > All Computers
+          Reports > Update Status Summary
+          
+  *maintenance : via la console (Options > Server Cleanup Wizard) ou via une commande : 
+      Invoke-WsusServerCleanup -CleanupObsoleteUpdates -CleanupObsoleteComputers -CleanupUnneededContentFiles -CompressUpdates -DeclineExpiredUpdates
+      
+----Utiliser SCCM : 
+
+ permet de gérer des postes/serveurs Windows (inventaire, déploiements, mises à jour, applis…)
+  gestion centralisée,
+  reporting,
+  approbations ciblées,
+  suivi des installations.
+
+ Prérequis : 
+  -Windows Server (2019 ou 2022)
+  -SQL Server (2019 ou 2022)
+  -Active Directory
+  -rôle WSUS installé sur le même serveur ou un autre
+  -Client Windows pour tester
+
+ configurer les rôles SCCM : 
+
+  -Management Point (MP) : communication client ↔ serveur
+  -Software Update Point (SUP) : synchronisation WSUS/SCCM
+  -Distribution Point (DP) : stockage du contenu
+
+ vérifier et déployer les MAJ :
+ 
+   Administration > Site Configuration > Sites > Configure Site Components > Software Update Point 
+                     ->choisir les catégories de produits et classifications (Security Updates, Critical Updates…)
+   Software Library > Software Updates > All Software Updates → Clique sur Synchronize Software Updates
+   Créer un groupe de mises à jour (Create Software Update Group)
+   Right click > Download
+   Choisir mon Distribution Point
+   Right click on the Update Group > Deploy
+                                     ->collection cible
+                                     ->immédiat ou planifié
+   Monitoring > Deployments (Suivre le déploiement)
+   Monitoring > Reporting > Reports > Software Updates - A Compliance (Vérifier les patches manquants)
+   nettoyer régulièrement WSUS : WSUS Cleanup Wizard
+
+  ----Utiliser Intune :
+
+  
+   une solution cloud de gestion des appareils et des mises à jour via Windows Update for Business
+         point fort : Patchs hors réseau d’entreprise
+                      exiger une politique de conformité
+
+   -Gérer les mises à jour Windows
+   -Appliquer des politiques de sécurité (ex :l'appareil doit être conforme pour accéder aux services M365)
+   -Distribuer des applications sur PC et mobiles
+   -Suivre la conformité 
+
+   Prérequis : 
+ 
+   -avoir un tenant avec licence "Microsoft intune seul" ou "Microsoft 365 E3/E5/Business Premium"
+   -Appareils Windows 10/11 doit être à la fois : 
+                     ->joints à Entra-ID 
+                     ->enrolled (enregistrés) dans Intune
+                     -->Connexion Internet sur les postes
+
+    il se base sur des stratégies : (un ensemble de paramètres de configuration que tu déploies sur un groupe)
+ 
+           ex : appliquer Les patchs mensuels (Patch Tuesday) qui seront déployés automatiquement via WUfB via 2 updates ring : 
+                        --> Devices → Windows → Update rings for Windows 10 and later, create profile ... ,
+                            Patch Tuesday (un update ring pilot) et l'assigner à un groupe de 2 devices sur Entra-ID
+                        --> Devices → Windows → Update rings for Windows 10 and later, create profile ... ,
+                            Patch Tuesday (un update ring Broad) et l'assigner à un groupe de 200 devices sur Entra-ID
+
+           ex : Déployer rapidement un patch critique (ex : zero-day)  ->Expedite update
+                        --> Devices → Windows → Quality updates for Windows 10 and later, selectionner le KBXXX ..., assigner aux appareils
+
+           Update Policy -> Expedite updates : Déployer rapidement un patch critique (ex : zero-day)  -> Politique temporaire
+           Update Policy -> Update Ring : déployer une MAJ régulière --> Politique permanente
+           Compliance Policy : une règle de sécurité qui détermine si un appareil est conforme ou non conforme aux exigences
+                               Conditional Access Policy d'Entra-ID -> Autoriser l’accès à Microsoft 365 uniquement si l’appareil est conforme à Intune
+
+           Contrôler l’accès au réseau
+
+           App Policy : gèrent les applications sur les devices.
+          
+           App deployment : Déployer une application ou MAJ de l'app : 
+                         Télécharge le .exe ou .msi, puis convertis-le en .intunewin : 
+                               IntuneWinAppUtil.exe -c "C:\Source\Chrome" -s "chrome_installer.exe" -o "C:\Output"    
+                         uploader sur : Apps → All apps → + Add, Windows app (Win32) puis suivre les étapes ... Required or available, cible
+
+           Créer des rapports : conformité, inventaire, mises à jour, etc.
+
+   Devices → Monitor → Windows updates
+        (Les appareils à jour ou non, Le pourcentage de conformité, Les versions installées)
+
+
+========Enrôlement des PC et téléphones : 
+===========================================
+
+dsregcmd /status : 
+
+“Fully join”   AzureAdJoined : YES	                        ✅ Azure AD Join (fully joined)    --> le PC s’enrôle automatiquement dans Intune
+“Hybrid join”  DomainJoined : YES + AzureAdJoined : YES	        🔄 Hybrid Join                     --> le PC s’enrôle via la stratégie d’auto enrôlement (GPO à activer sur l'AD local)
+“Registered”   AzureAdRegistered : YES	                        🧩 Simple enregistrement (BYOD)    --> uniquement “enregistré” pour accéder aux apps Microsoft 365
+
+-Azure AD Join (Cloud-only / Full cloud) --> Auto-enrôlement MDM
+-Hybrid Azure AD Join                    --> Auto-enrôlement via GPO sur l'AD local
+-Enrôlement manuel                       --> Enrôlement manuel via : accès professionnel ou scolaire
+
+------> un PC avec enrôlement manuel peut être retiré par l'utilisateur lui même.
+
+=======================
+Pour les téléphones :
+
+pour les téléphone IOS :
+
+         -achetés via Apple Business Manager (ABM), mettre le compte ABM et le téléphone s'enrôle dès le départ.
+         -enrôler manuellement : installer l’application “Company Portal” depuis l’App Store, se connecter avec azureAD, il s'enrôle tout de suite.
+
+pour les téléphone Android : 
+         -Android Enterprise/Zero-touch, enrôlement automatique.
+         -installer l’application Company Portal, enrôlement manuel
+
+-->un téléphone enrôlé manuellement peut être désenrôlé par l'utilisateur lui même.
+
+   
+
+   
+  
+ 
+
+
+ 

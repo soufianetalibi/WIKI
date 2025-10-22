@@ -1,0 +1,39 @@
+﻿
+Azure Stack HCI : virtualisation locale mais connectée à azure, un OS de virtualisation ayant HyperV où je crée uniquement des VMs : only IaaS
+
+Azure Stack Hub : C’est une appliance matérielle + logicielles des partenaires Microsoft pour installer azure dans mon datacenter.
+                  → un mini cloud azure dans mon datacenter : IaaS et quelques PaaS, mais reste réduit par rapport à azure publique bien sûr.
+                    je peux créer des App Services, Functions, Event Hubs, SQL Database, etc.), en plus des VMs.
+                  possible de l'utiliser en mode connecté ou déconnecté 
+                  
+Azure Arc : connecter mon infra locale avec azure pour l'administrer depuis le portail azure : mises à jour, sécurité, monitoring
+            peut connecter des VMs sur mon HyperV/ESXi ou sur d'autres cloud AWS EC2, google, OVH ...
+
+Azure migrate : Migrer mes VMs locale ou serveurs physique vers azure public.
+                Migrer une BD vers Azure SQL database, SQL managed instance, MySQL, postresql ...
+
+DNAT sur azure : permet à un flux entrant depuis internet à aller vers une ressource dans mon vnet
+                 Faisable sur un LoadBalancer ou un Firewall mais l'IP publique doit être attachée au LB ou FW.
+ ex : 20.30.40.50 port 80 → DNAT le redirige vers la VM interne 10.0.0.4 port 8080
+
+-Windows server azure Edition :  → non installable directement on-prem sur son propre serveur physique, mais installable seulement : 
+                                          -Sur Azure (VM dans le cloud Microsoft).
+                                          -Sur Azure Stack HCI (infrastructure hybride on-prem + Azure).
+
+windows serveur a le rôle Network Policy and Access Services (NPAS)
+➝ NPS (RADIUS), DirectAccess, VPN (RAS), protection réseau (NAC)
+
+windows serveur a les rôle containers et Hyper-V Containers
+                      Hyper-V containers : chaque container aura son propre noyau léger, isolation mais un peu lourd
+                      containers : partage de noyau du hôte, plus léger.
+                ->il faut installer le rôle containers puis ajouter le module docker
+
+Start-Service docker
+docker version
+
+docker pull mcr.microsoft.com/windows/servercore/iis
+docker run -d -p 80:80 mcr.microsoft.com/windows/servercore/iis
+
+mais je peux lancer uniquement des app windows : .NET, IIS, PowerShell
+
+====================================================================================

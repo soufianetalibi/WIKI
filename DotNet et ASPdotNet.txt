@@ -1,0 +1,110 @@
+﻿
+ASP.NET core 8 est le backend web moderne qui s'exécute côté serveur et se connecte à des BDD, services cloud, fichiers, API ... 
+               il peut générer du html, json, xml … (par exemple un Endpoint /blobs revoie un json)
+               possible de le lier un frontend React, angular, HTML/CSS/JS pour construire une Webapp complète avec frontend stylé.
+
+ équivalent d'ASP.NET core : SpringBoot, SpringMVC, (JAVA) 
+                             Express.js, NestJS,    (Node.js)
+                             Django, Flask          (python)
+                             Ruby                   (Ruby)
+                             Laraval, Symphony      (PHP)
+
+==========
+
+.NET :  usage -> Applications métiers internes
+
+   .NET Framework 4.x → legacy, Windows uniquement, Server Core.
+   .NET Core / .NET 6, 7, 8 → multiplateforme, plus léger, fonctionne sur Server Core ou Nano Server.
+
+=======
+
+ASP.NET : extension de .NET pour créer des applications web et API   usage -> Sites web internes ou externes, API REST, Microservices web.
+
+   ASP.NET 4.8 → legacy, basé sur .NET Framework, nécessite IIS. 
+   ASP.NET Core 6, 7, 8 → moderne, multiplateforme, plus léger, peut tourner sur IIS ou Kestrel
+
+
+Si je développe une nouvelle application, utiliser .NET8 --> installer visual studio, Windows form App .NET8 C#
+Si je développe une nouvelle App web/API, utiliser ASP.NET core 8  --> installer .NET SDK 8.0 , sous cmd "dotnet new mvc -n Webapp" , cd Webapp ,  puis  "dotnet run" , puis vérifier l'URL
+
+===>je peux créer un conteneur ayant le SDK .NET, Node.js
+    développer dans le conteneur sans avoir besoin d'installer physiquement sur ma machine local les outils DEV : 
+
+Solution 1:  -Créer un Dockerfile pour developper avec ASP.NET 8 dans un conteneur : 
+
+======créer file Dockerfile.dev
+# Image SDK .NET 8 (dev tools inclus)
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dev
+# Répertoire de travail dans le conteneur
+WORKDIR /src
+# Installer Node.js si tu veux aussi du front (React/Angular/Blazor WASM)
+# RUN apt-get update && apt-get install -y nodejs npm
+===================
+
+docker build -f Dockerfile.dev -t aspnet-dev .
+
+docker run -it --rm -v ${PWD}:/src -p 5000:5000 aspnet-dev bash
+
+dotnet new mvc -n MyApp
+cd MyApp
+dotnet run --urls "http://0.0.0.0:5000"
+
+une fois le developpement est terminé, générer la version optimisée pour la prod dans /app : 
+
+dotnet publish -c Release -o /app
+
+**Déploiement1 =dans Windows server, installer IIS, créer un site qui pointe sur le dossier /app
+
+**Déploiement2 =Si je veux publier cela sur une webapp azure  : 
+
+   docker build -t myapp:prod .
+   docker tag myapp:prod souflouf89/myapp:prod
+   docker login
+   docker push souflouf89/myapp:prod
+   et dans azure, créer une webapp et choisir la source de l'image souflouf89/myapp:prod
+
+
+**Déploiement3 =je peux déployer en prod via un dockerfile toujours sur mon serveur linux : 
+
+======créer file : Dockerfile
+# Étape 1 : Build (avec SDK)
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY . .
+RUN dotnet publish -c Release -o /app
+# Étape 2 : Runtime (léger)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "MyApp.dll"]
+===================
+
+docker build -t myapp:prod .
+docker run -d -p 80:8080 myapp:prod
+
+
+Dockerfile.dev → utilisé par les devs pour travailler dans le container.
+Dockerfile → utilisé pour générer l’image finale de production.
+
+
+===========================================================================================================================
+
+Solution 2: -lancer une seule commande sans passer par une création de dockerfile : 
+
+Lancer un conteneur interactif qui permet de developper avec ASP.NET 8 dans un conteneur: 
+ 
+  docker run -it --name aspnet-dev -v ${PWD}:/src -p 5000:5000 -p 7000:7000 mcr.microsoft.com/dotnet/sdk:8.0 bash
+
+  -v ${PWD}:/src → monte ton dossier projet local dans /src du container (partage des fichiers).
+  -p 5000:5000 -p 7000:7000 → mappe les ports web HTTP/HTTPS.
+  bash → tu entres dans un terminal du container.
+
+  # Créer un projet ASP.NET Core MVC
+  dotnet new mvc -n WebApp
+  cd WebApp
+  dotnet run --urls "http://0.0.0.0:5000"
+
+    
+
+
+

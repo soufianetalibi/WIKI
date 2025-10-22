@@ -1,0 +1,20 @@
+﻿
+Lorsqu’un fichier blob est ajouté à mon Azure Storage Account, (monblobfree2025 -> mesblobs)
+
+➡️ un fichier est uploadé dans le blob
+➡️ un événement Event Grid est envoyé  
+➡️ la Logic App reçoit la notification (via le trigger HTTP)
+➡️ la logic apps envoie un e-mail automatique à Soufiane.talibi@gmail.com
+
+RG-Storage-Free
+└── Storage Account: monblobfree2025
+    └── Container: mesblobs
+         └── [nouveau blob uploadé] 
+              ↓
+         Event Grid (BlobCreated)
+              ↓
+RG: event
+└── Logic App: logicapp-blob-notification
+    └── Send Email → Soufiane.talibi@gmail.com
+
+

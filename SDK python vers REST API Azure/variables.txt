@@ -1,0 +1,17 @@
+
+un script python qui se connecte via SDK sur REST API azure pour lister les VMs : 
+
+Tout d'abord executer sur powershell les variables d'environnement : 
+
+$env:AZURE_TENANT_ID="1324dfb4-4457-41c3-a943-293c61bbd70c"
+$env:AZURE_CLIENT_ID="3a38a7e4-2dec-4275-a6cd-29cf91ecbd76"
+$env:AZURE_CLIENT_SECRET="CONFIDENTIELLLLLL :)"
+$env:AZURE_SUBSCRIPTION_ID="c5346ccd-9bc4-4053-91da-8ab9be9ab95e"
+
+puis lancer le script : 
+
+PS C:\Users\TALIBI01\Desktop> python SDKAzure.py
+
+un script python qui se connecte via SDK sur REST API azure pour faire des actions sur les VMs : 
+
+PS C:\Users\TALIBI01\Desktop> python SDKAzureMenu.py

@@ -1,0 +1,242 @@
+﻿Ports à ouvrir sur un serveur AD : 
+
+RDP 3389
+SMB 445
+Custom 135
+LDAP 389
+DNS UDP 53
+DNS TCP 53
+All ICMP
+custom 49152-65539
+custom TCP 88
+
+============================
+
+Nouveauté Windows server 2019 : 
+
+Azure Hybrid Services
+ Azure Backup : Sauvegarde sécurisée des données locales dans le cloud.
+ Azure Site Recovery (ASR) : Plan de reprise après sinistre en cas de panne, avec réplication des machines virtuelles dans Azure.
+ Azure File Sync : Synchronisation des fichiers locaux avec le cloud pour des performances locales et une gestion simplifiée.
+
+Windows Admin Center (WAC) : une administration centralisée des serveurs, serveillance avec azure monitor, MAJ avec update management, backup auto avec azure backup, intégration dans azure security center
+
+Storage Migration Service
+
+Nouveautés Windows server 2022 : DNS-Over-HTTPS, Azure Arc, SMB over QUIC, Secured-core Server, TLS 1.3 par défaut.
+
+==windows server 2022 : 
+
+deux types de channel 
+ semi-annuel : mode core, nouvelle version tous les 18 mois
+ LTSC : mode graphique, nouveau build chaque 3 ans et support qui arrive à 10 ans.
+
+Nouvautés : 
+-DNS-Over-HTTPS.
+-Windows Admin center avec plus de fonctionnalitées.
+-TLS 1.3 par défaut
+-chiffrement AES-256 pour SMB
+-Azure ARC : gouverner les serveurs OnPrem ou d'autres cloud et les lier avec le cloud Azure, il suffit d y installer l'agent AZ-ARC.
+             ex : collecte des events d'un serveur local et envoi vers AZ sentinel via AZ-ARC
+
+  install-module -Name az
+  set-ExecutionPoicy -ExecutionPolicy bypass
+  login-azAccount
+  Set-AzContext -SubscriptionId 
+  Register-AzResourceProvider -ProviderName Microsoft.HybridCompute
+  Register-AzResourceProvider -ProviderName Microsoft.GuestConfiguration
+  Register-AzResourceProvider -ProviderName Microsoft.HybridConnectivity
+  -se connecter à azure ARC, ajouter un serveur, télécharger le script et l'éxécuter pour connecter mon srv local à ARC.
+  -exploiter les serveurs connectées, auditer, monitorer, MAJ, gérer à distance...
+
+ -Windows Admin center : web access HTTPS 443, gérer à distance : WIN-Server 2012+, WIN-10+, Serveurs dans Azure Stack HCI, un HyperV.
+                         serveurs client : avoir WinRm 5985 sans chiffrement, 5986 WinRm avec chiffrement.  (Enable-PSRemoting -Force, sc query winrm, netstat -an | findstr 5985, netstat -an | findstr 5986)
+
+ possible d'ajouter Windows Admin Center dans Azure ARC, cela ouvre le port 6516 sur le client et ajoute une extension WAC
+ ceci permet de gérer le serveur Onpromise depuis la console AZ-ARC
+
+ DNS-Over-HTTPS : chiffrer les requêtes DNS, celà doit être activé sur le client WS 2022 et le serveur DNS (par ex si je fixe le DNS google, ce dernier permet cette chiffrement)
+  lister les serveurs qui communiquent avec moi en DnsOverHttps : get-DnsClientDohServerAddress
+ 
+Ajouter un Windows local à AzureAD : Paramètres > Comptes > Accès professionnel ou scolaire, se connecter à AzureAD (dsregcmd /status -> AzureAdJoined:YES)
+Ajouter un Windows local à AzureADDS : avoir une cnx entre Vnet ADDS et réseau local du client (via VPN ...)
+                                       sur client, changer son DNS par les IP ADDS, Propriétés > Paramètres système avancés, saisir le domaine ADDS de façon classique.
+
+Azure Stack HCI : virtualisation locale mais connectée à azure.
+Azure Stack Hub : execute azure localement  IaaS, PaaS pour un environnement isolé.
+WinRE : Recovery Environment, Réparer l'ordinateur qui figure dans le boot avce une image ISO
+
+==============================================================================================================
+
+Microsoft Certified : Windows Server Hybrid Administrator Associate AZ-800
+
+Alternatives du RDP : 
+✅Windows Admin Center
+✅ RSAT (Remote Server Administration Tools)
+✅ WinRM (protocole WS-Management)
+
+Certificat : signature numérique ayant : 
+                -Une fonction SSL, cryptage EFS
+                -clé privée et publique
+                -délivré par une CA publique ou privée
+                -possède une date d'émission et validité
+                -possible de révoquer (arrêter sa validité)
+
+LAPS : Local Administrator Password Solution
+
+Network Policy and Access Services (NPS)
+
+Failover Clustering
+
+DirectAccess et VPN
+
+====
+
+Accès à distance ;
+
+Attestation d’intégrité de l’appareil ;
+
+Hyper-V ;
+
+Serveur de télécopie ;
+
+Serveur DHCP ;
+
+Serveur DNS ;
+
+Serveur Web (IIS) ;
+
+Service Guardian hôte ;
+
+Services AD DS ;
+
+Services AD LDS ;
+
+Services AD RMS ;
+
+Services Bureau à distance ; RDS
+
+Services d’activation en volume ; KMS
+
+Services d’impression et de numérisation de documents ;
+
+Services de certificats Active Directory ; ADCS
+
+Services de déploiement Windows ; WDS
+
+Services de fédération Active Directory (AD FS) ;
+
+Service de fichiers et de stockage ;
+
+Service de stratégie et d’accès réseau ;
+
+Service WSUS (Windows Server Update Services).
+
+
+==========
+diskpart
+list disk
+list volume
+
+=======par dictionnaire :
+
+nmap 192.168.1.140
+->135 msrpc
+->139 netbios
+->443 https
+->445 microsoft-ds
+->5157 wsdapi
+
+crackmapexec smb 192.168.1.140 -U ~/Desktop/user -D ~/Desktop/Rockyou
+
+https://192.168.1.140 (depuis navigateur)
+
+smbclient //192.168.1.140/C$ -U Administrator*soufiane123
+cd users
+cd administrator
+cd Desktop
+get userinfo.txt
+
+=======par brut force : 
+
+python3 jamalbrute1.py
+ passwordfile : passwords.txt
+ taget user : soufiane@gmail.com
+
+=======password cracking hash MD5 SHA1 : 
+
+python3 password_cracker.py
+ 
+select SHA1
+input the SHA1 hash to crack 
+
+==================
+
+Relation d'approbation : permet au users authentifiés sur domaine A d'accéder au ressources du domaine B.
+
+
+Firmware : logiciel de bas niveau BIOS/UEFI
+  voir la version : wmic bios get smbiosbiosversion
+  voir le SN de la machine : wmic bios get serialnumber
+  CPU et génération : wmic cpu get name, maxclockspeed, manufacturer
+  RAM : wmic memorychip get capacity, speed, manufacturer
+  Disque : wmic diskdrive get model, size, mediaType
+  RAID : RAID 0, RAID 1, RAID 5, RAID 10, RAID 50, 
+
+systèmes de fichier FAT32 NTFS 
+Partitions MBR(BIOS) / GPT(UEFI)
+
+DNS, serveur primaire (RW), secondaire (RO), cache (historique)
+     zone directe (nom-IP), inversée (IP-nom)
+     NS, MX, A, AAAA, CNAME, PTR     
+
+catalogue global, RODC
+FSMO / RID / PDC
+NTDS.DIT
+Replication, relation d'approbation
+GPO
+
+===============
+Rôle ETL : Extraire des données provenant de différentes sources excel, MySQL... et les insérer dans un SGBDR
+
+ETL : SSIS (créer le datawharehouse)
+Analyse : SSAS (analyse et création des dimensions)
+Reporting : SSRS (créer gère et publie les rapports)
+
+==outils à utiliser : 
+-SQL server Entreprise ou professionnel (ou developer edition)
+-SQL server management studio
+-SQL server intergration services projects 2022
+-IDE : Visual studio community 2022 
+
+=====
+Pfsense : firewall logiciel open source FreeBSD, coût réduit mais dépend de l'OS et necessite des MAJ
+        Cisco Secure Firewall (anciennement ASA)
+        IPFire
+        Fortigate VM
+        Sophos XG
+        
+Firewall matériel : Cisco ASA, Fortigate, SonicWall, Netgear, checkpoint, palo Alto, Stormshield
+
+===================
+
+Inspection SSL : l'analyse du trafic chiffré : HTTPS, SMTPS, FTPS, etc...
+  exemple : openssl s_client -connect example.com:443
+  vérifier le certificat d'un site, hébergeur de la VM... : https://www.ssllabs.com/
+  voir l'enregistrement DNS : nslookup -type=ns www.intelcia.com
+  vérifier l'hébergeur d'un domaine "Name server ou registrar" : nslookup -type=ns intelcia.com
+
+l'IP du MX, c'est l'IP du serveur qui reçoit les emails entrant à domaine.
+les IP TXT(SPF), ce sont les IP déclarées légitimes d'envoyer des mails sortant au nom de mon domaine.
+
+-Sécurité des Emails : 
+
+SPF (Sender Policy Framework) – Le videur des serveurs :
+SPF vérifie que l’e-mail est envoyé par un serveur autorisé par votre domaine. Si un serveur inconnu tente de se faire passer pour vous, il est bloqué. Résultat : moins d’usurpation de domaine.
+    le SPF liste les IP des serveurs autorisés à envoyer des e-mails à partir de mon domaine.
+ 
+DKIM (DomainKeys Identified Mail) – La signature inviolable :
+Chaque e-mail est signé avec une clé privée. Le destinataire utilise la clé publique (stockée dans votre DNS) pour vérifier si l’e-mail a été modifié. Si quelque chose cloche, il est marqué comme suspect. Pensez à ça comme une signature unique qui garantit l’intégrité du message.
+
+DMARC (Domain-based Message Authentication, Reporting & Conformance) – Le chef d’orchestre :
+DMARC combine SPF et DKIM pour définir ce qu’on fait des e-mails non conformes : les rejeter, les mettre en quarantaine ou simplement les signaler. En plus, il fournit des rapports pour analyser les tentatives de fraude. C’est votre bouclier actif contre les attaques par spoofing.

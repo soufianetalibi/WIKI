@@ -1,0 +1,267 @@
+Vérifier le DC azure avec une bonne latence : (pour y créer nos ressources)
+https://azurespeedtest.azurewebsites.net/
+
+
+AZ-900 --> AZ-104 --> AZ-305
+
+204 : developer
+400 : devops
+500 : security
+700 : Networking
+
+Les innovations de microsoft : 
+ -Digital et app innovation 
+ -sécurité
+ -data
+ -modern work : O365 ...
+ -Business apps
+
+AZ : azure général
+
+Index dans BD : trie les données et facilite la recherche pour minimiser le temps.
+  on l'active sur les colonnes souvents sollicités mais avec modération
+  il facilite la recherche mais occupe un peu plus d'espace sur disque.
+
+==========================================================================
+
+-portail
+  cloudshell (powershell et bash)
+
+-powershell (Get-AzreSourceGroup) et CLI (az group list)
+
+on peut uploader et downloader des scripts sur le cloudshell
+ 
+=====
+
+ARM manager : la conception des ressources
+ARP provider : la création les ressources 
+
+scripts azure : 
+
+========================
+provisionned : allocated for me (réservé) -> montant fixe
+serverless : payement à la consommation -> montant variable
+
+-Des templates pour créer des services : 
+https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts
+
+il vaut mieux gérer la facturation par souscription
+
+on applique les policy et les rôles (IAM) sur : management group'MG'/souscription/resource group'RG'/resource
+
+il existe un root MG 
+on peut mettre un MG dans un MG sous 6 niveaux
+on peut pas mettre RG dans un RG
+
+groupes d'administration (MG) 
+groupes de ressources (RG)
+
+-on peut filtrer par un tag sur la liste des ressources 
+
+-les verrous sur les resources : 
+    - read only : fixer la SKU.
+    - delete : éviter la suppression accidentelle.
+
+on peut suivre le coût au niveau : Resource, RG, Subscription, MG
+
+SKU = pricing 
+
+Une ressource peut être facturée avec 3 façons : 
+ -provisionned
+ -reserved
+ -serverless
+
+UPFRONT : Payé au départ
+MOUNTHLY : payé à la fin du mois
+
+Tsypes de souscriptions : 
+ -Free : 200$
+ -EA   : contract direct avec microsoft, avec engagement sur un montant fixé au début de l'année (ex: 100.000$)
+           en fin d'année, s'il me reste du solde, je peux faire des réservations de ressources payées au départ (UPFRONT) pour ne pas perdre ce qui reste du solde.
+ -CSP  : cloud solution provider, (passer par des revendeurs), sans engagement avec microsoft, c'est comme le pay as you go mais avec des revendeurs azure.
+ -AIO  : azure in open : système de recharge (100$ ou plus)
+ -Sponsored : un solde de 6000$ par ex
+ -Education : pour une université 
+ -Pay as you go : pour les particuliers, avec une carte de crédit.
+
+=====
+Simulation de coût : 
+ https://azure.microsoft.com/en-gb/pricing/calculator/
+ -> permet de générer des devis.
+
+pour bien maitriser le coût : 
+
+ -Faire des policy sur les ressources
+ -Faire de verrous read only sur les ressources (Fixer les SKU)
+ -Faire des alertes de budgets
+
+==============================================
+
+                RBAC : 
+
+Sur VM : 
+VM user login : 
+user access administrator
+
+Sur subscription
+ owner : full access
+ contributor : tous les accès mais n'ajoute personne
+ RBAC admin : pas d'accès à la ressource mais gère les accès
+
+                AD :  ( licences : FREE, P1, P2 ) "azure AD peut avoir plusieurs tenants"
+
+global admin
+
+
+
+un user admin sans MFA peut être piraté et utilisé pour créer des ressources et vider le solde ou exploiter les données.
+
+=============
+
+SSPR 
+MFA
+=======
+deux types de users : interne et guest 
+ Pour les users internes il existe : Full cloud, synchronized
+
+Azure AD : 
+ B2C : Dans le cas où les utilisateurs seront des externes.
+ 
+la première création sera avec le domaine : .onmicrosoft.com
+ le compte avec lequel nous avons crée le tenant sera un global admin du tenant.
+
+sign-in logs : les authentifications, juste les ouvertures de sessions et depuis quelle IP ...
+audit logs : toutes les opérations qui touchent les users, token 
+revoke sessions : arrêter toutes les sessions actives du user. (il faut la faire après la désactivation d'un user)
+  créer des users en masse sur azure AD.
+
+Cas pratique : 
+ -inviter un user sur mon azure AD
+ -ajouter ce user sur IAM d'une souscription en tant que contributeur
+
+portail de gestion des devices : endpoint.microsoft.com
+
+intodns.com : permet d'avoir des détails sur mon domaine
+ la partie MX permet de voir comment est géré la messagerie : en local, google, O365 ...
+
+ Storage account : 
+-BLOB :   (containers)
+Binary large object
+ stocker des videos,  images, streaming, text, HDD des VMs
+ blob peut être utilisé pour du SFTP
+   block blobs sont les plus utilisés pour videos images ...
+   page blobs contiennent les disques des VMs
+   file blobs contiennent des logs files
+
+-Azure Files : (file shares)
+partage à monter sur une VM (C: D: \\)
+-TABLE
+QUEUE
+
+Type : V1 et V2
+Replication : LRS (3 copies dans la même AZ) ZRS (3 copies sur des AZ différentes) GRS GZRS RA-GZRS
+Performance tier : standard  premium
+Access tier : hot cold archive
+
+azure storage explorer : application à installer pour visualiser le contenu de mon Storage account.
+ ->copier la chaine de connexion depuis active keys sur azure et la mettre dans azure storage explorer
+
+azure file sync : 
+ -> j'ai un azure file sur azure, au lieu de donner l'accès directe à tous mes clients internes sur mon azure files
+    je prends une VM interne chez moi j'y installe azure file sync, je le connecte à mon azure file (la synchro entre cette VM et azure file est automatique)
+    les utilisateurs internes vont accéder en local sur le partage de cette VM.
+     ->une sorte de VM relais entre mes end-users et azure file. 
+
+Peering entre deux Vnets : il faut créer deux peering dans les deux sens A vers B et B vers A.
+
+VPN gateway : 
+https://docs.fortinet.com/document/fortigate/6.2.2/cookbook/255100/ipsec-vpn-to-azure#To5
+
+gateway : 
+La connexion : remonte connected 
+local network gateway : les LANs destination onpromise
+
+s'il y a :
+-un peering entre Vnet_A et Vnet_B
+-un VPN Gateway entre Vnet_B et mon LAN onpromise
+-->Vnet_A peut communiquer avec le LAN onpromise
+
+======
+PAAS :
+
+Anciennes ressources sur azure s'appelaient : webapp, mobileapp
+
+Maintenant nous utilisons : 
+-app service : l'instance qui execute le code (équivalent de site IIS, ...)
+-App service plan : le web server
+un appservice plan peut tourner plusieurs app services
+
+je peux découper mon app service en slots : DEV et PROD
+je peux configurer un commit automatique sur DEV pour y faire evolution1,evolution2,evolution3... (PROD reste intacte)
+Une fois le test de la DEV est OK, je peux faire un swap entre DEV et PROD pour que le contenu de DEV sera envoyé à PROD et PROD vers DEV
+ --> au cas où j'ai un problème sur la prod, je fais un nouveau swap pour revenir à la situation d'avant.
+
+auto scale : ex : si le CPU de mon app service plan dépasse 90% ajouter une autre instance de plus à la limite de 5 au MAX (scale out)
+                  il faut ajouter aussi la règle de diminution en cas de baisse du trafic (scale in)
+
+scale out : ajouter instance 2,3 ... chaqu'une avec CPU RAM
+scale UP : même instance mais avec plus de ressources +CPU +RAM
+
+===============
+Backup : 
+
+RPO : Recovery point objectives -> Fréquence des backup (ex dernier backup depuis 4h maximum)
+RTO : Recovery time objectives  -> Temps d'arrêt maximum
+
+Recovery Service Vault stocke les backup de VM azure, onpromise VM, SQL server, SAP HANA
+
+
+code cloud init : un code mis lors de la création de la VM pour installer à l'avance par ex nginx ...
+#cloud-config
+packages_upgrade: true
+packages:
+ - nginx
+
+création de VM avec template : sur le portail chercher template, créer et le remplir puis le déployer.
+
+===============
+availability set : protège dans la même zone
+availability zone: protège dans la même région
+
+créer une Av set et y activer le management de disque.
+Créer VM1 et selectionner l'Av set
+Créer VM2 et selectionner l'Av set 
+ 
+Scale set : (VMSS)
+
+-créer une VM normale et y installer tous les packages
+  éteindre cette VM.
+  créer une image à partir de cette virtual machine (capture, create an image version 1.0)
+
+créer une VM scale set : 
+  selectionner mon image
+
+update management : à activer sur une VM pour qu'elle soit mise à jour à un moment X choisi par nous.
+
+azure bastion : pour ne pas exposer les ports 22 et 3389 à l'extérieur
+ créer un subnet AzureBastionSubnet /24
+ créer un bastion dans ce subnet
+
+====
+azure monitor : 
+ Metrics : des graphes 
+ logs 
+ créer des alertes
+->permet aussi de voir si le sizing est correcte et y a pas de surdimensions sur 1 mois
+ 
+Application insight : 
+ voir la disponibilité d'une URL, application ... 
+
+Network watcher : 
+ permet de voir la topologie réseau (très pratique pour voir le schéma)
+ ip flow verify : voir si le flux est ouvert entre src et dst
+ 
+  
+policy : permet de définir des règles sur la souscription : ne pas créer de VMs, ne pas dépasser ... 
+=======
+Let's encrypt : permet d'activer le SSL gratuitement sur les serveurs web
