@@ -1,0 +1,25 @@
+
+Tester l'IA pré entrainée d'azure: 
+ -Langage (texte) : Détecter le sentiment, Résumer, traduire, extraire des infos, détecter le ton, créer un chatbot --> Azure AI Language, Azure OpenAI
+ -Vision (image & vidéo) : Reconnaître objets, lire texte (OCR), détecter visages, modérer contenu visuel --> Azure AI Vision, Custom Vision
+ -speech : transcription, synthèse vocale, traduction vocale 
+
+Développer et entrainer ma propre IA: 
+ Machine Learning / AutoML : Entraîner mes propres modèles personnalisés --> Azure Machine Learning
+
+
+AI azure : 
+
+ créer un service de language "analyse-sentiment-test"
+ accéder à language studio "https://language.cognitive.azure.com/"
+ classify text :
+  ecrire : je suis heureux 
+  la AI retourne : 
+              positive
+              Confidence: 98.00%
+              98.00% Positive
+              0.00% Neutral
+              2.00% Negative
+
+
+

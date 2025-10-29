@@ -28,6 +28,29 @@ les Azure Functions, App Services / Web Apps, Containers / Kubernetes utilisent 
 
 Azure monitor : un agent AMA qui s'ajoute dans la VM et envoie les logs des métriques vers un log analytics
 
+Les workspaces Log Analytics :
+Get-AzOperationalInsightsWorkspace
+
+  Les ressources qui envoient les logs aux logs analytics :
+  (Get-AzDiagnosticSetting).WorkspaceResourceId
+
+Les App Insights :
+Get-AzApplicationInsights
+
+  Les log analytics utilisés par ces app insights :
+  (Get-AzApplicationInsights).WorkspaceResourceId
+
+Exemple : 
+
+?? VM ? via “Azure Monitor Agent” ou “Log Analytics Agent”  vers : Log Analytics Workspace
+
+?? App Service ? via “Diagnostic Settings” vers : Log Analytics Workspace
+
+?? Storage Account ? via “Diagnostic Settings” vers : Log Analytics Workspace
+
+? Function App ? via Application Insights ? puis (optionnellement) vers : Log Analytics Workspace
+
+=======================================================
 
 -Dans un log analytics : 
 

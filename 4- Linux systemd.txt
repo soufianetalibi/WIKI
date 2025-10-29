@@ -95,12 +95,15 @@ sudo systemctl enable nginx     #démarrer automatiquement au boot
 
 paquet --> service  --> processus :
 
-
-
 -on installe un paquet qui crée un service, ce dernier démarre un ou plusieurs processus (nginx, mysql, ssh)
 
-
 -Certains paquets installent uniquement des programmes que tu lances à la main (vim, curl, git)
+
+sudo ufw allow 80/tcp
+sudo ufw allow 22
+sudo ufw reload
+
+sudo ufw status verbose
 
 8. Logs
 
@@ -112,6 +115,54 @@ tail -f /var/log/syslog     # Logs système en direct
 tail -f /var/log/auth.log   # Connexions SSH et authentifications
 last
 
+====
+ sudo ss -Tnp  # affiche toutes les connexions actives sur mon linux
+ who
+ w
+ last -i | head -n 50   # affiche les derniers logins avec IP
+ ss -tnp | grep ':22'   # connexions SSH en cours
+ sudo lsof -iTCP -sTCP:ESTABLISHED -P -n | grep :22
+
+si je soupçonne une ip non autorisée par ex : "114.96.104.77" !!
+
+sudo grep '114.96.104.77' /var/log/auth.log* -n  (voir s'il y a des logs de tentatives)
+sudo journalctl -u ssh -n 200
+
+Bloquer l'ip sur le firewall : 
+sudo ufw deny from 114.96.104.77
+
+installer fail2ban pour qu'il bloque automatiquement les IP qui font des tentatives 
+
+Check for weak ciphers or outdated algorithms:
+ nmap --script ssh2-enum-algos -p 22 206.189.102.54
+
+Test for login attempts:
+ hydra -l username -P passwordlist ssh://206.189.102.54
+
+
+# Scan rapide des 100 ports les plus courants (modéré)
+sudo nmap -sS -Pn -T3 --top-ports 100 -oA /tmp/nmap_top100 206.189.102.54
+
+# Identification des services & versions sur ces ports :
+sudo nmap -sV -sC -Pn -T3 -p 22 -oA /tmp/nmap_services 206.189.102.54
+
+# scan vulnérabilités (prudent)
+sudo nmap -sV -Pn -T3 --script "vuln" -oA /tmp/nmap_vuln <IP>
+
+# plus complet (si script 'vulners' installé) – donne CVE et CVSS si possible
+sudo nmap -sV -Pn -T3 --script "vuln,vulners" -oA /tmp/nmap_vuln_vulners <IP>
+
+# Scan complet (tous les ports) - lent et plus bruyant
+sudo nmap -sS -Pn -T2 -p- 1.2.3.4
+
+audit SSL/TLS rapide : 
+sslscan <IP>:443 | tee /tmp/sslscan.txt
+
+
+Rester sécurisé : surveiller les logs sur ma VM, connexions établies, processus  : 
+ sudo tail -f /var/log/auth.log
+ sudo ss -tnp
+ htop
 
 ====Démarrage linux : 
 

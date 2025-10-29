@@ -1,0 +1,35 @@
+﻿
+
+az appservice plan create --name plan-gratuit --resource-group rg-webpp-gratuit --sku F1
+az webapp create --name monwebgratuit123 --resource-group rg-lab-gratuit --plan plan-gratuit
+
+➡️ Tu obtiens une URL comme :
+https://monwebgratuit123.azurewebsites.net
+
+Fixer le runtime : (dans ce cas c'est python 3.12)
+az webapp config set --resource-group rg-webpp-gratuit --name monwebgratuit123 --linux-fx-version "PYTHON|3.12"
+   
+az webapp browse --name monwebgratuit123 --resource-group rg-webpp-gratuit
+
+
+Crée un dossier local "monapp" contenant mon application web.
+ (je dois avoir aussi en local le runtime python 3.12 --> vérifier python --version)
+
+Cas Python (Flask)
+
+/monapp
+ ├── app.py
+ ├── requirements.txt
+ └── runtime.txt (par ex. python=3.9)
+
+-Déploiement via Git (professionel et permet de mettre à jour facilement) : 
+
+az webapp deployment source config-local-git --name monwebgratuit123 --resource-group rg-webpp-gratuit
+
+ ->Cela te renverra une URL Git, par exemple : https://monwebgratuit123.scm.azurewebsites.net/monwebgratuit123.git
+ ->synchroniser mon dossier local avec ce dépôt git : 
+
+git remote add azure https://monwebgratuit123.scm.azurewebsites.net/monwebgratuit123.git
+git push azure main
+
+Azure déploiera automatiquement le code sur la webapp.

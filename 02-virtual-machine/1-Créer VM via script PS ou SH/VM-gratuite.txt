@@ -1,0 +1,85 @@
+
+
+# Variables à personnaliser
+RESOURCE_GROUP="Linux-B1S"
+VNET_NAME="Vnet-France"
+SUBNET_NAME="VMs"
+VM_NAME="Linux-B1S"
+LOCATION="francecentral"
+VNET_ADDRESS_PREFIX="192.168.0.0/16"
+SUBNET_PREFIX="192.168.1.0/24"
+
+# 1?? Créer le VNet
+az network vnet create \
+  --name $VNET_NAME \
+  --resource-group $RESOURCE_GROUP \
+  --location $LOCATION \
+  --address-prefix $VNET_ADDRESS_PREFIX \
+  --subnet-name $SUBNET_NAME \
+  --subnet-prefix $SUBNET_PREFIX
+
+# 1?? Création d’une IP publique Standard (statique)
+# ?? Le SKU Basic n’est plus disponible sur France Central
+# L’IP Standard est gratuite tant qu’elle reste associée à une VM active
+az network public-ip create \
+  --name "${VM_NAME}-ip" \
+  --resource-group $RESOURCE_GROUP \
+  --sku Standard \
+  --allocation-method Static \
+  --location $LOCATION
+
+# 2?? Création d’une interface réseau (NIC) sur le VNet existant
+az network nic create \
+  --name "${VM_NAME}-nic" \
+  --resource-group $RESOURCE_GROUP \
+  --vnet-name $VNET_NAME \
+  --subnet $SUBNET_NAME \
+  --public-ip-address "${VM_NAME}-ip" \
+  --location $LOCATION
+
+# 3?? Création de la VM Ubuntu B1s (Free Tier)
+az vm create \
+  --name $VM_NAME \
+  --resource-group $RESOURCE_GROUP \
+  --image "Ubuntu2204" \
+  --size "Standard_B1s" \
+  --os-disk-name "${VM_NAME}-osdisk" \
+  --storage-sku "Standard_LRS" \
+  --nics "${VM_NAME}-nic" \
+  --admin-username azureuser \
+  --generate-ssh-keys \
+  --location $LOCATION
+
+# Créer un NSG : 
+az network nsg create \
+  --resource-group $RESOURCE_GROUP \
+  --name "${VM_NAME}-nsg" \
+  --location $LOCATION
+
+# 4?? (Optionnel) Ouvrir le port SSH (22)
+az network nsg rule create \
+  --resource-group $RESOURCE_GROUP \
+  --nsg-name "${VM_NAME}-nsg" \
+  --name Allow-SSH \
+  --protocol Tcp \
+  --priority 1000 \
+  --destination-port-ranges 22 \
+  --access Allow \
+  --direction Inbound
+
+# Associer le NSG à la NIC : 
+az network nic update \
+  --name "${VM_NAME}-nic" \
+  --resource-group $RESOURCE_GROUP \
+  --network-security-group "${VM_NAME}-nsg"
+==================== Résultat : 
+
+VM B1s gratuite (tant que < 750 h/mois)
+
+Disque HDD (64 Go)
+
+IP publique dynamique (gratuite)
+
+Trafic sortant 15 Go/mois gratuit
+
+Le trafic entrant (téléchargements vers la VM) reste toujours gratuit 
