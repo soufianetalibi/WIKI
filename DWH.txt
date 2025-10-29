@@ -1,0 +1,106 @@
+
+Extraction -> Données brutes
+Transformation -> Données nettoyées, structurées
+Chargement Données -> envoyer vers un DWH
+
+ETL (Extract, Transform, Load) permet de faire les 3 étapes.
+
+=== Exemple pratique : 
+
+-Préparer les données sources sur la table "Commandes" 
+-Créer les tables de dimensions (modélisation)
+-Créer la table de faits "FaitCommandes" et y insérer les données de Commandes transformées
+-Lancer des requêtes analytiques
+
+
+==============📥les données sources
+CREATE TABLE Commandes (
+    IdCommande INT,
+    DateCommande DATE,
+    IdClient INT,
+    IdProduit INT,
+    Quantite INT,
+    Montant DECIMAL(10,2)
+);
+
+=============🧭 Créer les tables de dimensions
+-- Dimension Client
+CREATE TABLE DimClient (
+    IdClient INT PRIMARY KEY,
+    NomClient NVARCHAR(100),
+    Region NVARCHAR(50),
+    Segment NVARCHAR(50)
+);
+
+-- Dimension Produit
+CREATE TABLE DimProduit (
+    IdProduit INT PRIMARY KEY,
+    NomProduit NVARCHAR(100),
+    Categorie NVARCHAR(50),
+    Marque NVARCHAR(50)
+);
+
+-- Dimension Date
+CREATE TABLE DimDate (
+    DateKey DATE PRIMARY KEY,
+    Jour INT,
+    Mois INT,
+    Trimestre INT,
+    Annee INT
+);
+
+
+================📊 Créer la table de faits
+CREATE TABLE FaitCommandes (
+    IdCommande INT PRIMARY KEY,
+    DateKey DATE FOREIGN KEY REFERENCES DimDate(DateKey),
+    IdClient INT FOREIGN KEY REFERENCES DimClient(IdClient),
+    IdProduit INT FOREIGN KEY REFERENCES DimProduit(IdProduit),
+    Quantite INT,
+    Montant DECIMAL(10,2)
+);
+
+=================
+
+Clients : 1, 2, 3
+
+Produits : 101 à 104
+
+Dates : réparties sur 2023, 2024, 2025
+
+==========================================================================================
+insérer les données de Commandes transformées : 
+
+INSERT INTO FaitCommandes (IdCommande, DateKey, IdClient, IdProduit, Quantite, Montant)
+SELECT 
+    c.IdCommande,
+    c.DateCommande,
+    c.IdClient,
+    c.IdProduit,
+    c.Quantite,
+    c.Montant
+FROM Commandes c
+JOIN DimDate d ON c.DateCommande = d.DateKey
+JOIN DimClient cl ON c.IdClient = cl.IdClient
+JOIN DimProduit p ON c.IdProduit = p.IdProduit;
+
+==========================================================================================
+Requête analytique sur la table "FaitCommandes"  :
+==============================
+SELECT 
+    d.Annee,
+    p.Categorie,
+    SUM(f.Montant) AS TotalVentes
+FROM FaitCommandes f
+JOIN DimDate d ON f.DateKey = d.DateKey
+JOIN DimProduit p ON f.IdProduit = p.IdProduit
+GROUP BY d.Annee, p.Categorie;
+
+=>ça va donner le total des ventes par catégories de produits par année  : 
+
+Annee	Categorie	TotalVentes
+2023	Électronique	1 250 000
+2023	Vêtements	980 000
+2024	Électronique	1 450 000
+2024	Vêtements	1 100 000
+===================================================

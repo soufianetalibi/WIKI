@@ -133,11 +133,14 @@ sudo ufw deny from 114.96.104.77
 
 installer fail2ban pour qu'il bloque automatiquement les IP qui font des tentatives 
 
-Check for weak ciphers or outdated algorithms:
+Check for weak ciphers or outdated algorithms on SSH :
  nmap --script ssh2-enum-algos -p 22 206.189.102.54
 
 Test for login attempts:
- hydra -l username -P passwordlist ssh://206.189.102.54
+ hydra -l username -P password ssh://206.189.102.54
+
+télécharger le fichier : 
+wget -O password https://raw.githubusercontent.com/TSMaitry/passwordlist.txt/master/password
 
 
 # Scan rapide des 100 ports les plus courants (modéré)
