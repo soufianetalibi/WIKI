@@ -186,4 +186,14 @@ az ad sp create-for-rbac \
 voir les logs de connexions que ça soit user normal ou SP : 
  ENTRA-ID : supervision, → journaux de connexion
 
-
+===============================
+pour permettre à github de se connecter sur azure via la SP github-actions-sp : 
+Créer un repository secret : 
+ nommer AZURE_CREDENTIALS
+ contenu : 
+  {
+  "clientId": "...",
+  "clientSecret": "...",
+  "subscriptionId": "...",
+  "tenantId": "..."
+  }
