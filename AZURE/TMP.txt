@@ -166,10 +166,24 @@ Abonnnements :
 -E5 : 35$
 -Microsoft 365 apps for entreprise
 
-=================================================
+===============================================================
 
 comment connecter une application à azure via azure AD : 
 
 1. App Registration : déclarer une application, Cela génère un client_id et un secret
 2. Service Principal : l’identité concrète de cette application, l'objet utilisé pour donner les droits (le SP se crée automatiquement avec l'app registration)
 3. accorder les droits RBAC au SP de l'application.
+
+Commande azure : 
+az ad sp create-for-rbac \
+  --name "github-actions-sp" \
+  --role contributor \
+  --scopes /subscriptions/<SUBSCRIPTION_ID> \
+  --sdk-auth
+
+==>quand je crée cette SP, azure crée automatiquement une app registration, un SP, un secret et lui affecte le rôle.
+
+voir les logs de connexions que ça soit user normal ou SP : 
+ ENTRA-ID : supervision, → journaux de connexion
+
+
