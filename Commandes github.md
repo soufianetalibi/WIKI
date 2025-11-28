@@ -91,6 +91,35 @@ workflow GitHub Actions qui déploie une application nodeJS sur un VPS via SSH
 workflow GitHub Actions qui déploie automatiquement une application Node.js sur Azure App Service
 workflow GitHub Actions qui construit et déploie une application statique (par exemple un site React) sur GitHub Pages (serveur web statique sur github)
 
+===============================
+
+un workflow Github actions peut être lancé : 
+
+ 1- on: workflow_dispatch -> manuellement depuis le portail 
+ 2- on: schedule: cron:   -> lancement automatique
+ 3- on: push: branches: [main] -> s'execute suite à un push main
+ 4- on: pull_request -> s'execute suite à un pull 
+ 5- on:    release -> quand une release est crée 
+
+ -->le workflow : un fichier .yml ayant une suite d’actions à executer  sur un environnement cible (cloud, serveur, conteneur, VM, on-prem, etc.).
+
+===========================================
+
+🔑 API & automatisation sur github
+✅ Webhooks
+
+Déclencher des outils externes
+
+ex : envoyer un SMS avec GitHub Webhook
+     écrire un msg sur un canal teams "un nouveau push a été effectué"
+
+========================================
+
+⚙️ Dev & CI/CD
+✅ Environments
+
+Prod / staging / dev
+→ avec approbations manuelles
 
 ====================================================================================================================================
 Exemple de pipeline complet 
