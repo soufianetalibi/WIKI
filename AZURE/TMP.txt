@@ -168,7 +168,62 @@ Abonnnements :
 
 ===============================================================
 
-comment connecter une application à azure via azure AD : 
+eventgrid : C’est un service de distribution d’événements (trigger A -> déclencher B), déclencheur uniquement.
+ sendgrid : ressource qui permet d'envoyer des emails massifs uniquement
+ logic apps : workflow automatisés, visuel (no-code ou low-code) et peut faire différents scénarios, executeur qui necessite un déclenchement.
+ automation : executeur de script PS, python sous forme de runbooks, permet de 
+
+webhook : déclenchement via une requête HTTP
+          Logic Apps : Trigger HTTP request → démarre le workflow
+          Azure automation : Webhook du runbook → démarre le runbook
+          Event grid : Reçoit et envoie des événements HTTP
+          Sendgrid : Webhook sortant uniquement , pour notifier des événements email
+                     
+======
+snapshot : copie ponctuelle d'un dique 
+           par exemple, prendre une image du disque OS stockée dans le même groupe de ressource de la VM
+
+
+====================== Backup via azure : 
+
+1-VM native sur azure : 
+  Azure Backup via un Recovery Services Vault
+
+2-VM on promise : (petite VM)
+  télécharger "Azure Backup Agent" et l'installer 
+  lier la VM à un "Recovery Services Vault" et la sauvegarder
+
+3-VM on promise : (solution moderne)
+  inscrire la VM avec azure ARC
+  utiliser "Azure Backup via un Recovery Services Vault" comment une VM native d'azure.
+
+4-VMs on promise : (bcp de VMs à sauvegarder dans le cloud) 
+  installer MABS "une VM locale"
+  sauvegarder les VMs via MABS
+
+Azure automation : 
+
+-automatiser l'execution de script powershell, python ... (executer un runbook sur un schedule)
+-automatiser la création des snapshots de disque sur les VMs 
+-déployer automatiquement des ressources
+-déclencher une logic apps via http qui va faire une action
+
+  exemple : créer un workflow Azure Automation + Logic Apps pour générer un email automatique avec la liste des comptes ENTRA-ID actifs/inactifs et la dernière connexion
+              
+===============================================================
+je peux m'authentifier avec : 
+  -un user normal ayant l'interactif (mais necessite l'intervention humaine)
+  -une managed identity
+  -un service principal
+
+managed identity : c'est une identité crée par azure pour l'accès d'une ressource déployé sur l'abonnement azure (AZautomation, AZmonitor) 
+                   il faut juste la trouver et lui donner les droits IAM ou ENTRA-ID
+                   
+SP : une identité crée manuellement, elle exige un client_ID, secret pour s'authentifier
+                   la source de connexion peut être hors azure : nagios externe qui supervise dans azure, 
+                                                                 application qui s'authentifie via ENTRA-ID
+  
+comment connecter une application externe à azure via azure AD : 
 
 1. App Registration : déclarer une application, Cela génère un client_id et un secret
 2. Service Principal : l’identité concrète de cette application, l'objet utilisé pour donner les droits (le SP se crée automatiquement avec l'app registration)
@@ -185,6 +240,14 @@ az ad sp create-for-rbac \
 
 voir les logs de connexions que ça soit user normal ou SP : 
  ENTRA-ID : supervision, → journaux de connexion
+
+Methode 1 : utiliser REST API sur azure  
+  1-Obtenir un token OAuth 2.0 bearer
+  2-Utiliser le token dans les requêtes REST
+
+Methode 2 : utiliser le SDK du langage (dans python ou powershell ...) 
+  il gère lui même l'obtention du token... en arrière plan 
+  facilite le code d'authentification
 
 ===============================
 pour permettre à github de se connecter sur azure via la SP github-actions-sp : 
