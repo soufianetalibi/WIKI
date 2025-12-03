@@ -20,7 +20,7 @@ Cas Python (Flask)
 /monapp
  ├── app.py
  ├── requirements.txt
- └── runtime.txt (par ex. python=3.9)
+ └── runtime.txt (par ex. python=3.12)
 
 -Déploiement via Git (professionel et permet de mettre à jour facilement) : 
 
