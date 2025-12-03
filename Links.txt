@@ -1,5 +1,5 @@
 
--Fonction serverless qui calcule l'âge "agefunctiondemo1234": 
+-Fonction serverless qui calcule l'Ã¢ge "agefunctiondemo1234": 
 
 https://agefunctiondemo1234.azurewebsites.net/api/AgeCalculator?dob=03/09/1992
 
@@ -11,18 +11,10 @@ https://red-flower-051b10903.2.azurestaticapps.net/
 
 https://blobwebapp-auddejh6gya9f7d5.francecentral-01.azurewebsites.net/blobs
 
--Azure ACI, app dockerisé instanciée depuis mon dockerhub "souflouf89/mon-app-visiteurs" nommé "mon-app-visiteurs": 
+-Azure ACI, app dockerisÃ© instanciÃ©e depuis mon dockerhub "souflouf89/mon-app-visiteurs" nommÃ© "mon-app-visiteurs": 
 
 http://mon-app-visiteurs-dns.francecentral.azurecontainer.io:3000/
-
--Webbapp avec backend node.js qui stocke dans une BD azure SQL server "monappnode":  
-
-https://monappnode.azurewebsites.net/
 
 -Page "index.html" sur github pages : 
 
 https://soufianetalibi.github.io/click-counter/
-
-
-
-
