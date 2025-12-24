@@ -216,7 +216,17 @@ Les conteneurs partagent le noyau du même système d’exploitation
                démarrent en qq seconds par rapports VMs (qq minutes)
                azure ACI et AKS sont idéales pour les microservices, charges de travail temporaires
 
+=================================================================================================================================
 
+SNS : push des msg vers subscribers (push to multiple) (comme Azure Event Grid)
+SQS : un seul consommateur de connecte et pull les msg chez lui (pull to one) (comme Azure Service Bus)
+
+KDS : Kinesis Data Streams, collecte des événements en temps réel (comme Azure Event Hubs)
+KDA : Kinesis Data Analytics, analyseur des événements en temps réel une fois arrivé (comme Azure Stream Analytics)
+
+la différence entre SQS et KDS : 
+          SQS : un msg dans la file sera consommé une seule fois puis disparait, point to point.
+          KDS : événement collecté et conservé entre 24h et 1 année pour plusieurs consommateurs
 
 =======================================================================================
 
