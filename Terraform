@@ -1,0 +1,51 @@
+
+Terraform : outil IaC qui permet de créer une infrastructure cloud sur des providers (Azure, AWS, GCP …)
+Ansible : Ansible → configure les serveurs une fois créés
+
+Les étapes : 
+
+terraform init
+Initialise le projet et télécharge les plugins nécessaires
+
+terraform plan
+Montre ce qui va être créé, modifié ou supprimé
+
+terraform apply
+Applique réellement les changements
+
+terraform destroy
+Supprime l’infrastructure créée
+
+================================================================================================
+
+terraform.tfstate : garde l’état réel de l’infrastructure (réponse du provider après exécution du code)
+                    mémoriser ce qui est réellement déployé, éviter de redéployer l'existant
+
+main.tf	                 : Déclaration de l’infrastructure
+variables.tf             : Déclaration des variables de l'infra
+terraform.tfvars	 : Valeurs d’entrées des variables
+terraform.tfstate	 : Réponse / état réel
+terraform.tfstate.backup : Sauvegarde pour récupérer l'infra en cas de perte
+outputs.tf               : permet de récupérer un ID, une IP, sortir des infos après un apply
+
+quand j'exécute terraform Apply, un fichier "terraform.tfstate.backup" est crée avant de modifier le tfstate actuel.
+
+récupérer mon infra d'avant : mv terraform.tfstate.backup terraform.tfstate
+                              terraform plan
+
+Un workspace est un environnement logique dans Terraform avec son propre fichier d’état tfstate (DEV TEST PROD)
+Même code Terraform, mais états séparés entre les workspaces
+
+terraform workspace list        # Liste des workspaces
+terraform workspace select dev  # Changer
+terraform workspace show        # Voir le courant
+
+===============================================================================================
+
+exemple : créer un groupe de ressources sur azure : 
+
+azure-rg/
+├── main.tf
+├── variables.tf
+├── terraform.tfvars
+└── outputs.tf
