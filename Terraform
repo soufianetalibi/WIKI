@@ -1,6 +1,8 @@
 
 Terraform : outil IaC qui permet de créer une infrastructure cloud sur des providers (Azure, AWS, GCP …)
-Ansible : Ansible → configure les serveurs une fois créés
+
+Ansible : Ansible → configure les serveurs une fois créés, garder une config type sur un parc de serveurs via des playbooks
+          ex : pour mes 4 serveurs web, si IIS n'est pas installé il faut le réinstaller 
 
 Les étapes : 
 
