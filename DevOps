@@ -1,0 +1,29 @@
+
+pipeline : une suite d'étape sur les processus DEVOPS : 
+
+	Dev Push Git → Build → Tests → Package → Staging → Tests → Production
+
+Le cycle DevOps est souvent représenté par un cercle d’amélioration continue :
+
+Plan : Planifier les fonctionnalités et les changements.
+
+Code : Développement des fonctionnalités.
+
+Build : Compilation et tests automatisés.
+
+Test : Validation de la qualité et correction des bugs.
+
+Release : Déploiement en environnement de production.
+
+Deploy : Livraison et mise en production.
+
+Operate : Surveillance et maintenance.
+
+Monitor : Analyse et feedback pour améliorer le processus.
+
+exemple : 
+
+Dev → tu écris ton code
+CI/CD → tu testes et build ton image Docker
+Docker Hub → tu stockes ton image
+Prod → tu déploies ton image sur ton serveur web et elle tourne comme un conteneur
