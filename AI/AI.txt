@@ -1,1 +1,232 @@
 
+19ᵉ siècle : Charles Babbage and "Difference Engine", "Analytical Engine" --> concept mécanique d’ordinateur, jamais terminé
+1940 : turing machine qui casse enigma
+1945 : l'ENIAC --> premières machines réelles proches de l’ordinateur moderne
+1950 : le transistor
+1960 : les circuits intégrés
+1970 : les microprocesseurs
+1976 : Apple 1 puis 2 
+1981 : IBM PC (hardware)
+1981 : MS-DOS (Software) crée par Microsoft pour le "IBM PC"
+1984 : Macintosh (GUI)
+1985 : Windows 1.0 (juste OS sur matériel IBM)
+1988 : AS400 (hardware et software IBM pour entreprises)
+1991 : Linux (Software sur les IBM PC)
+
+===========
+
+Artificial Intelligence : 
+
+AI is the ability of a machine to learn patterns and make predictions like a human mind.
+
+augmented intelligence is to perform somes tasks more than human ability : diagnosing cancer, big data analysis ...
+
+machine Learning : Branch of AI where the machine learn from data without being explicitly programmed with specific rules
+
+Deep Learning is a subfield of ML that use neural networks to learn from data
+
+Année : 
+2010-2015  : Narrow AI
+Today      : Broad AI
++2050     : General AI 
+
+High expectations and lack of funding were the main causes of the First Winter of AI. (Les attentes élevées et le manque de financement)
+
+eras of computing : Tabulation, Programming, AI
+
+DATA : 
+Structured data : in rows and columns
+Unstructured data : txt jpg mp4 ...
+Semi-structured data : use of metadata to identify it
+
+Three methods of ML : 
+-Supervised Learning : labeled data, ex : train AI to classify images to animals (dog, cat, monkey …) 
+-Unsupervised Learning : without label, train AI to find herself a natural grouping then classify images 
+-Reinforcement Learning : A type of machine learning where an AI learns to accomplish a task by receiving feedback in the form of rewards or penalties for its actions, allowing it to discover the best strategy over time (trial and errors)
+
+====
+NLP : natural language processing : make the AI undertand the human language.
+
+cognitive AI system can : Learn, Reason, interact, understand
+
+chatbot has a frontend (user interaction)
+              backend (intents, Entities, Dialog)
+
+        chatbot runs NLP on his backend to understand human's intentions
+        chatbot are focused to answer for specific questions in a limited domain
+
+CNN : convolutional neural network : visual recognition to identify things in an image (used in medical)
+GAN : generative adversarial network : AI system create new drawings and photos
+
+===
+###Classical machine learning is easier to interpret compared to most methods in the deep learning ecosystem (NCC,GAN ...) 
+
+ML : predict and classify, learn from experience
+ Deep learning : neural networks like human brain
+
+Examples of classical ML : 
+-decision tree is a supervised learning algorithm, decide based on rules that i give.
+-Linear regression : prédire une valeur "prix d'une maison..."
+-Logistic regression : used to produce an output value that ranges between 0 and 1 (vrai ou faux, spam ou pas spam, ...)
+
+###Deep Learning ecosystem : 
+
+Should I order a pizza? I’ll ask the neural network
+  -->It has learned many things about Marc’s past pizza buying behavior
+
+deep neural network (DNN) : used to arrive to output layer
+
+The four roles responsible for data are: Data Scientist, AI Model Lead, Chief Risk Officer, and Data Engineer.
+Which of the following business roles contribute to design décisions : AI Model Lead, Business Owner
+AI Ops Engineer: Responsible for deploying, monitoring, and maintaining AI models in production.
+
+==AI ethics : 
+Explainability
+Robustness
+Transparency
+Fairness
+Privacy
+
+============================== 
+
+AI : simulation de l'intelligence humaine qui inclue : ML, Deep Learning, NLP (lire, comprendre et générer du langage humain), neural network, cognitive computing, computer vision (reconnaissance faciale, lecture dans l'image, video)
+
+ML : branche IA qui permet à la machine d'apprendre à partir des données 
+       -apprentissage supervisé : la ML apprend et me retour un résultat attendu (ex : emails --> spam ou pas spam, transactions --> fraude ou pas fraude) :  Classification d'e-mails, Diagnostic médical, Prédiction du prix d'un bien ...
+       -apprentissage non supervisé : la ML cherche des structures cachées ou des regroupements ... Segmentation, Trouver des tendances ...
+       -apprentissage par renforcement : apprend par essais/erreurs :  Voiture autonome, Trading automatisé
+
+Deep Learning : subset of ML using neural networks : reconnaissance d'image, détection du texte
+
+Generative AI : Special kind of deep Learning that use transformers (encoding, decoding) to create text, image , audio, code …
+                 
+LLM : un modèle d’intelligence artificielle (IA entrainée sur des données massives) capable de comprendre et de générer du langage humain (texte) à très grande échelle, exemple : GPT-4, claude, Gemini, Mistral, LLaMA
+
+====
+
+IA / ML / IA générative / LLM Ops - RAG / AutoML / TinyML
+
+
+IA : Simulation du cerveau humain
+
+Machine Learning : l'aptitude de la machine à se développer et exécuter des actions sans programmation préalable
+
+Deep learning : technique de la ML où les algorithmes fonctionne dans le modèle des réseaux neuronaux pour apprendre à partir d'une grande quantité de données
+
+
+Predective AI : durée de vie du matériel ...
+
+DLP : surveiller et empêcher les données confidentielles à sortir vers un attaquant, vers le dark web ou vers une IA 
+DART : processus qui détecte les erreurs vulnérabilités sur un logiciel développé 
+
+GPT : poser question et l'IA répond
+Chat complétions : conversation avec l'IA 
+DALLE : génération des images
+Whisper : transcription traduction
+
+Azure AI : 
+ Applications : M365, M Dynamics265
+ application platform : du PaaS
+ scenario based services :
+ customizable AI models : à personnaliser
+ ML platforme : à vous de développer l'IA
+
+ azure AI Foundry : entrainer sa propre IA par un développeur
+ copilot studio : pour les non developpeur, solution rapide sans expertise
+ 
+
+1-Data collection : Azure Data Factory, Microsoft Purview
+
+2-Data Orchestration/preparation : AZ Data lake storage
+                                   AZ Synapse analytics 
+                                   AZ Databricks
+                                   Microsoft Fabric
+
+3-Data Staging : 
+
+4-Data Analysis :
+
+5-Data modeling : Azure Machine Learning, Azure Cognitive Services, Azure Databricks
+
+6-Data Deployment : Azure Devops, GitHub
+
+7-Data Monitoring : Azure Monitor, Azure Machine learning
+
+=======
+
+1-Crawl 2-walk 3-Run 
+
+Data quality : La qualité des données est cruciale : 
+
+-TIMELINESS   à jour, récente
+-COMPLETENESS  Exhaustivité (complète)
+-CONFORMITY   respect des formats
+-UNIQUENESS
+-ACCURACY     exactitude, reflète la réalité
+-CONSISTENCY  Cohérence 
+-ACCESSIBILITY
+-RELIABILITY  Fiabilité
+  --> Un modèle d'IA entraîné sur des données erronées produira de mauvais résultats.
+
+
+=========
+Workbooks : workbook est un fichier (xls, ods) contenant plusieurs feuilles "worksheets" pour manipuler les données sur par un tableur, ex Excel ou google sheets ou apache Zeppelin.
+
+Notebooks : env interactif qui execute du code python ou sql ... et retour un explicatif (.ipynb, .rmd)
+            ex : charger un dataset .csv, nettoie et affiche un graph explicatif combien d'élève qui a passable, assez bien, bien, excellent.
+
+NLP : Natural Language Processing, c'est le traitement du langage naturel qui permet à l'IA de traiter le texte, la parole
+      ex : chatgpt, Siri, google traduction
+
+==========================
+
+Architecture typique d’un chatbot web
+
+-Frontend (interface utilisateur) :
+
+HTML/CSS/JS ou un framework comme React ou Vue
+
+Affiche les messages utilisateur + bot (style Messenger)
+
+-Backend (serveur) :
+
+En Python avec Flask ou FastAPI
+
+Reçoit les messages, traite la logique, envoie la réponse
+
+-IA / Traitement NLP :
+
+Moteur de règles (simple)
+
+OU modèle IA (comme GPT, BERT, ou un modèle personnalisé)
+
+OU API externe (ex : OpenAI, Google Dialogflow)
+
+-Base de données (optionnelle) :
+
+Sauvegarde les conversations, utilisateurs, préférences, etc.
+
+================================
+
+chatbot Apache2-Flask connecté à PostreSQL : 
+
+chatbot_app/
+│
+├── app.py                 # Backend Flask
+├── Dockerfile             # Dockerfile pour l'application Flask
+├── docker-compose.yml     # Fichier de configuration Docker Compose
+├── requirements.txt       # Dépendances Python
+├── templates/
+│   └── index.html         # Frontend HTML + JavaScript
+├── static/
+│   └── style.css          # Style CSS (optionnel)
+└── .env                   # Variables d'environnement
+
+->je peux poser la question sur un produit dans un table de la BD et le chatbot va répondre.
+
+=====
+
+-je peux créer un chatbot avec l'intelligence de chatgpt via son API (inclure la clé GPT payante dans le programme, utiliser le cervau développé d'OPENAI)
+-je peux créer un chatbot avec de la AI open source comme LLaMA, Falcon, GPT-J
+
+
