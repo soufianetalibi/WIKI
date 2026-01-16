@@ -21,7 +21,12 @@ modèle : cerveau de l'IA (la structure d’un réseau de neurones)
                    donc il faut : Entraîner une seule fois, mais sur beaucoup de données pour avoir de bons résultats
                                   Sauvegarder = écrire les poids et la structure dans des fichiers --> save_pretrained
                                   Recharger = lire ces fichiers pour récupérer le modèle entraîné --> from_pretrained
-                             
+
+il y a 3 façons pour créer une IA : 
+            -Utiliser le modèle tel quel (texte, image…)	Charger le modèle → inference      -> utiliser le modèle chargé tel qu'il est 
+            -Adapter le modèle à tes données	Charger le modèle → fine-tuning → inference    -> entrainer le modèle chargé et l'adapter à mes données, c'est le plus courant
+            -Créer un modèle à partir de zéro	Définir la structure → entraîner → inference  -> créer son propre modèle IA
+
 NLP : compréhension du language humain
 
 LLM : évolution du NLP, génère du texte en continu, Peut répondre, compléter, coder, traduire…
