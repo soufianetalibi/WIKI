@@ -1,0 +1,50 @@
+IA qui apprend à classer des mots par type
+
+Machine Learning supervisé
+un modèle qui apprend à partir d’exemples
+Python + scikit-learn
+
+Il n’a pas compris comme un humain, Il a reconnu des ressemblances avec ce qu'il connait déjà
+Le programme ne voit pas des mots, mais des morceaux de lettres
+
+quand il voit certains morceaux de lettres, il comprend que c'est le type X
+
+donc le mot cheval qui est nouveau pour lui ressemble à chien, chat, lion qu'il connait déjà
+
+========= programme python : =============================================
+pip install scikit-learn
+python test_IA.py
+
+=========== file test_IA.py ==================================================
+
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+
+# Données d'entraînement
+mots = [
+    "chien", "chat", "lion", "chevre", "tigre",
+    "pomme", "banane", "orange", "fraise", "poire",
+    "table", "chaise", "voiture", "camion", "lit"
+]
+
+labels = [
+    "animal", "animal", "animal", "animal", "animal",
+    "fruit", "fruit", "fruit", "fruit", "fruit",
+    "objet", "objet", "objet", "objet", "objet"
+]
+
+# Vectorisation (lettres)
+vectorizer = CountVectorizer(analyzer="char", ngram_range=(2, 3))
+X = vectorizer.fit_transform(mots)
+
+# Modèle ML
+model = MultinomialNB()
+model.fit(X, labels)
+
+# Test
+test_mots = ["cheval", "fraise", "camion"]
+X_test = vectorizer.transform(test_mots)
+predictions = model.predict(X_test)
+
+for mot, cat in zip(test_mots, predictions):
+    print(mot, "→", cat)
