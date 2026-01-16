@@ -1,0 +1,117 @@
+
+
+-Administration systèmes Windows/linux
+-Le cloud Azure                         IaaS, PaaS, SaaS, (azure stack HCI "azure-like", Azure stack HUB "mini azure"), ARC, intune 
+-la virtualisation                      (virtualisation des OS ESXi 9.0 et vcenter 8.0 U3)
+-la conteneurisation                    (virtualisation des runtimes sur le même OS) : dockerfile -> construire l'image -> lancer le conteneur.
+-VDI                                    
+-Les réseaux IP
+-La sécurité                            (Firewalls, SIEM, EDR, mise à jour OS et applications) 
+-le DEVOPS                              (build and deploy de façon automatisée et répétitive)
+-IaC                                    (créer une infra à base du code : Terraform multi providers, azure ARM, AWS cloudformation …)
+-IoT                                    connectivité des objets via une passerelle (montre, voiture, lampe, capteur, caméra …)
+-IA                                     simuler l'intelligence du cerveau humain via la ML, deep Learning, voir même l'IA augmentée qui dépasse l'humain.
+-Bases de données                       Relationnel (Mysql, SQLserver), 
+==============================
+
+1. Administration systèmes Windows / Linux
+
+Windows :
+
+Outils principaux : PowerShell, Active Directory, GPO, WSUS, Hyper-V.
+
+Gestion : utilisateurs/groupes, droits NTFS, services, planificateur de tâches, mise à jour système.
+
+Supervision : Event Viewer, Performance Monitor, scripts d’automatisation PowerShell.
+
+Linux :
+
+Distributions communes : Ubuntu, Debian, CentOS, Red Hat.
+
+Commandes de base : ls, ps, top, systemctl, journalctl, apt/yum, chmod/chown.
+
+Administration : gestion des services, utilisateurs, permissions, scripts Bash, configuration réseau et sécurité (iptables, SSH).
+
+☁️ 2. Le Cloud Microsoft Azure
+
+Concepts fondamentaux : IaaS (VMs, réseaux, stockage), PaaS (App Service, SQL), SaaS.
+
+Ressources clés :
+
+Compute : Azure Virtual Machines, Scale Sets, App Services.
+
+Storage : Blob, File, Table, Queue.
+
+Réseau : Virtual Network, Subnets, Load Balancer, VPN Gateway.
+
+Sécurité : Azure AD, RBAC, Key Vault, Defender for Cloud.
+
+Automatisation : Azure CLI, PowerShell, ARM Templates, Bicep, Terraform.
+
+🧩 3. La Virtualisation
+
+Principe : abstraction du matériel pour exécuter plusieurs machines virtuelles sur un seul hôte.
+
+Solutions courantes :
+
+VMware ESXi / vSphere
+
+Hyper-V (Microsoft)
+
+KVM / Proxmox (Linux)
+
+Bénéfices : isolation, meilleure utilisation des ressources, snapshots, migration à chaud.
+
+📦 4. La Conteneurisation
+
+Concept : encapsuler une application et ses dépendances dans un conteneur léger.
+
+Outils :
+
+Docker : création, exécution, partage d’images.
+
+Kubernetes : orchestration des conteneurs à grande échelle (pods, services, deployments).
+
+Avantages : portabilité, rapidité, scalabilité, CI/CD simplifié.
+
+🌐 5. Les Réseaux IP
+
+Couches OSI : 1 à 7 (physique → application).
+
+Adresses : IPv4 (32 bits) / IPv6 (128 bits).
+
+Composants : routeurs, switches, DNS, DHCP, firewall.
+
+Protocoles essentiels : TCP/IP, HTTP(S), SSH, SMTP, FTP, SNMP.
+
+Outils d’administration : ping, traceroute, netstat, ip, nslookup, nmap, wireshark.
+
+🔒 6. La Sécurité
+
+Principes de base : confidentialité, intégrité, disponibilité (CIA).
+
+Sécurité système : gestion des patchs, contrôle d’accès, antivirus/EDR, sauvegardes.
+
+Sécurité réseau : pare-feux, VPN, segmentation, IDS/IPS.
+
+Sécurité cloud : gestion des identités (MFA, RBAC), logs, chiffrement, conformité (ISO, RGPD).
+
+Outils : Fail2Ban, OpenVAS, Azure Defender, Nessus, Wireshark.
+
+SIEM / SOC / EDR / XDR
+
+⚙️ 7. Le DevOps
+
+Philosophie : collaboration entre développement et exploitation → automatisation, intégration continue et déploiement continu (CI/CD).
+
+Outils principaux :
+
+CI/CD : Jenkins, GitHub Actions, GitLab CI, Azure DevOps.
+
+Infrastructure as Code (IaC) : Terraform, Ansible, Puppet.
+
+Conteneurs : Docker, Kubernetes.
+
+Monitoring : Prometheus, Grafana, ELK Stack.
+
+Objectif : rapidité, fiabilité et traçabilité des déploiements.
