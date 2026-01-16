@@ -1,0 +1,94 @@
+cycle de l'IA : 
+
+Données
+ ↓
+Représentation    : transformer les données (images"pixels", texte"n-grams" ) en format que le modèle peut traiter
+ ↓
+Modèle            : cerveau qui s'entraine avec les données transformées 
+ ↓
+Évaluation        : je teste l'IA et j'évalue le résultat
+ ↓
+Amélioration
+ ↺
+
+
+modèle : cerveau de l'IA (la structure d’un réseau de neurones)
+         transformers est une boite à outils python qui charge un modèle avec réseau neuronal "deep Learning" pour l'entrainer sur mes données
+
+       entrainer un modèle : c'est lui apporter mes données transformées pour retourner le résultat voulu
+                             si j'entraine un modèle sur un programme et j'arrête python, je perds ses paramètres et je reviens zéro
+
+                   donc il faut : Entraîner une seule fois, mais sur beaucoup de données pour avoir de bons résultats
+                                  Sauvegarder = écrire les poids et la structure dans des fichiers --> save_pretrained
+                                  Recharger = lire ces fichiers pour récupérer le modèle entraîné --> from_pretrained
+                             
+NLP : compréhension du language humain
+
+LLM : évolution du NLP, génère du texte en continu, Peut répondre, compléter, coder, traduire…
+
+Exemple de mini LLM : LLM personnalisé qui peut apprendre tes propres phrases et générer du texte du même style.
+
+                      j'utilise un modèle de la boite transformers, je lui donne mes données "dataset" et je reçois un résultat
+======
+
+pip install transformers torch datasets
+
+transformers → c'est la librairie qui charge et entraine des modèles IA codés à l'avance (modèles : GPT, GPT-2, GPT-3, BERT, RoBERTa, DistilBERT…)
+torch → calcul ML
+datasets → gérer facilement tes données, c'est la source de données de l'IA
+======
+
+==== mes_phrases.txt : 
+Le chat aime dormir sur le canapé.
+Les pommes sont rouges et sucrées.
+Les chiens adorent courir dans le parc.
+Les fraises sont délicieuses au petit déjeuner.
+
+==== test_LLM.py : (ici mon IA est volatile, pas de sauvegarde de l'entrainement effectué)
+
+from transformers import AutoTokenizer, AutoModelForCausalLM, Trainer, TrainingArguments, TextDataset, DataCollatorForLanguageModeling
+
+# Choisir un petit modèle pré-entraîné pour démarrer
+model_name = "distilgpt2"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
+
+# Créer un dataset à partir de ton fichier texte
+def load_dataset(file_path, tokenizer, block_size=128):
+    with open(file_path, "r", encoding="utf-8") as f:
+        lines = f.read().splitlines()
+    tokenized = tokenizer(lines, truncation=True, padding="max_length", max_length=block_size, return_tensors="pt")
+    return tokenized
+
+dataset = load_dataset("mes_phrases.txt", tokenizer)
+
+# Data collator
+data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
+
+# Paramètres d’entraînement
+training_args = TrainingArguments(
+    output_dir="./mini_llm",
+    overwrite_output_dir=True,
+    num_train_epochs=3,
+    per_device_train_batch_size=1,
+    save_steps=500,
+    save_total_limit=2,
+    logging_steps=100
+)
+
+# Trainer
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=dataset,
+    data_collator=data_collator
+)
+
+# Entraîner le modèle
+trainer.train()
+
+# Générer du texte avec ton mini LLM personnalisé
+prompt = input("Écris le début d'une phrase : ")
+inputs = tokenizer(prompt, return_tensors="pt")
+outputs = model.generate(**inputs, max_length=50)
+print(tokenizer.decode(outputs[0], skip_special_tokens=True))
