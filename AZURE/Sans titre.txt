@@ -1,28 +1,4 @@
 ﻿
-Cisco Meraki : une gamme des équipements (Switches MS, Gateway-SDWAN MX, AcessPoint MR, NAC ) mais only cloud managed.  (utile pour PME)
-   sinon il y a du Cisco classique gérable on-prem :  
-            cisco catalyst
-            cisco ISR/ASR   (ISR pour agences et PME, ASR pour backbones et FAI)
-            cisco nexus     ( gamme pour datacenters et virtualisation)
-            cisco ASA/Firepower
-            cisco ISE : NAC
-
-Juniper : Switches Entreprise L2/L3 EX Series, switches datacenters (QFX Series, Routeurs MX, ACX, PTX), SD-Branch, 
-
-HPE Aruba : une gamme des équipements comme Meraki  mais hybride (AP, Switches, NAC ClearPass, SDWAN EdgeConnect, Branch Gateways), équipements cloud managed avec aruba central ou on-prem managed directement.
-       
-Netgear et Dlink : Particuliers, PME, petites écoles
-
-[Siège entreprise]───(Internet/MPLS)────[Filiale A]─── Wi-Fi, Switch, AP
-                                         │
-                                         └──[Filiale B]─── Wi-Fi, Switch, Contrôle d'accès
-
-SD-WAN : gère le lien entre siège ↔ filiales A,B et l'ensemble est géré par un orchestrateur.
-
-SD-Branch : gère chaque filiale A ou B (SD-WAN, SD-LAN, SD-Security, SD-WiFi, Téléphonie IP ...) et l'ensemble des filiales est géré par un orchestrateur.
-
-SD-WAN = Optimiser les "routes" entre les villes
-SD-Branch = Gérer toute l'infrastructure d'une "ville" (routes, électricité, sécurité, communications, etc.)
 
 ===============================================================================
 
