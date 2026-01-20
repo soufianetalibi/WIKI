@@ -18,3 +18,32 @@ http://mon-app-visiteurs-dns.francecentral.azurecontainer.io:3000/
 -Page "index.html" sur github pages : 
 
 https://soufianetalibi.github.io/click-counter/
+
+====================================== tester eventgrid "blob-created-subscription" sur monblobfree2025
+
+une fois qu'un blob est ajouté sur le conteneur "mesblobs", event grid déclenche un webhook sur la logicapp "logicapp-blob-notification" pour me notifier de l'upload via gmail
+
+======================================= tester la logicapp "Send-EntraID-Users-Mail" avec ce script powershell : 
+c'est une logic app qui reçoit un fichier users.csv et l'envoie par mail à une adresse gmail
+
+$file = "C:\users.csv"
+$fileBytes = [System.IO.File]::ReadAllBytes($file)
+$base64 = [Convert]::ToBase64String($fileBytes)
+
+$body = @{
+    FileName = "users.csv"
+    FileContent = $base64
+} | ConvertTo-Json -Depth 3
+
+Invoke-RestMethod `
+    -Uri "https://prod-15.francecentral.logic.azure.com:443/workflows/c098a95e41d943d8810a91305865b01b/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=OZ3l9nBHvSF8IaMHyko6V-WZVQLd_91F-shXA4q1_hA
+" `
+    -Method POST `
+    -ContentType "application/json" `
+    -Body $body
+
+====contenu du fichier users.csv : 
+id,nom,prenom,email,ville
+1,Dupont,Jean,jean.dupont@email.com,Paris
+2,Martin,Claire,claire.martin@email.com,Lyon
+3,Durand,Paul,paul.durand@email.com,Marseille
