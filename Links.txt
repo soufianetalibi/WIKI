@@ -19,7 +19,7 @@ http://mon-app-visiteurs-dns.francecentral.azurecontainer.io:3000/
 
 https://soufianetalibi.github.io/click-counter/
 
-====================================== tester eventgrid "blob-created-subscription" sur monblobfree2025
+====================================== tester eventgrid et logicapps : "blob-created-subscription" sur monblobfree2025 : 
 
 une fois qu'un blob est ajouté sur le conteneur "mesblobs", event grid déclenche un webhook sur la logicapp "logicapp-blob-notification" pour me notifier de l'upload via gmail
 
