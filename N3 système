@@ -145,3 +145,132 @@ SD-Branch : gère chaque filiale A ou B (SD-WAN, SD-LAN, SD-Security, SD-WiFi, T
 SD-WAN = Optimiser les "routes" entre les villes
 SD-Branch = Gérer toute l'infrastructure d'une "ville" (routes, électricité, sécurité, communications, etc.)
 
+================================================== Les RAID : 
+
+RAID matériel : via contrôleur de stockage des disques : PERC Dell, Smart Array HP, Lenovo RAID, Cisco UCS CIMC
+RAID logiciel : via l'OS installé : lvm ou mdadmsous sous linux, volumes dynamiques sur Windows 
+
+RAID : combiner des disques pour la tolérence de panne 
+       exemple : RAID 50 (ou RAID 5+0) + 1 hot Spare
+
+--> je peux configurer le RAID depuis l'OS Windows/Linux ou bien depuis le contrôleur matériel au démarrage du serveur (DELL, HP, LENOVO, CISCO UCS)
+
+================================================== Types de données : 
+
+Les types de données : 
+ -structurées : SQL Server, Azure SQL Database, Oracle, MySQL avec Primary Keys et FK.
+ -semi-structurées : clé-valeur (Redis, DynamoDB) 
+                     DocumentDB (Azure Cosmos DB, MongoDB) -> JSON, BSON ou XML
+                     colonnes (Cassandra)
+ -non structurées : Blob Storage, Data Lake : Pas de schémas
+
+Accès à SQL server : 
+
+1-SQLCMD : sqlcmd -S monserveursql.database.windows.net -d SQLDB -U monuser -P MonMotDePasse -N -l 30
+2-Application installé SSMS
+3-ODBC (tout accès via driver "ODBC Driver 18" installé sur la machine source : Excel, PowerShell, script python C++ PHP, app windows)
+4-JDBC (directe via le code d'une application java)
+5-ADO.NET (directe via le code d'une application .NET ou ASP.NET)
+
+NB : JAVA et .NET ont des pilotes natifs vers la base de données SQL server, les autres languages doivent passer par le pilote ODBC
+
+
+Accès à MySQL : 
+
+1️⃣ Via le client en ligne de commande : 
+mysql -h monserveur.mysql.database.azure.com -u monuser -p
+
+
+2️⃣ Via un outil graphique : 
+
+3️⃣ Via ODBC : 
+MySQL ODBC 8.0 Unicode Driver, pour excel, power BI, PowerShell, applications C++, Python, PHP, etc
+
+4️⃣ Via JDBC (pour Java) : 
+Équivalent JDBC de SQL Server, mais open source.
+
+5️⃣ Via ADO.NET (pour .NET / ASP.NET) : 
+MySQL Connector/NET
+
+6️⃣ Via les bibliothèques spécifiques à chaque langage : (accès directe via le protocole MySQL natif)
+     Python -> mysql-connector-python ou PyMySQL
+     PHP    -> mysqli ou PDO_MySQL
+     Node.js-> mysql2
+     ...
+
+====================================================  chiffrement : 
+
+Chiffrement des données en transit : TLS(HTTPS), SSH, VPN, SFTP, SMTPS
+Chiffrement des données au repos : BitLocker, Azure Key Vault
+
+A network protocol is a set of rules and standards that define how data is formatted, transmitted, and received over a network
+
+SSL/TLS : protocole de sécurité utilisé pour chiffrer les communications
+
+cipher suite : l’algorithme précis utilisé dans cette connexion TLS
+
+HTTPS = HTTP + TLS → sécurisé via le port 443
+FTPS = FTP + TLS
+
+TLS 1.2	✅ Standard actuel (très utilisé)	
+TLS 1.3	🚀 Le plus récent (plus rapide et plus sûr)
+
+RDP 3389 utilise aussi le TLS sous deux modes : 
+  -supporté : choisie le TLS si supporté
+  -Requis : usage TLS forcé
+
+Vérifier si RDP est activé : Test-NetConnection -ComputerName 192.168.1.10 -Port 3389
+
+# vérifier la version TLS utilisée sur un serveur web
+openssl s_client -connect example.com:443 -tls1_2
+openssl s_client -connect example.com:443 -tls1_3
+
+il y a deux TLS : 
+  TLS application 
+  TLS du système 
+
+certaines applications ont leurs propre TLS (un navigateur  web qui gère le TLS à son niveau)
+
+certaines applications se basent sur le TLS du système 
+
+Le TLS côté OS sert de moteur TLS commun pour tous les logiciels qui ne gèrent pas leur propre TLS
+
+========================= ADCA : 
+
+ADCA a deux modes : 
+ CA standalone (non intégrée au domaine) : C’est une autorité de certification sans lien avec Active Directory.
+ CA de domaine (Enterprise CA) : C’est une autorité de certification intégrée à Active Directory (AD).
+
+====comment ajouter un serveur web dans l'ADCA : 
+Créer une request sur le serveur_web, placer dans le fichier cert_request.txt
+Sur le serveur ADCA : 
+certreq -submit -attrib "CertificateTemplate:WebServer" C:\Users\TALIBI01\Desktop\cert_request.txt
+Sauvegarder .cer
+Uploader .CER sur le serveur web.
+
+=================
+
+auto-signé : si j'ai pas de serveur ADCA interne et je n'utilise pas une autorité publique, je peux utiliser l'autosigné
+             ça veut dire que le serveur sécurise l'accès lui même sans faire appel à une autorité interne ou publique
+
+Pour sécuriser l'accès RDP : 
+
+-émis par ta CA interne   
+      -
+      -les clients vont se connecter directement sur le serveur RDP avec la ROOT_CA déjà dépoyée sur les clients
+
+-Un certificat autosigné par le serveur RDP lui même : 
+     un cert auto-signé à créer sur le serveur RDP et que j'installe par la suite ce cert sur les clients qui vont se connecter en RDP.
+     sur les clients, il faut absolument ajouter le certificat dans : certmgr.msc → Trusted Root Certification Authorities → Certificates
+
+Pour info : 
+un serveur RDP crée automatiquement un certificat autosigné après son installation "RDP self-signed", (voir sur certlm.msc, personnel)
+  mais ce certificat n'est reconnu par les clients qui se connecte, donc les clients affichent un avertissement
+  pour éviter le message d'avertissement, il faut exporter ce certificat et l'importer sur les postes clients.
+  mais la communisation reste quand même chiffrée.
+
+ ->après installation du RDP, je peux remplacer le certificat autosigné par un certificat issu de ma CA interne 
+
+IIS, WinRM, ADFS, ADDS, WSUS, exchange crée aussi des certificats autosignés juste après l'installation du service.
+
+
