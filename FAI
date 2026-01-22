@@ -1,0 +1,107 @@
+DSL : Physique (couche 1), Transmission sur paire cuivre (Transporte les bits sur la ligne cuivre)
+
+PPP : Protocole de liaison de données (couche 2)
+
+Quand tu te connectais à Internet avec un modem dans les années 2000, ton FAI utilisait PPP over Ethernet (PPPoE) ou PPP over ATM (PPPoA).
+
+ATM : réseau de transport, Technologie de commutation (couche 2) qui représente l'infra régionale du FAI 
+
+MPLS : réseau de transport moderne (couche 2.5) qui représente l'infra régionale du FAI 
+
+Résumé : 
+
+DSL historique :
+Modem → DSLAM → ATM → BRAS → IP → Backbone FAI → Internet
+
+DSL moderne :
+Modem → DSLAM Ethernet → Ethernet/MPLS → BNG → IP → Backbone FAI → Internet
+
+Fibre :
+ONT → OLT → Ethernet/MPLS → BNG → IP → Backbone FAI → Internet
+
+4G / 5G :
+Antenne → Fibre → Ethernet/MPLS → Mobile Core → IP → Backbone FAI → Internet
+
+
+La 4G/5G utilise le même réseau de collecte ethernet/MPLS : 
+
+Les antennes 4G/5G sont aussi connectées en fibre au réseau Ethernet/MPLS comme pour la collecte des lignes DSL et fibre : 
+
+Antenne 4G/5G → Ethernet/MPLS (backhaul) → Mobile Core → IP → Backbone FAI → Internet
+
+NB : DSL et fibre sortent vers le backbone par le BRAS, 
+     les antennes 4G/5G sorent vers le backbone par le mobile core
+
+composant du réseau ethernet/MPLS : 
+ -Switchs Ethernet pour la couche L2
+ -Routeurs MPLS (ou commutateurs L3 MPLS) 
+ -Serveurs de contrôle / routeurs PE/CE pour faire du VPN MPLS
+
+les routeurs CE sont utilisés pour une entreprise multi-sites pour faire des liaisons L3VPN-MPLS: 
+
+   [CE1]──Ethernet──[PE1]──Ethernet/MPLS──[PE2]──Ethernet──[CE2]
+
+on utilise le BGP entre CE et PE car : 
+    c'est un protocole de routage robuste et scalable
+    utile dans la L3VPN MPLS (IP VPN) ->échange des routes IP
+    sur le site client BGP gère les routes actives/backup proprement.
+
+Dans une L2VPN MPLS : le PE ne fait pas de routage pour le client, le MPLS est juste un transport de la trame ethernet
+                      le client peut utiliser son propre protocole (OSPF IBGP VRRP …)
+                      c'est comme si le réseau MPLS est un grand switch ethernet qui fait passer les trame L2
+                      Idéal si tu veux étendre ton réseau LAN comme s’il était local car le Le FAI transporte juste les trames Ethernet.
+
+Dans une L3VPN MPLS : le PE devient le next-hop et échange des routes avec le CE, via BGP ou statique
+                      chaque site a son propre subnet IP
+
+Si un client demande un lien MPLS entre deux points, le lien entre PE et CE peut être : 
+
+  -Eth optique 1G (SFP)  → vers PE 
+  -Eth optique 10G (SFP+)  → vers PE
+  -Eth optique 100G (QSFP)  → vers PE
+  -100M cuivre (RJ45) ou 1G cuivre (RJ45) sur une distance max de ~100 mètres, puis convertir en fibre  → vers PE
+  -entre 8M et 100M Cuivre RJ11 = interface téléphonique ou xDSL de distance 1 à 3 km max puis → boucle locale cuivre vers DSLAM → BRAS → IP/MPLS 
+
+Matériel CE : Cisco ISR, Juniper SRX, MikroTik CCR
+
+=======================
+
+ ✅ DSL historique : 
+
+PC → Modem ADSL → DSLAM → Réseau_ATM_FAI  → BRAS/BNG → Backbone-IP-FAI → internet
+
+Chaque paquet IP est :
+ encapsulé dans PPP,
+ puis transporté en cellules ATM de 53 octets (PPPoA),
+ et transmis sur la ligne DSL (le support de suivre),
+ reçu par le DSLAM (dans le central du FAI),
+ Le DSLAM démodule le signal DSL, reconstitue les cellules ATM
+ les cellules ATM contiennent toujours l'encapsulation PPP qui contient à son tour les paquets IP
+ ces cellules ATM passe par le réseau de transport ATM et arrivent au BRAS / BNG
+ le BRAS/BNG désencapsule le PPP (fin du PPP), authentifie le user et une IP est donnée au modem/routeur, 
+    extrait les paquets IP, l’envoie sur le backbone IP du FAI (MPLS / IP)
+    le backbone IP du FAI est connecté à internet
+
+ ✅ DSL moderne : 
+
+ADSL2+, VDSL, VDSL2 (toujours le câble téléphonique cuivre entre le modem DSL et le DSLAM Ethernet)
+
+La collecte ne se fait plus en ATM mais en Ethernet, PPPoE
+ 
+PC → Modem DSL → DSLAM (Ethernet) → Réseau de collecte Ethernet/MPLS → BNG → Backbone IP → Internet
+
+ ✅ Fibre optique : 
+
+ni cuivre, ni DSL, ni ATM, ni DSLAM.
+
+ on utilise un signal optique, une ONT/ONU chez l’abonné, un OLT chez l’opérateur, un BNG/BRAS
+        L’OLT joue le rôle du DSLAM pour la fibre
+        
+
+ONT/ONU → OLT → Réseau d’agrégation Ethernet/MPLS → BNG/BRAS → Backbone IP → Internet
+
+
+il y a deux façons pour se connecter en fibre : 
+
+ ✔️ 1. PPPoE sur fibre : l'abonné établie une session PPP sur ethernet qui sera désencapsulée sur le BNG/BRAS (similaire au scenario du DSL)
+ ✔️ 2. IPoE (DHCP) : 
