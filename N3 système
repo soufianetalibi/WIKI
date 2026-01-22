@@ -1,7 +1,7 @@
 
 
 -Administration systèmes Windows/linux
--Le cloud Azure                         IaaS, PaaS, SaaS, (azure stack HCI "azure-like", Azure stack HUB "mini azure"), ARC, intune 
+-Le cloud Azure                         IaaS, PaaS, SaaS, (azure stack HCI "azure-like", Azure stack HUB "mini azure"), Entra Connect, ARC, intune 
 -la virtualisation                      (virtualisation des OS ESXi 9.0 et vcenter 8.0 U3)
 -la conteneurisation                    (virtualisation des runtimes sur le même OS) : dockerfile -> construire l'image -> lancer le conteneur.
 -VDI, Bureau virtuel                    Citrix Virtual Apps & Desktops (XenDesktop), VM dédiée sur le serveur     (par contre les users du RDS partagent une seule VM)                           
