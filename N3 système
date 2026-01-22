@@ -7,7 +7,7 @@
 -VDI, Bureau virtuel                    Citrix Virtual Apps & Desktops (XenDesktop), VM dédiée sur le serveur     (par contre les users du RDS partagent une seule VM)                           
                                           la VDI peut être persistante (le user X garde la VM Y dédiée pour lui et ses changements persistent, donc autant de VM que de users)
                                                            non persistante "pooled", la VM est réinitialisée à son état d’origine suite à la déconnexion pour l'attribuer à un autre user.
--Les réseaux IP                          statique, RIP, EIGRP, OSPF, BGP   ,  MPLS, SD-WAN, VPN IPsec
+-Les réseaux IP                          statique, RIP "vecteur de distance", EIGRP "Hybrid", OSPF "Link state", BGP "entre AS" , MPLS, SD-WAN, VPN IPsec | AD | VLAN TRUNK STP VTP | SNAT DNAT PAT | ACL | HSRP VRRP GLBP | point to point : PPP HDLC | 
 -La sécurité                            (Firewalls, SIEM, EDR, mise à jour OS et applications) 
 -le DEVOPS                              (build and deploy de façon automatisée et répétitive)
 -IaC                                    (créer une infra à base du code : Terraform multi providers, azure ARM, AWS cloudformation …)
