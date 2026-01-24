@@ -2,6 +2,7 @@
 
 -Microservice : découper le backend d'une application en services, chaqu'un fait une tâche
 
+-RabbitMQ, AWS SQS ou AZ service Bus  : ce sont des brocker de msg entre les microservices ( exemple commande --> Paiement )
 
 Exemple d'applications : 
 
@@ -221,3 +222,15 @@ Chaque microservice est indépendant
 Chaque service écoute sur son propre port
 
 L’API Gateway est le point d’entrée unique
+
+==================
+Liaison entre les microservices : 
+===================
+Lorsque un utilisateur lance une commande X, il faut déclencher un paiement 
+
+donc le microservice orders doit envoyer un message au microservice payment (ce message transactionnel ne doit pas être perdu)
+
+RabbitMQ est un brocker de message sous linux, il transmet les msg entre microservices d'une application
+         si le microservice payment est KO, le msg reste dans la file jusqu'à ce qu'il soit traité
+
+il est possible d'utiliser à la place de Rabbitmq des solutions cloud comme azure service bus ou AWS SQS.
