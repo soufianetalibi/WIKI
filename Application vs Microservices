@@ -1,0 +1,223 @@
+-Application = Frontend + backend + BDD (architecture 3 tiers)
+
+-Microservice : découper le backend d'une application en services, chaqu'un fait une tâche
+
+
+Exemple d'applications : 
+
+-Application Apache2-PHP + MariaDB
+-Application Angular+Symfony+MariaDB
+-application ASP.NET Core + SQL Server
+-Application Apache2-Flask + MariaDB
+-Application Node.js + MongoDB
+-Application Node.js + DynamoDB
+-Application Python Flask + Redis
+-Application Flask + OpenAI (chatbot)
+
+Si on utilise Flask par exemple, le backend est Gunicorn.
+Si on utilise spring boot par exemple, le backend est tomcat.
+
+===Frontend
+
+HTML5
+React (is a Library:  .JSX + html file),
+Next.JS (is a Framework based on react)
+Vue.js (is a Framework : .JS + html file),
+angular (is a Framework .ts + .html )
+  we add Bootstrap, Tailwind are used for styling  (Like CSS)
+
+===Backend : 
+Langages/frameworks
+Javascript Node.js (Express, Next.js, Nest.js)
+Python (Django, Gunicorn Flask)
+PHP (Laravel, Symfony)
+Ruby (Rails)
+Java (Spring, tomcat, wildfly, jetty)
+Go, Rust, etc.
+l'ASP.NET kestrel
+
+   ----> Le Framework d'un langage permet de construire une application complète rapidement au lieu de partir du zéro.
+
+En utilisant un backend en arrière plan, les frontends (Apache2, Nginx, Caddy, angular) devient un reverse proxy 
+
+ASP.NET Core est un framework full-stack qui gère le frontend et le backend.
+
+===une stack est une constitution de frontend+backend+BD : 
+
+Nom du stack	Frontend	       Backend	       Base de données
+MERN	          React  	    Node.js + Express	MongoDB
+MEVN           	Vue	            Node.js + Express	MongoDB
+LAMP	          PHP	               Apache	          MySQL
+Django stack	HTML/React	    Django (Python)	      PostgreSQL/MySQL
+Spring Boot	React/Vue/Angular   Spring Boot (Java)	MySQL/PostgreSQL
+
+
+
+Exemple de Stack Web complète : 
+
+Couches	Stack :         "Classique HTML/PHP"	 "Stack moderne React"
+Frontend      :	        HTML + CSS + JS 	React ou Next.js 
+Backend	      :             PHP    	        Node.js (ou API Next.js)
+Base de données : 	MySQL / MariaDB	        PostgreSQL / MongoDB
+
+
+--Exemple Hybride : 
+Navigateur
+  ⬇️ HTML/CSS/JS
+  ⬇️ React ou Vue (Frontend dynamique)
+  ⬇️ API Fetch
+Serveur (Backend)
+  ⬇️ Node.js, PHP, Django...
+  ⬇️ Base de données (MySQL, MongoDB...)
+
+================================================
+Utiliser un backend divisé en microservices : 
+=================================================
+
+Soit une application ayant un grand backend
+
+Par ex le backend de cette application sera découpé sur les microservices suivants : 
+
+-API Gateway : Point d’entrée unique
+-user : gestion des utilisateurs
+-product : gestion des produits
+-order : gestion des commandes
+-payment : Paiement et facturation
+
+Chaqu’un est indépendant des autres, déploiement séparé, traite une partie du backend de l’application
+
+l'API Gateway est le point d'entrée unique du frontend de l'application qui envoie vers le microservice approprié
+
+=====================
+Exemple pratique : 
+=====================
+un exemple simple et concret de microservices Node.js avec une API Gateway + 3 microservices : 
+
+microservices-demo/
+├── api-gateway/
+│   └── server.js          (port 3000) qui va router 
+├── user-service/
+│   └── server.js          (port 3001)
+├── product-service/
+│   └── server.js          (port 3002)
+└── order-service/
+    └── server.js          (port 3003)
+
+1️⃣ User Service
+
+user-service/server.js
+
+const express = require("express");
+const app = express();
+
+app.get("/users", (req, res) => {
+  res.json([
+    { id: 1, name: "Alice" },
+    { id: 2, name: "Bob" }
+  ]);
+});
+
+app.listen(3001, () => {
+  console.log("👤 User Service running on port 3001");
+});
+
+2️⃣ Product Service
+
+product-service/server.js
+
+const express = require("express");
+const app = express();
+
+app.get("/products", (req, res) => {
+  res.json([
+    { id: 1, name: "Laptop" },
+    { id: 2, name: "Phone" }
+  ]);
+});
+
+app.listen(3002, () => {
+  console.log("📦 Product Service running on port 3002");
+});
+
+3️⃣ Order Service
+
+order-service/server.js
+
+const express = require("express");
+const app = express();
+
+app.get("/orders", (req, res) => {
+  res.json([
+    { id: 1, productId: 1, userId: 2 },
+    { id: 2, productId: 2, userId: 1 }
+  ]);
+});
+
+app.listen(3003, () => {
+  console.log("🛒 Order Service running on port 3003");
+});
+
+4️⃣ API Gateway
+
+api-gateway/server.js
+
+const express = require("express");
+const axios = require("axios");
+const app = express();
+
+// Redirige vers User Service
+app.get("/users", async (req, res) => {
+  const response = await axios.get("http://localhost:3001/users");
+  res.json(response.data);
+});
+
+// Redirige vers Product Service
+app.get("/products", async (req, res) => {
+  const response = await axios.get("http://localhost:3002/products");
+  res.json(response.data);
+});
+
+// Redirige vers Order Service
+app.get("/orders", async (req, res) => {
+  const response = await axios.get("http://localhost:3003/orders");
+  res.json(response.data);
+});
+
+app.listen(3000, () => {
+  console.log("🚪 API Gateway running on port 3000");
+});
+
+5️⃣ Comment tester localement
+
+Ouvre 4 terminaux
+
+Lancer chaque service à part :
+
+# terminal 1
+node user-service/server.js
+
+# terminal 2
+node product-service/server.js
+
+# terminal 3
+node order-service/server.js
+
+# terminal 4
+node api-gateway/server.js     (le service général)
+
+
+Depuis un navigateur ou Postman :
+
+http://localhost:3000/users
+http://localhost:3000/products
+http://localhost:3000/orders
+
+Le frontend n’appelle que le API Gateway (port 3000), et la gateway redirige vers les microservices.
+
+🧠 Ce que ça montre
+
+Chaque microservice est indépendant
+
+Chaque service écoute sur son propre port
+
+L’API Gateway est le point d’entrée unique
