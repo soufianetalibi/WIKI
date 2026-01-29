@@ -1,14 +1,21 @@
 ﻿Ports à ouvrir sur un serveur AD : 
 
-RDP 3389
-SMB 445
-Custom 135
+RDP 3389 
+SMB 445  SMB / SYSVOL / NETLOGON ✅
+Custom 135  → RPC Endpoint Mapper
 LDAP 389
 DNS UDP 53
 DNS TCP 53
+UDP 123 → NTP
 All ICMP
-custom 49152-65539
-custom TCP 88
+TCP 49152–65535 → Ports dynamiques RPC
+custom TCP 88 Kerberos
+TCP/UDP 464 → changement de mot de passe Kerberos
+TCP 636 → LDAPS (LDAP sécurisé – recommandé)
+TCP 3268 → Global Catalog
+TCP 3269 → Global Catalog sécurisé (SSL)
+TCP 9389 → AD Web Services
+TCP 5722 → DFS Replication
 
 ============================
 
