@@ -1,0 +1,57 @@
+# ==========================
+# 1️⃣ Configurer le LCM
+# ==========================
+[DSCLocalConfigurationManager()]
+configuration LCMConfig
+{
+    Node "localhost"
+    {
+        Settings
+        {
+            RefreshMode = "Push"                   # Mode Push
+            ConfigurationMode = "ApplyAndAutoCorrect" # Corrige automatiquement
+            RebootNodeIfNeeded = $false
+            ConfigurationModeFrequencyMins = 15    # Vérifie toutes les 15 minutes
+            DebugMode = "ForceModuleImport"
+        }
+    }
+}
+
+# Générer le MOF pour le LCM
+LCMConfig -OutputPath "C:\DSC\LCMConfig"
+
+# Appliquer la configuration LCM
+Set-DscLocalConfigurationManager -Path "C:\DSC\LCMConfig"
+
+Write-Host "✅ LCM configuré en ApplyAndAutoCorrect"
+
+# ==========================
+# 2️⃣ Configurer DSC pour W32Time
+# ==========================
+Configuration KeepW32TimeRunning
+{
+    param (
+        [string[]]$NodeName = "localhost"
+    )
+
+    # Importer le module DSC intégré
+    Import-DscResource -ModuleName PSDesiredStateConfiguration
+
+    Node $NodeName
+    {
+        Service W32TimeService
+        {
+            Name        = "w32time"
+            StartupType = "Automatic"
+            State       = "Running"
+        }
+    }
+}
+
+# Générer le MOF pour le serveur
+KeepW32TimeRunning -OutputPath "C:\DSC\KeepW32TimeRunning"
+
+# Appliquer la configuration DSC
+Start-DscConfiguration -Path "C:\DSC\KeepW32TimeRunning" -Wait -Verbose -Force
+
+Write-Host "✅ Configuration DSC appliquée pour W32Time. Le service sera surveillé et corrigé automatiquement."
