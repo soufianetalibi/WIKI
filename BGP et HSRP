@@ -1,0 +1,139 @@
+
+Multi-homing avec BGP : 
+
+Connecter des agences à un datacenter et internet via un backbone : 
+
+[site Lyon] ----\
+[site Marseille] --> Paris (Backbone) --> 2 FAI Internet + DataCenter
+[site Lille] ----/
+
+Tu as deux liens Internet à Paris (via deux FAI).
+Tu utilises BGP sur Paris pour gérer ces deux liens
+redistribuer la route par défaut vers toutes les agences via OSPF
+Résultat : toutes les agences accèdent à Internet via Paris, avec redondance
+
+Tes agences n’ont pas de BGP direct entre elles, elles passent par le backbone à Paris
+Le backbone est donc le point central où tu peux contrôler le trafic inter-agences
+
+Paris est connecté à deux fournisseurs Internet, on a besoin de configurer BGP en plus du OSPF : 
+🔹 Interne entreprise = OSPF suffit
+🔹 Vers Internet / plusieurs FAI = BGP devient utile (et souvent nécessaire)
+
+on utilise BGP et OSPF : 
+
+OSPF	À l’intérieur de chaque site	Rapidité, simplicité, découverte automatique
+BGP	Entre Paris et les agences	Politiques, scalabilité, contrôle des routes
+
+OSPF connaît uniquement les routes internes du site
+BGP transporte uniquement les routes entre sites
+On fait une redistribution contrôlée entre OSPF et BGP sur chaque routeur frontière.
+
+=====
+Paris (siège)	65000  LAN:10.0.0.0/24   Paris (backbone interne) = OSPF Area 0
+Lyon	        65001  LAN:10.1.0.0/24   Lyon = OSPF Area 1
+Marseille	65002  LAN:10.2.0.0/24   Marseille = OSPF Area 2
+Lille	        65003  LAN:10.3.0.0/24   Lille = OSPF Area 3
+
+==
+   Lien	                    Réseau
+Lyon → Paris       	192.168.10.0/30
+Marseille → Paris	192.168.10.4/30
+Lille → Paris	        192.168.10.8/30
+
+======configuration : 
+
+==Sur Paris (AS 65000) : 
+router bgp 65000
+ neighbor 192.168.10.2 remote-as 65001   ! Lyon
+ neighbor 192.168.10.6 remote-as 65002   ! Marseille
+ neighbor 192.168.10.10 remote-as 65003  ! Lille
+
+ ! Annoncer le réseau du Data Center / Siège
+ network 10.0.0.0 mask 255.255.255.0
+ ! On redistribue les routes BGP dans OSPF pour les rendre visibles en interne
+ redistribute bgp 65000
+
+ router ospf 1
+ network 10.0.0.0 0.0.0.255 area 0
+
+==Sur Lyon (AS 65001)
+router bgp 65001
+ neighbor 192.168.10.1 remote-as 65000   ! Paris
+
+ ! Annoncer le réseau local de Lyon
+ network 10.1.0.0 mask 255.255.255.0
+ ! On annonce vers BGP le réseau local appris par OSPF
+ redistribute ospf 1
+
+router ospf 1
+ network 10.1.0.0 0.0.0.255 area 1
+
+==Sur Marseille (AS 65002)
+router bgp 65002
+ neighbor 192.168.10.5 remote-as 65000   ! Paris
+ network 10.2.0.0 mask 255.255.255.0
+ redistribute ospf 1
+
+router ospf 1
+ network 10.2.0.0 0.0.0.255 area 2
+
+==Sur Lille (AS 65003)
+router bgp 65003
+ neighbor 192.168.10.9 remote-as 65000   ! Paris
+ network 10.3.0.0 mask 255.255.255.0
+ redistribute ospf 1
+
+router ospf 1
+ network 10.3.0.0 0.0.0.255 area 3
+
+==============Ajouter la config des 2 FAI sur paris : 
+
+Lien	               Réseau   	   Paris           FAI
+Paris ↔ FAI 1	 198.51.100.0/30	 198.51.100.2	198.51.100.1
+Paris ↔ FAI 2	 203.0.113.0/30	         203.0.113.2	203.0.113.1
+
+router bgp 65000
+
+ ! === Voisins BGP des FAI ===
+ neighbor 198.51.100.1 remote-as 64512   ! FAI 1
+ neighbor 203.0.113.1 remote-as 64513    ! FAI 2
+
+ !accepter la route par défaut des FAI
+ ! ===normalement mon FAI va m'envoyer un 0.0.0.0/0
+ router bgp 65000
+ neighbor 198.51.100.1 default-originate
+ neighbor 203.0.113.1 default-originate
+
+ !Redistribuer Internet dans OSPF
+ router ospf 1
+ default-information originate
+
+ ! === préférer un FAI principal est possible : 
+  neighbor 198.51.100.1 weight 200   ! FAI 1 préféré
+  neighbor 203.0.113.1 weight 100    ! FAI 2 moins préféré
+
+Enfin : les deux liens Internet sont configurés uniquement à Paris, en BGP, et Paris redistribue Internet aux agences via OSPF
+
+===========================================HSRP============================================================================================
+
+HSRP c'est utilisé dans un même LAN pour donner une passerelle redondante : 
+
+PC ---- Switch ---- Routeur A
+                 \
+                  ---- Routeur B
+
+
+IP réelle Routeur A : 10.1.0.1
+IP réelle Routeur B : 10.1.0.2
+ IP virtuelle HSRP : 10.1.0.254 (passerelle des PC)
+
+Routeur A : 
+interface GigabitEthernet0/0
+ ip address 10.1.0.1 255.255.255.0
+ standby 1 ip 10.1.0.254
+ standby 1 priority 110   ! Routeur principal
+
+Routeur B : 
+interface GigabitEthernet0/0
+ ip address 10.1.0.2 255.255.255.0
+ standby 1 ip 10.1.0.254
