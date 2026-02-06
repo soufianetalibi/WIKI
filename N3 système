@@ -19,6 +19,27 @@
 SNAT : Source NAT, Traduire l’adresse source d’un paquet sortant, il regroupe le NAT statique (ip to ip), le NAT dynamic (pool) et le NAT Overload (PAT) 
 DNAT : Destination NAT, Traduire l’adresse de destination d’un paquet entrant (c'est le port forwarding)
 
+=====
+K8s = système qui gère automatiquement des applications en containers sur plusieurs serveurs.
+
+Kubernetes "k8s" permet de :
+
+🚀 déployer des applications (conteneurs)
+
+🔄 les redémarrer automatiquement si elles plantent
+
+📈 augmenter ou réduire le nombre d’instances (scaling)
+
+⚖️ répartir la charge entre plusieurs serveurs
+
+🔁 faire des mises à jour sans interruption (rolling update)
+
+Master (Control Plane)
+Workers (Nœuds)
+Un Pod contient un ou plusieurs containers ( qui constituent l'application)
+
+==================================================================================================
+
 1. Administration systèmes Windows / Linux
 
 Windows :
