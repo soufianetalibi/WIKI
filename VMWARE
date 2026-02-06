@@ -1,0 +1,36 @@
+
+MGMT domain : cluster de serveurs dédié pour l'infra local
+workload domain : cluster de serveurs dédié  pour les clients 
+
+======
+La licence VMWARE n'est plus perpétuelle, c'est un abonnement annuel : 
+
+VVF = licence pour avoir vSphere, vcenter, VSAN uniquement
+VCF = licence complète pour créer une plateforme cloud complète
+  VCD = le portail cloud provider
+
+VCF : Vmware cloud foundation 
+      stack cloud pour les datacenters (l’infrastructure cloud complète)
+      elle gère plusieurs briques vmware : 
+	      -vSphere → virtualisation des serveurs
+	      -vSAN → stockage logiciel
+	      -NSX → réseau et sécurité
+	      -Aria (vRealize) → supervision / automatisation
+
+VCD est une plateforme de portail cloud multi-tenant, le portail pour vendre/consommer du cloud basé VCF.
+	VCD = la couche “service cloud” au-dessus de VCF  pour devenir un cloud provider
+
+licence vmware : 32 cœurs par licence (une licence couvre jusqu'à 32 cœurs sur un processeur physique)
+                 un minimum de 16 cœurs par processeur pour la licence (même si le CPU physique a moins que 16)
+
+si j'ai 2 serveurs ayant 64 cœurs chaqu'un, j'aurai besoin de 4 licences.
+
+=====
+NSX : 
+ j'ai un cluster vSphere avec des serveurs physiques (ESXi)
+ déployer les appliances sous forme VMs : NSX Manager + NSX Controllers + NSX Edge
+ créer des réseaux virtuels (switch, routeur, firewall) qui sécurisent mes VMs
+
+  Manager = cerveau, accès Web
+  Controllers = architectes du trafic
+  Edge = porte de sortie sécurisée
