@@ -1,0 +1,91 @@
+🏗️ Architecture générale du lab
+
+Ton lab repose sur une architecture classique de réseau opérateur :
+	•	1 routeur P (Provider) → cœur MPLS qui ne fait que commuter des labels (pas de routes clients).
+	•	2 routeurs PE (Provider Edge) : PE1 et PE2 → points d’entrée/sortie des clients dans le réseau MPLS.
+	•	Plusieurs réseaux clients (CE - Customer Edge) connectés aux PE.
+
+🔹 Cœur du réseau (P et interconnexions PE-P)
+	•	Le cœur du réseau utilise OSPF uniquement pour l’infrastructure du fournisseur.
+	•	Il transporte uniquement des routes internes au SP, et aucune route client.
+	•	Cela permet :
+	•	Une meilleure scalabilité
+	•	Une séparation claire entre le réseau du provider et celui des clients
+	•	Une architecture plus simple et propre
+
+⸻
+
+🔐 Séparation des clients avec VRF
+
+Sur les routeurs PE, tu as configuré plusieurs VRF (Virtual Routing and Forwarding).
+
+Chaque VRF :
+	•	Représente un client différent
+	•	Possède sa propre table de routage séparée
+	•	Permet d’utiliser des adresses IP qui se chevauchent entre clients sans conflit
+
+🔄 Différents protocoles de routage côté client
+
+Chaque VRF utilise un protocole différent selon le type de client :
+	•	✅ OSPF → pour les grandes entreprises avec routage dynamique
+	•	✅ Routage statique → pour petits sites ou anciens réseaux
+	•	✅ EIGRP → pour environnements principalement Cisco
+
+👉 Cela montre que MPLS L3 VPN peut transporter des routes provenant de protocoles variés.
+
+⸻
+
+📌 RD et RT : isolation et connectivité contrôlée
+
+🔹 Route Distinguisher (RD)
+
+Le RD permet de rendre uniques les routes clients dans MP-BGP, même si deux clients utilisent les mêmes adresses IP (ex : 10.0.0.0/8).
+
+🔹 Route Target (RT)
+
+Les RT contrôlent :
+	•	Quelles routes sont exportées par un PE
+	•	Quelles routes sont importées par un autre PE
+
+👉 C’est grâce aux RT que tu peux :
+	•	Soit isoler totalement des clients
+	•	Soit permettre une communication contrôlée entre certains sites
+
+⸻
+
+🔁 MP-BGP : le cœur du VPN MPLS
+
+Entre PE1 et PE2, tu utilises MP-BGP (Multiprotocol BGP) pour échanger des routes VPNv4.
+
+Ces routes contiennent :
+	•	Le préfixe client
+	•	Le RD
+	•	Les RT
+	•	Le label MPLS
+
+👉 MP-BGP est donc l’élément clé qui permet :
+	•	Le transport des routes clients à travers le backbone MPLS
+	•	L’établissement de la connectivité VPN de bout en bout
+
+⸻
+
+🔀 Redistribution de routes sur les PE uniquement
+
+Toute la redistribution entre :
+	•	OSPF / EIGRP / statique (côté client)
+	•	BGP (côté provider)
+
+👉 est effectuée uniquement sur les routeurs PE.
+
+Tu utilises des route-maps pour :
+	•	Filtrer les routes
+	•	Contrôler précisément ce qui est annoncé
+	•	Éviter les boucles de routage
+
+Cela reflète une pratique réelle des opérateurs et permet de garder le cœur MPLS indépendant des protocoles clients.
+
+⸻
+
+✅ Conclusion du lab
+
+Ton laboratoire montre concrètement que MPLS L3 VPN permet à plusieurs clients, utilisant différents protocoles de routage, de partager en toute sécurité la même infrastructure de fournisseur.
