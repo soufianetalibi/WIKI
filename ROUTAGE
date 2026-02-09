@@ -1,0 +1,249 @@
+
+L2 supporte seulement du VLAN or L3 supporte le VLAN et le routage interVLAN
+L3 supporte OSPF EIGRP BGP ...
+L3 can assign IP to an interface
+L3 can use ACLs to manage traffic from source to destination.
+ 
+Controle Plane : 
+1-Check ARP table
+2-check the routing table RIB (qui est alimentée par le static, l'EIGRP, OSPF ...)
+
+Data plane : 
+1-Forwarding table FIB alimentée par la controle plane, ce qui donne un routage rapide
+
+RIB : sh ip route 
+FIB : sh ip cef
+
+FIB : Forwarding table (remplie à partir du processus de routage de la controle plane)
+RIB : Routing table  
+
+Les protocoles de routages stockent les informations dans la RIB 
+Dans la RIB, on trouve une destination avec plusieurs chemins.
+Dans la FIB, ontrouve une destination avec un seul chemin choisi. 
+
+    --> pour utiliser le routage FIB, il faut activer le CEF.
+
+IGP vs EGP
+
+IGP classless : RIPv2, EIGRP, OSPFv2, IS-IS
+EGP classless : BGPv4
+
+HSRP : propre à cisco pour PCA du routage.
+VRRP : protocole standard pour PCA du routage.
+GLBP : propre à cisco pour la répartition de charge sur plusieurs routeurs.
+
+AD :
+ Directly connected : 0
+ routage statique : 1 
+ RIP : 120
+ IGRP : 100
+ OSPF : 110
+ EIGRP interne : 90
+ EIGRP externe : 170
+ BGP externe : 20
+ BGP interne : 200
+ IS-IS : 115
+
+Split horizon : technique utilisée pour accélérer la convergence, on interdit à un routeur d’envoyer une route à un routeur adjacent quand cette route passe par ce routeur adjacent.
+
+le résumé automatique : 
+ RIPv2 est classless, les sous réseaux sont résumés avec les deux mêmes chemins à coût égal
+no auto-summary : permet de désactiver le résumé automatique des routes.
+
+=======
+Redistribution et commandes de vérifications : 
+===================
+
+passive-interface : interface sur laquelle il faut pas passer des packets de routage (LAN)
+
+ASBR : routeur dans le domaine OSPF connecté à internet ou un domaine non OSPF
+ABR : routeur qui connecte deux AREAS dans le domaine OSPF
+Fédérateur : routeur dans la zone 0 fédératrice du domaine OSPF
+
+
+Route Redistribution between RIP and OSPF Routing domain
+Route Redistribution between RIP and EIGRP
+Route Redistribution Between OSPF and EIGRP
+
+RIP : 
+redistribute connected : diffuser les adresses des réseaux directement connectés
+redistribute static : diffuser les routes statiques
+redistribute ospf 100 metric 1
+redistribute eigrp 100 metric 1
+
+show ip protocols | begin rip
+show ip route
+show ip rip database
+debug ip rip
+undebug all
+
+EIGRP : 
+redistribute static
+redistribute connected
+redistribute rip metric 10000 1 255 1 1500
+redistribute ospf 100 metric 1000 100 255 1 1500
+
+
+show ip protocols | begin eigrp
+show ip eigrp neighbors
+show ip route eigrp | begin gateway
+show ip eigrp interface <interface>
+show ip eigrp topology
+
+OSPF : 
+redistribute connected
+redistribute static
+Redistribute rip metric 1
+redistribute eigrp 100 metric 1 subnets
+
+Accès internet à diffuser dans mon domaine OSPF : 
+ip route 0.0.0.0 0.0.0.0 209.165.200.226
+router ospf 10
+default-information originate
+
+show ip protocols | begin ospf
+show ip ospf neighbor
+show ip ospf database
+show ip ospf interface serial 0/0/0
+show ip route ospf
+
+=======================
+Route map :  
+=======
+ Only advertise some routes
+ Redistribute with conditions
+ change next hop ip address (Policy based routing)
+
+Execution d'une route map : 
+route-map permit 10
+route-map deny 20
+route-map permit 30
+implicite deny
+
+*Exemple, advertise only subnets with 192.168.0.0/24 on EIGRP : 
+
+-->Before configuration : 
+R2#show ip route eigrp | include /24
+D     192.168.0.0/24 
+D     192.168.1.0/24 
+D     192.168.2.0/24 
+D     192.168.3.0/24
+
+Route map : 
+
+route-map TEST_1 permit 10
+ match ip address R1_L0_PERMIT
+  ip access-list standard R1_L0_PERMIT
+    permit 192.168.0.0 0.0.0.255
+
+router eigrp 1
+distribute-list route-map TEST_1 in
+
+=============
+
+-->After configuration : 
+R2#show ip route eigrp | include /24
+D     192.168.0.0/24
+
+===================================================================
+Tunnel GRE : un protocole d'encapsulation de paquets pour rendre deux routeurs comme s'ils sont directement connectés afin d'établir établir un routage directe entre eux. 
+             un tunnel GRE n'est pas crypté, il vaut mieux utiliser GRE Over IPSEC (un VPN IPSEC entre les deux routeurs avec tunnel GRE et profiter de ce tunnel pour établir un routage directe entre les deux peers)
+
+      LAN1,LAN2 ------Routeur1------Tunnel_GRE_Over_IPSEC------Routeur2--------LAN3,LAN4
+   
+   --> activer EIGRP sur R1 et R2 et l'envoyer via le tunnel pour faire apparaitre les routes LAN1,LAN2 sur Routeur2 et l'inverse.
+
+===================================================================
+VPN IPSEC : sécuriser les données envoyées sur les réseaux publics entre deux LAN uniquement.
+DMVPN : IPsec, mGRE et NHRP sécuriser les données envoyées sur les réseaux publics entre siège et filiales.
+        Le traffic intersite sera chiffré IPsec, et le traffic à destination d’Internet sort sur une gateway internet.
+===========================================
+
+RNIS/ISDN, c'est une évolution du RTC. Sur les deux passent le téléphone, par exemple. La différence, c'est que le RNIS est numérique, le RTC, analogique.
+           RNIS atteint environ 2 Mb/s avec les BRI et PRI.
+RTPC/PSTN, système téléphonique international qui utilise des fils de cuivre pour transporter des données vocales analogiques.
+
+Offres Triple Play : 
+ BOX_DSL ---PSTN----DSLAM-----ATM------Réseau-IP-FAI
+
+L'accès au réseau WAN du FAI est possible :
+ via le réseau RTPC avec un modem et le RNIS (dans le cas où l'accès DSL n'existe pas)
+ via le réseau RTPC avec une BOX xDSL et DSLAM dans la NRA vers l'ATM puis le réseau du FAI (débit jusqu'à 100 Mb/s)
+ via modem et câble coaxial allant jusqu'à l'opérateur
+ via ligne spécialisée : via CSU/DSU et un routeur client (T1/E1, T3/E3)
+ via VSAT : modem satellite et un satellite connecté au FAI.
+ via la FTTH 
+
+Commutation de circuits : chemin dédié, facturée à la durée. ex : RTPC, RNIS
+Commutation de paquets : réseau partagé, facturée à la charge ex : Frame Relay
+
+WAN point to point : PPP, HDLC 
+
+WAN NBMA : X25 FrameRelay ATM MPLS VPLS 
+
+=====
+
+Mécanisme de transport :
+ 
+1-VPN GRE                                                    VPN site à site sur WAN
+2-VPN IPSEC                                                  VPN site à site sur WAN
+3-VPN GRE over IPSEC                                         VPN site à site sur WAN
+4-DMVPN    transport GRE/IPSEC dynamique                     VPN multipoint entreprise sur WAN
+5-L3VPN (MPLS VPN) routage VRF+BGP sur transport MPLS       (VPN opérateur pour multi-agence)
+6-EVPN (VPN Ethernet) routage BGP EVPN sur transport VXLAN  (vlan dans le cloud)
+
+
+Tunnel VPN GRE : la création d’un lien IP virtuel point-à-point.
+
+[PC-A]--(LAN A: 10.0.1.0/24)--[Routeur_A] ←→ GRE TUNNEL ←→ [Routeur_B]--(LAN B: 10.0.2.0/24)--[PC-B]
+
+GRE tunnel IPs :
+Routeur_A → 192.168.100.1
+Routeur_B → 192.168.100.2
+
+Sur Routeur_A : 
+ip route add 10.0.2.0/24 via 192.168.100.2 dev gre1
+   -->"pour joindre le LANB, je dois envoyer les paquets via le tunnel GRE à Routeur_B".
+
+pour vérifier le tunnel GRE : 
+  ip tunnel show
+  ip route (sur Routeur_A, doit afficher une route : 10.0.2.0/24 via 192.168.100.2 dev gre1)
+
+==>point fort : transporte le routage dynamique OSPF, BGP, multicast comme si on a deux routeurs directement connectés
+                si j'active le routage dynamique sur Routeur_A et Routeur_B, ils vont échanger les routes dynamiquement tant que le tunnel est UP.
+==>point faible : communication claire entre Routeur_A et Routeur_B
+
+=======================================================================================================================
+Tunnel VPN IPSEC : la création d'un lien crypté entre LAN-A et LAN-B
+
+[PC-A]--(LAN A: 10.0.1.0/24)--[Routeur_A] ←→ IPSEC TUNNEL ←→ [Routeur_B]--(LAN B: 10.0.2.0/24)--[PC-B]
+
+liaison chiffré entre les deux LAN mais ne transporte que le trafic des LAN-A et LAN-B, ces derniers doivent être déclarés dans la phase2 du tunnel.
+
+========================================================================================================================
+GRE over IPSEC : Permet de profiter de la flexibilité du GRE (routage dynamique, multicast …) tout en chiffrant les données qui passent 
+
+[LAN A] ←→ GRE ←→ IPsec (chiffré sur Internet) ←→ GRE ←→ [LAN B]
+
+==>IPsec chiffre les paquets GRE et a l’intérieur de GRE, je peux faire passer IP, multicast, OSPF, BGP ... 
+
+=========================================================================================================================================
+DMVPN (VPN multipoint dynamique)
+🌐 Une solution appartenant à Cisco.
+✅Permet la création de tunnels dynamiques entre plusieurs emplacements.
+
+Phase 1	Tous les tunnels passent par le hub (hub-and-spoke)
+Phase 2	Spokes peuvent communiquer directement entre eux
+Phase 3	Routage optimisé avec redirection NHRP
+
+
+=================================================================================================================================
+L3VPN (MPLS VPN)
+établissement d'un VPN dans le Backbone MPLS, utilisé par les fournisseurs de services.
+🏢 Communément utilisé dans les environnements Entreprises et Fournisseurs Internet (FAI).
+
+==================================================================================================================================
+EVPN (Ethernet VPN)
+un protocole de niveau 2/3 utilisé pour étendre des réseaux Ethernet sur un backbone IP/MPLS
+
+                
