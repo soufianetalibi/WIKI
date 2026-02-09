@@ -1,6 +1,129 @@
 
-MGMT domain : cluster de serveurs dédié pour l'infra local
-workload domain : cluster de serveurs dédié  pour les clients 
+
+
+💡 𝗧𝗿𝗼𝘂𝗯𝗹𝗲𝘀𝗵𝗼𝗼𝘁𝗶𝗻𝗴 & 𝗣𝗲𝗿𝗳𝗼𝗿𝗺𝗮𝗻𝗰𝗲
+
+1️⃣ How do you fix slow VM performance? What’s your troubleshooting approach?
+2️⃣ If a host is not responding, what are your next steps?
+3️⃣ What’s the management service restart command?
+4️⃣ ESXi enters maintenance mode but gets stuck—how do you fix it?
+5️⃣ A VM is stuck during vMotion—how do you resolve it?
+6️⃣ How do you troubleshoot storage issues in VMware?
+7️⃣ Your ESXi host has a PSOD (Purple Screen of Death) error—how do you fix it?
+ 
+🛠️ 𝗩𝗠𝘄𝗮𝗿𝗲 𝗜𝗻𝗳𝗿𝗮𝘀𝘁𝗿𝘂𝗰𝘁𝘂𝗿𝗲 & 𝗨𝗽𝗴𝗿𝗮𝗱𝗲𝘀
+ 
+8️⃣ How do you add a new datastore to a cluster?
+9️⃣ What are the pre-checks before upgrading vSphere?
+🔟 How do you upgrade an ESXi host?
+1️⃣1️⃣ How do you upgrade vCenter Server?
+1️⃣2️⃣ What are the different ways to upgrade ESXi?
+1️⃣3️⃣ How do you revert an ESXi upgrade to the previous version?
+ 
+📡 𝗡𝗲𝘁𝘄𝗼𝗿𝗸𝗶𝗻𝗴 & 𝗦𝘁𝗼𝗿𝗮𝗴𝗲
+ 
+1️⃣4️⃣ How do you migrate a disk from one datastore to another?
+1️⃣5️⃣ What’s the difference between a VM port group and a VMkernel port?
+1️⃣6️⃣ How do you migrate from a standard switch to a distributed switch (DVSwitch)?
+1️⃣7️⃣ What happens if two VMs have the same IP address?
+ 
+🔄 𝗛𝗶𝗴𝗵 𝗔𝘃𝗮𝗶𝗹𝗮𝗯𝗶𝗹𝗶𝘁𝘆 & 𝗕𝗮𝗰𝗸𝘂𝗽𝘀
+ 
+1️⃣8️⃣ If a backup fails for a VM, how do you fix it?
+1️⃣9️⃣ What happens when a VM appears as an orphaned VM?
+2️⃣0️⃣ What services are impacted when vCenter goes down?
+2️⃣1️⃣ What is VMware DPM and Proactive HA?
+2️⃣2️⃣ What’s the difference between HA and Proactive HA?
+ 
+🔥 𝗔𝗱𝘃𝗮𝗻𝗰𝗲𝗱 𝗖𝗼𝗻𝗰𝗲𝗽𝘁𝘀 & 𝗡𝗲𝘄 𝗙𝗲𝗮𝘁𝘂𝗿𝗲𝘀
+ 
+2️⃣3️⃣ Explain RAID 10 vs RAID 01—which one is better?
+2️⃣4️⃣ What are the new features of ESXi 8.0?
+2️⃣5️⃣ What is VSAN, and how do you replace a disk in VSAN?
+2️⃣6️⃣ How do you calculate IOPS in VMware?
+
+
+Management services restart : (Don't affect VMs) 
+ /etc/init.d/hostd restart
+ /etc/init.d/vpxa restart
+ services.sh restart
+
+DCUI : accès console directe
+Host client : accès web via mgmt IP
+
+upgrade ESXi via ISO, or via Offline Bundle "esxcli command" and ESXi-8.0.zip (take a backup before upgrade)
+
+DPM : option de la DRS, permet de mettre en veille un ESXi si la charge du cluster est basse.
+Proactive HA : option de la DRS, permet de faire des migrations  suite à des événements matériel, before Failure
+               elle implique l'activation de la HA et la DRS en mode automatique ou partiellement automatique et la licence entreprise plus.
+HA : restart VMs after Failure
+
+NVMe sur les disque SSD
+vGPU : virtualisation de la carte graphique du host ESXi pour les VMs
+vLCM : fonctionnalité depuis v7, MAJ des hosts, automatisation des patches, upgrade, drivers, firemwares, vmtools vmhardware... (Full lifecycle mgmt)
+       VUM est ancien, il patch et upgrade ESXi et VMtools VM hardware 
+         par contre vLCM gère tout y compris le hardware le firemware des hosts physiques.
+ 
+Vmtools : pilotes installés dans la VMs
+Version matérielle : virtual hardware version
+ exemple : ESXi 8.0 U2 : VM version 21, VMware Tools 12.3+
+
+VMFS : c'est un système de fichier Vmware crée sur un disque local de l'ESXi ou un LUN "SAN FC, ISCSI"
+NFS : système de fichier qui permet de monter un partage NAS sur l'ESXi
+ Les deux peuvent stocker les VMs et utilisés dans la vmotion DRS...
+
+vSAN : grouper les disques locaux des ESXi d'un cluster sous forme d'un datastore, point fort : hyper-converged
+
+
+VMFS Multipathing : redondance de stockage.
+host profiles to manage VMware ESXi host compliance : standardiser les hosts ESXi.
+virtual machines, templates, clones, and snapshots
+content libraries for templates and deploying VMs
+virtual machine storage policies
+Storage Optimization and Storage I/O
+Secure VMs and enable Key Management Services in vCenter 
+vSphere Lifecycle Manager (vLCM) for Patch and Update vSphere ESXi hosts
+
+=================================
+
+VCSA : Appliance linux ayant : BD postregsql, services, stockage local
+Content Library : espace pour stocker : ISO, templates, OVF/OVA
+
+Content Library d'un vcenter VCSA peut être : 
+  -locale : VMFS(LUN), NFS ou VSAN accessible par le vcenter, accessible uniquement depuis ce vcenter.
+  -publiée :VMFS(LUN), NFS ou VSAN qui permet à d'autres vcenters de s'y abonner (on demand or synchronisé) via une URL HTTPS
+
+
+-Publier une LIB du vcenter A : (on demand)
+
+vCenter A publie la Content Library.
+
+vCenter B s’abonne à cette bibliothèque en mode On Demand.
+
+vCenter B ne copie pas automatiquement tous les contenus.
+
+Lorsqu’un administrateur à vCenter B déploie une VM ou récupère un template/ISO, le fichier est téléchargé depuis vCenter A au moment du besoin.
+
+ ->Économie de stockage sur vCenter B, car on ne stocke que ce qui est utilisé.
+
+
+-Publier une LIB du vcenter A : (synchronisé)
+
+vCenter A publie la Content Library.
+
+vCenter B s’abonne à cette bibliothèque en mode synchronisé.
+
+Tous les contenus (templates, ISO, OVF/OVA) sont automatiquement copiés sur vCenter B dès qu’ils apparaissent ou sont mis à jour dans vCenter A.
+
+La bibliothèque sur B est donc une copie complète, toujours à jour avec A.
+
+====Accès au hardware à distance : 
+HP iLO, Dell iDRAC, Cisco UCS
+ 
+================================================================
+
+MGMT domain : cluster de serveurs ESXi dédié pour l'infra local
+workload domain : cluster de serveurs ESXi dédié  pour les clients 
 
 ======
 La licence VMWARE n'est plus perpétuelle, c'est un abonnement annuel : 
