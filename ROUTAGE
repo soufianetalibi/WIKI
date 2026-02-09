@@ -246,4 +246,57 @@ L3VPN (MPLS VPN)
 EVPN (Ethernet VPN)
 un protocole de niveau 2/3 utilisé pour étendre des réseaux Ethernet sur un backbone IP/MPLS
 
+================================================================
+==== 3 SSID WIFI vers internet : 
+
+[PC  --> AP Wi-Fi] --(VLAN 10,20,30)--> [Switch] --Trunk--> [FortiGate] --> Internet
+
+Sur la wifi :
+•	SSID Staff_WiFi → VLAN 10
+•	SSID Students_WiFi → VLAN 20
+•	SSID Guest_WiFi → VLAN 30
+
+Lier l’AP au switch via un port trunk : 
+
+interface gigabitEthernet 0/1
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30
+ switchport trunk native vlan 999   ! VLAN inutilisé pour la sécurité
+Lier le switch avec le fortigate sur un port trunk aussi 
+
+Sur le fortigate j’utilise un seul port physique qui reçoit 3 VLANs, donc je cree sur ce port des interfaces VLAN logiques : 
+
+Sur port1 : 
+Interface VLAN10 : 192.168.10.1/24
+Interface VLAN20 : 192.168.20.1/24
+Interface VLAN30 : 192.168.30.1/24
+
+Je peux appliquer des règles sur chaque VLAN à part 
+
+Dans une règle, je peux activer : 
+
+Web Filtering
+
+-Application control
+
+-SSL Inspection : analyser le trafic HTTPS pour appliquer filtrage et sécurité
+
+-Antivirus / Anti-malware : analyser le trafic pour détecter virus ou malwares
+
+-IPS (Intrusion Prevention System) : détecter et bloquer attaques réseau
+
+
+NAC : vérifier l’identité et l’état d’un appareil X avant de lui permettre de se connecter sur le LAN 
+
+Intune : contrôle l’accès aux ressources au niveau des appareils pré enregistrés 
+
+NPS via client radius : 
+ pc se connecte sur le switch/AP
+ Switch/AP consulte le serveur NPS 
+ Serveur NPS vérifie sur l’AD puis retourne OK
+
+NPS direct : 
+ Pc se connecte directement sur le NPS pour demander l’accès 
+ NPS vérifie avec l’AD et retourne OK 
+
                 
