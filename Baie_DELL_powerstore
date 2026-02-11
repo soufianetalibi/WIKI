@@ -1,0 +1,61 @@
+Dell PowerMax : Baie SAN haut de gamme, NVMe end‑to‑end, haut de gamme pour la virtualisation et BD critiques (workload très critique)
+
+Dell PowerStore : Baie SAN/NAS tout‑flash, Charges applicatives, virtualisation, bases de données (équilibre performance, coût)
+
+Dell PowerFlex : solution SDS (software‑defined) 
+
+Dell Unity XT : unifiée (bloc + fichier)
+
+Dell PowerProtect Data Domain : dédié pour la protection de données, Sauvegarde, archivage, protection contre les ransomwares
+
+========
+
+Powerstore : 
+
+ modèle T , nombre de nœuds, les disques et câbles
+ Interfaces : iSCSI, Fibre Channel, NVMe over FC
+
+
+ Management : connectez les ports d’administration aux VLAN de management.
+ Données : connectez les ports de données aux switches SAN/NAS.
+
+ Créer le cluster PowerStore (Si plusieurs nœuds : ajouter chaque nœud au cluster)
+ Configurer la licence, nom du cluster, NTP, DNS.
+
+ choisir d'utiliser la baie en mode "unified : SAN et NAS" ou "block optimized : SAN only"
+
+ créer les pools de stockage, basés sur disques SSD/NVMe
+
+ Configurer les protocoles d’accès
+   SAN (iSCSI, FC) → créer LUNs/Volumes et mapper aux serveurs ESXi ou Hyper‑V
+   NAS (SMB/NFS) → créer partages et permissions.
+
+--> les données de la Baie powerstore doivent être sauvegardées dans une autre baie datadomain.
+
+nœud : unité de calcul et gestion de disques : CPU/RAM contrôleurs de disques, ports
+pool : groupement de disques
+lun  : un volume crée dans le pool
+
+il faut configurer 4 IPs dans la Baie : 
+
+-cluster IP
+-Appliance IP 
+-IP du NodeA 
+-IP du NodeB 
+
+================================
+
+Serveur ESXi / Hyper-V
+     |        \
+   HBA1      HBA2
+     |        \
+    ---------------- Switch SAN ----------------
+    |                                   |
+ Nœud 1                             Nœud 2
+ (PowerStore)                        (PowerStore)
+    |                                   |
+   Disques / Pools / Volumes exposés par le cluster
+
+=====
+Si la Baie powerstore est pleine, on peut ajouter 3 autres Baies suplémentaires à inclure dans le même cluster mais cette nouvelle baie aura une IP appliance, ip nodeA, ip nodeB 
+
