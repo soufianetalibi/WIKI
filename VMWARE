@@ -157,3 +157,37 @@ NSX :
   Manager = cerveau, accès Web
   Controllers = architectes du trafic
   Edge = porte de sortie sécurisée
+
+==================================
+
+vRealize/Aria includes : 
+
+-vROps (vRealize Operations) : Performance monitoring, capacity management, predictive analytics, included in VVF
+-vRLI (vRealize Log Insight) : Collects logs from ESXi hosts, vCenter, NSX, and VMs for troubleshooting, included in VVF
+-vNLI (vRealize Network Insight) : Helps with NSX troubleshooting, network visibility
+-vRA (vRealize Automation) : Automates deployment of VMs, applications, and services across on-premises and cloud environments
+ ----->every one is an OVA Appliance to install
+
+===================================================
+
+la VM cloud Builder permet de créer le VCF, se base sur un excel ou json ayant les IP, mdp des appliances vcenter, NSX, Vrealize, SDDC Manager, VSAN si utilisé (elle crée le management domain)
+
+LCM : gérer le cycle de vie des composants : Patch ESXi, MAJ firemware
+      dans un VCF, on utilise le SDDC Manager qui met à jour tout : ESXi, Vcenter, NSX, Aria
+      dans un VVF, on on upgrade chaque solution à part de la façon traditionnelle
+
+VMware vCenter Enhanced Linked Mode (ELM) : créer deux vcenter qui partagent le même SSO.
+ par exemple avoir deux clusters mgmt ayant vcenter1 et workload ayant vcenter2
+ le vcenter2 qui gère le workload sera crée dans les ESXi du cluster mgmt et utilisera le SSO du vcenter1 mais va gérer le cluster workload.
+
+ cela va permettre aussi la "Cross-vCenter vMotion", migrer une VM du vcenter1 vers vcenter2 même s'il y a pas de stockage partagé.
+
+ Encryption : crypter le datastore vSAN ou la VM (VMDK + VMX)
+
+ VSAN : OSA, ESA
+
+ Deduplication et compression : sur les disques SSD possible sur vSAN OSA
+
+ vTPM : permet de sécuriser l'OS invité de la VM, stocke les clés de chiffrement de la VM.
+
+
