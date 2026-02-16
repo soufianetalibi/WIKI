@@ -1,0 +1,50 @@
+
+=====
+Avec docker seul : 
+-scale UP des ressources doit être fait manuellement 
+-si le serveur docker est KO, les conteneurs tombent
+
+Avec kuberneties : 
+-scale UP automatique
+-relance des Pods si un node est KO
+
+kubernetes k8s : un logiciel open source d’orchestration de conteneurs : déployer, scale UP, HA, update des apps sans interruption (kubeadm)
+                k8s s'installe sur des serveurs master et worker
+		k8s utilise la BD "etcd" qui tourne seulement sur les nœuds master
+		Kubernetes n'utilise pas docker mais plutôt containerd qui est recommandé
+                 k3s est une distribution légère de Kubernetes multi cluster avec BD SQLite idéal pour tester (il contient containerd intégré)
+		             minikube est aussi une distribution légère avec 1cluster/1node ayant tout : control plane, etcd, worker, 1node, pods
+
+un cluster : ensemble de nodes avec ses propres (control plane"master", etcd, workers, pods)
+             3 clusters = 3 control planes séparés
+un node : un serveur physique ou virtuel qui peut être "master" ou "worker"
+Un pod est une unité déployable = application
+
+kubectl get nodes
+kubectl get pods
+kubectl get svc 		
+====tester un Pod : 
+kubectl create deployment nginx --image=Nginx
+kubectl get deployments
+kubectl get pods
+kubectl expose deployment nginx --type=NodePort --port=80
+minikube service Nginx
+kubectl scale deployment nginx --replicas=3 (scale UP x3)
+kubectl get pods
+============================================================
+
+Kubernetes "k8s" permet de :
+
+🚀 déployer des applications (conteneurs)
+
+🔄 les redémarrer automatiquement si elles plantent
+
+📈 augmenter ou réduire le nombre d’instances (scaling)
+
+⚖️ répartir la charge entre plusieurs serveurs
+
+🔁 faire des mises à jour sans interruption (rolling update)
+
+Master (Control Plane)
+Workers (Nœuds)
+Un Pod contient un ou plusieurs containers ( qui constituent l'application)
