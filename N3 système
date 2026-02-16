@@ -17,7 +17,7 @@
 ==============================
 
 SNAT : Source NAT, Traduire l’adresse source d’un paquet sortant, il regroupe le NAT statique (ip to ip), le NAT dynamic (pool) et le NAT Overload (PAT) 
-DNAT : Destination NAT, Traduire l’adresse de destination d’un paquet entrant (c'est le port forwarding)
+DNAT : Destination NAT, Traduire l’adresse de destination d’un paquet entrant ( par exeemple le port forwarding)
 
 ==================================================================================================
 
