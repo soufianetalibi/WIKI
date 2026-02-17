@@ -117,9 +117,19 @@ Tous les contenus (templates, ISO, OVF/OVA) sont automatiquement copiés sur vCe
 
 La bibliothèque sur B est donc une copie complète, toujours à jour avec A.
 
-====Accès au hardware à distance : 
+====Accès au hardware à distance :
+
 HP iLO, Dell iDRAC, Cisco UCS
- 
+
+Vérifier le hardware pour ESXi : 
+-Modèle serveur
+-CPU exact
+-Contrôleur RAID
+-Carte réseau 
+-Carte HBA 
+-->Firmware compatible et à jour (UEFI, contrôleur RAID, NIC, HBA)
+-->installer une image ISO ESXi dédiée à mon constructeur
+
 ================================================================
 
 MGMT domain : cluster de serveurs ESXi dédié pour l'infra local
