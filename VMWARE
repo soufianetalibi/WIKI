@@ -43,6 +43,12 @@
 2️⃣6️⃣ How do you calculate IOPS in VMware?
 
 
+VM déconnecté : VM setting > network adapter, check VLAN, Check console
+VM Frozen : vcenter > Tasks ans Events
+cannot power VM : Datastore > files, existing .lck file from another host
+Host not responding :  Host > summay hardware, check ILO/IDRAC
+vcenter down 503 : VAMI https://vcenter:5480 (services STS Postres ...)⁠
+
 Management services restart : (Don't affect VMs) 
  /etc/init.d/hostd restart
  /etc/init.d/vpxa restart
