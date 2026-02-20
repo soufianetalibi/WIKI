@@ -5,12 +5,16 @@ https://www.dell.com/support/home/fr-fr/products
 https://support.hpe.com/connect/s/?language=fr
 https://support.lenovo.com/ma/en/
 
+# voir tous les périphériques avec un driver signé installé sur Windows : 
+Get-WmiObject Win32_PnPSignedDriver | Select DeviceName, DriverVersion, Manufacturer
 
+# Vérifier la version BIOS/UEFI
+Get-WmiObject Win32_BIOS | Select Manufacturer, Name, SMBIOSBIOSVersion, ReleaseDate
 
+# Nic ou stockage
+Get-PnpDevice -Class Net | Select FriendlyName, Status, DriverVersion
 
-
-
-
+si c'est une VM, l'hyperviseur gère le BIOS virtuel, il suffit d'installer les VMtools à la dernière version
 
 Upgrade via image.ISO et powershell : 
 
