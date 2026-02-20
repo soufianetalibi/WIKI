@@ -1,0 +1,31 @@
+Mettre à jour d'abord : Drivers et firmware du matériel
+
+Upgrade via image.ISO et powershell : 
+
+# Exemple : monter l'ISO sur la VM
+$isoPath = "\\ServeurNAS\ISOs\WindowsServer2022.iso"
+Mount-DiskImage -ImagePath $isoPath
+
+Une fois monté, le lecteur ISO apparaît, par exemple D:\
+
+$setupPath = "D:\setup.exe"
+Start-Process -FilePath $setupPath -ArgumentList "/auto upgrade /quiet /noreboot /DynamicUpdate enable /Compat IgnoreWarning" -Wait
+
+Après l’upgrade, tu peux redémarrer la VM via :
+Restart-Computer -Force
+
+======pour boucler sur des VMs : 
+
+$VMs = @("VM2019-01", "VM2019-02", "VM2019-03") 
+
+foreach ($vm in $VMs) {
+    Invoke-Command -VMName $vm -ScriptBlock {
+        $setupPath = "D:\setup.exe"
+        Start-Process -FilePath $setupPath -ArgumentList "/auto upgrade /quiet /noreboot /DynamicUpdate enable /Compat IgnoreWarning" -Wait
+        Restart-Computer -Force
+    }
+}
+
+====Vérification après upgrade
+# Vérifier la version installée
+Get-ComputerInfo | Select WindowsProductName, WindowsVersion, OsBuildNumber
