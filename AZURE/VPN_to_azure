@@ -14,3 +14,5 @@ sur mon fortigate on premise suivre le tuto pour établir le lien avec la VPN ga
 https://www.linkedin.com/posts/mestafanos_azure-fortinet-hybridcloud-ugcPost-7431993302087942144-C9y5/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAABNCxVYBtAI2g8z0KjvvKx_FGypRHWV2ls0
 
 NB : la VPNgateway d'azure peut créer plusieurs tunnels avec plusieurs destinations
+
+voir les routes effectives : VM → Networking → Effective Routes
