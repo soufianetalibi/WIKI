@@ -4,7 +4,7 @@
 -Le cloud Azure                         IaaS, PaaS, SaaS, (azure stack HCI "azure-like", Azure stack HUB "mini azure"), Entra Connect, ARC, intune 
 -la virtualisation                      (virtualisation des OS ESXi 9.0 et vcenter 8.0 U3)
 -la conteneurisation                    (virtualisation des runtimes sur le même OS) : dockerfile -> construire l'image -> lancer le conteneur.
--VDI, Bureau virtuel                    Citrix Virtual Apps & Desktops (XenDesktop), VM dédiée sur le serveur     (par contre les users du RDS partagent une seule VM)                           
+-VDI, Bureau virtuel                    Citrix Virtual Apps & Desktops (XenDesktop), VM dédiée sur le serveur     (par contre les users du RDS partagent une seule VM et un seul OS)                           
                                           la VDI peut être persistante (le user X garde la VM Y dédiée pour lui et ses changements persistent, donc autant de VM que de users)
                                                            non persistante "pooled", la VM est réinitialisée à son état d’origine suite à la déconnexion pour l'attribuer à un autre user.
 -Les réseaux IP                          statique, RIP "vecteur de distance", EIGRP "Hybrid", OSPF "Link state", BGP "entre AS" , MPLS, SD-WAN, VPN IPsec | AD | VLAN TRUNK STP VTP | SNAT DNAT | ACL | HSRP VRRP GLBP | point to point : PPP HDLC | 
