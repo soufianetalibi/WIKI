@@ -31,6 +31,8 @@ Gestion : utilisateurs/groupes, droits NTFS, services, planificateur de tâches,
 
 Supervision : Event Viewer, Performance Monitor, scripts d’automatisation PowerShell.
 
+SCCM, ansible
+
 Linux :
 
 Distributions communes : Ubuntu, Debian, CentOS, Red Hat.
@@ -55,6 +57,8 @@ Sécurité : Azure AD, RBAC, Key Vault, Defender for Cloud.
 
 Automatisation : Azure CLI, PowerShell, ARM Templates, Bicep, Terraform.
 
+intune
+
 🧩 3. La Virtualisation
 
 Principe : abstraction du matériel pour exécuter plusieurs machines virtuelles sur un seul hôte.
@@ -72,8 +76,6 @@ Bénéfices : isolation, meilleure utilisation des ressources, snapshots, migrat
 📦 4. La Conteneurisation
 
 Concept : encapsuler une application et ses dépendances dans un conteneur léger.
-
-Outils :
 
 Docker : création, exécution, partage d’images.
 
