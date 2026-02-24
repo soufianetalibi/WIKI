@@ -1,3 +1,12 @@
+Solutions de protection et gestion des données (sauvegardes des VMs)
+-Veeam
+-Acronis
+-Commvault
+-Netbackup
+=======================================
+
+Les types de baie chez DELL : 
+
 Dell PowerMax : Baie SAN haut de gamme, NVMe end‑to‑end, haut de gamme pour la virtualisation et BD critiques (workload très critique)
 
 Dell PowerStore : Baie SAN/NAS tout‑flash, Charges applicatives, virtualisation, bases de données (équilibre performance, coût)
