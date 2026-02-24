@@ -1,7 +1,18 @@
+1-config on cloud : 
 
-
-
+créer les ressources azure en suivant le tuto : 
+-vnet (pool : 10.1.0.0/16 avec 10.1.0.0/24 comme subnet "FrontEnd" et 10.1.255.0/27 comme subnet "GatewaySubnet")
+-créer la vpn gateway
+-créer local network gateway (représente l'on-premise LAN ex : 10.101.1.0/24)
+-créer la connexion
 https://learn.microsoft.com/en-us/azure/vpn-gateway/tutorial-site-to-site-portal
 
 
+2-config on premise : 
 
+sur mon fortigate on premise suivre le tuto pour établir le lien avec la VPN gateway d'azure : 
+https://www.linkedin.com/posts/mestafanos_azure-fortinet-hybridcloud-ugcPost-7431993302087942144-C9y5/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAABNCxVYBtAI2g8z0KjvvKx_FGypRHWV2ls0
+
+
+
+NB : la VPNgateway d'azure peut créer plusieurs tunnels avec plusieurs destinations
