@@ -16,3 +16,6 @@ https://www.linkedin.com/posts/mestafanos_azure-fortinet-hybridcloud-ugcPost-743
 NB : la VPNgateway d'azure peut créer plusieurs tunnels avec plusieurs destinations
 
 voir les routes effectives : VM → Networking → Effective Routes
+->Routes système
+->Routes BGP
+->Routes UDR (si ajoutées)
