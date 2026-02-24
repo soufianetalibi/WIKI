@@ -3,6 +3,7 @@ Solutions de protection et gestion des données (sauvegardes des VMs)
 -Acronis
 -Commvault
 -Netbackup
+--->les backup sont souvent stockés dans une baie datadomain
 =======================================
 
 Les types de baie chez DELL : 
