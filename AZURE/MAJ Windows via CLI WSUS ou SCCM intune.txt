@@ -43,12 +43,15 @@ Sur la console :
   *maintenance : via la console (Options > Server Cleanup Wizard) ou via une commande : 
       Invoke-WsusServerCleanup -CleanupObsoleteUpdates -CleanupObsoleteComputers -CleanupUnneededContentFiles -CompressUpdates -DeclineExpiredUpdates
       
-----Utiliser SCCM : 
+----Utiliser SCCM : (nouveau nom : Microsoft Endpoint Configuration Manager)
 
- permet de gérer des postes/serveurs Windows (inventaire, déploiements, mises à jour, applis…)
-  gestion centralisée,
-  reporting,
-  approbations ciblées,
+ permet de gérer des postes/serveurs Windows : 
+  
+-installer Windows via images OSD
+-installation ou MAJ logiciels
+-gestion des MAJ windows
+-inventaire matériel et logiciel 
+  approbations ciblées (déployer sur une collection)
   suivi des installations.
 
  Prérequis : 
@@ -80,7 +83,6 @@ Sur la console :
    nettoyer régulièrement WSUS : WSUS Cleanup Wizard
 
   ----Utiliser Intune :
-
   
    une solution cloud de gestion des appareils et des mises à jour via Windows Update for Business
          point fort : Patchs hors réseau d’entreprise
