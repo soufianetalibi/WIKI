@@ -71,7 +71,11 @@ Hyper-V (Microsoft)
 
 KVM / Proxmox (Linux)
 
+Citrix Hypervisor
+
 Bénéfices : isolation, meilleure utilisation des ressources, snapshots, migration à chaud.
+
+il existe des solutions SDDC comme VCF de vmware ou openstack avce KVM : permet de créer un cloud privé qui virtualise (VM, réseau, storage) dans une seule platforme, c'est utile pour les cloud providers. 
 
 📦 4. La Conteneurisation
 
