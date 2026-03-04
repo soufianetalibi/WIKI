@@ -103,6 +103,48 @@ WinRE : Recovery Environment, Réparer l'ordinateur qui figure dans le boot avce
 
 ==============================================================================================================
 
+AD CS : Sert à fournir des certificats SSL pour sécuriser la data en transit. (les clients ont la ROOTCA installée)
+
+ADFS : solution de SSO on-premise basée sur Active Directory
+ utile pour les applications modernes qui ne supporte pas NTML/Kerberos mais plutôt les protocoles SAML, Oauth ou OpenID connect
+  ->le serveur web redirige l'utilisateur vers une page ADFS pour s'authentifier et crée un jeton d'accès
+
+Utilisateur connecté au domaine local
+        ↓
+AD DS (identité)
+        ↓
+AD FS (authentification / SSO)
+        ↓
+Application web / Cloud
+
+===
+AD RMS : Solution de Protection des données : (NTFS = contrôle d’accès, RMS = contrôle d’usage)
+         exemple NTFS : un fichier word --> ✅ Lire, ❌ Écrire / modifier, ❌ Éxecuter 
+         exemple RMS  : un fichier word --> ✅ lisible, ❌ non imprimable, ❌ non transférable, ❌ interdire le copier-coller
+			RMS protège le document partout où il va
+========
+Le rôle iSCSI Target sur Windows Server permet de transformer un serveur Windows en serveur de stockage SAN
+====
+Network Policy Server (NPS) : (Radius : contrôle “qui peut accéder” et “quelles règles appliquer”)
+  Contrôler l’accès Wi-Fi via 802.1X
+  Appliquer des restrictions basées sur l’appartenance au groupe Active Directory
+=========
+Remote Access ( Always On VPN ) = fournit “l’accès réseau réel” pour les clients distants
+fournit la connectivité réseau réelle
+Peut utiliser NPS pour l'authentification afin d'établir le VPN
+
+=======
+Windows Server Update Services (WSUS) 
+
+WDS (Windows Deployment Services) : déploie une image Windows via PXE boot
+
+MDT : Microsoft Deployment Toolkit, installer un OS, applications (Google Chrome…), Jonction au domaine sans intervention humaine.
+    SRV-DC : Windows server, AD, DNS DHCP, WDS, Windows ADK, MDT
+    CLIENT01 : VM vide (sans OS), Démarrage en PXE
+
+Storage Replica pour PRA
+
+=====================================
 Microsoft Certified : Windows Server Hybrid Administrator Associate AZ-800
 
 Alternatives du RDP : 
