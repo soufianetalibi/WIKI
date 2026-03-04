@@ -129,7 +129,7 @@ Network Policy Server (NPS) : (Radius : contrôle “qui peut accéder” et “
   Contrôler l’accès Wi-Fi via 802.1X
   Appliquer des restrictions basées sur l’appartenance au groupe Active Directory
 =========
-Remote Access ( Always On VPN ) = fournit “l’accès réseau réel” pour les clients distants
+Always On VPN : solution moderne de Microsoft pour fournir un accès réseau sécurisé et automatique aux utilisateurs distants
 fournit la connectivité réseau réelle
 Peut utiliser NPS pour l'authentification afin d'établir le VPN
 
