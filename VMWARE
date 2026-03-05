@@ -210,4 +210,23 @@ VMware vCenter Enhanced Linked Mode (ELM) : créer deux vcenter qui partagent le
 
  vTPM : permet de sécuriser l'OS invité de la VM, stocke les clés de chiffrement de la VM.
 
+=====
+MGMT : 
+ESXI1 192.168.137.10   vmk0
+ESXI2 192.168.137.11   vmk0
+ESXI3 192.168.137.12   vmk0
+vcenter déployé sur ESXI1 avec IP 192.168.137.40/24
+
+MGMT    : 192.168.137.0/24 vmk0
+vmotion : 192.168.138.0/24 vmk1
+storage : 192.168.139.0/24 vmk2
+FT      : 192.168.140.0/24 vmk3
+
+sur ESXI :
+ -vswitch0 for MGMT and VMotion : vmk0 et vmk1  ==>sort sur uplink 1
+          ajouter 1 port_group_VM qui contient juste la VM VCSA 
+
+ -vswitch1 for storage, FT : vmk2, vmk3  ==>sort sur uplink 2
+
+ -vswitch2 ayant 3 portgroup PROD v10, PPRD v20, TEST v30   ==>sort sur uplink 3
 
