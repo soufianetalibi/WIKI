@@ -1,0 +1,30 @@
+
+Génération des certificats PKI : 
+ 
+A-Méthode classique : 
+
+1.	Générer la CSR sur le serveur (clé privée locale)
+2.	Soumettre la CSR à la CA
+3.	La CA signe et délivre le certificat (.cer)
+4.	Importer sur le serveur, puis exporter en PFX si nécessaire pour sauvegarde
+
+commande pour signer une CSR sur mon ADCA : 
+ certreq -submit -attrib "CertificateTemplate:WebServer" C:\Users\TALIBI01\Desktop\cert_request_I100WEB101.txt
+
+B-auto-enrollement : 
+
+La CA interne (AD CS) a un template de certificat configuré pour auto-approbation
+Le serveur (membre du domaine) demande automatiquement un certificat correspondant à ce template
+•	La CA signe le certificat et l’installe directement sur le serveur
+•	Tout se fait via les services de domaine et les politiques de groupe (GPO)
+•	Le renouvellement est aussi automatique
+
+gpupdate /force
+certutil -pulse (déclenche manuellement le cycle d’auto-enrôlement)
+
+———
+.CSR : c’est le request que je génère au début sur mon serveur HTTPS/RDP… à signer sur l’ADCS
+.CER : c'est le certificat signé mais ne contient que la clé publique, installable sur le serveur web
+.PFX : c'est le certificat signé qui contient la clé privée et publique, à utiliser si je réinstalle mon serveur web et je veux réappliquer le certificat.
+
+NB : les clients qui souhaite communiquer avec les serveurs signés par mon ADCA doivent avoir la ROOTCA de mon ADCA
