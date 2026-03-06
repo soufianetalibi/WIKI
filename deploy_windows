@@ -1,0 +1,53 @@
+
+Avant de déployer Windows 11 : 
+
+-TPM 2.0 activé
+-Secure Boot activé
+
+=============================
+
+Déploiment des OS via PXE : WDS + MDT ===========================================================
+
+déployer Windows (OS deployment)
+installer automatiquement des applications
+appliquer des configurations et scripts
+préparer un poste après installation (jonction au domaine)
+
+Déploiement des applications : ==================================================================
+ 
+Tanium : outil qui gère les endpoints, installe en arriere plan directement sur la cible, ne publie pas
+
+ansible, puppet : Je peux installer toutes les applications via playbook et garder la conformité (automatisation, gestion d'état)
+
+via SCCM sur software center
+
+via intune sur Company portal
+
+classique : 
+ Via GPO (.msi)
+ Via script powershell 
+
+===================================================================================================
+
+-BYOD : registred : 
+pc personnel mais je veux l’inscrire sur intune 
+Le user se connecte sur windows avec compte local sans relation avec EntraID
+
+-Microsoft Entra ID : Joined (Le PC n'a aucun lien avec un domaine local), full cloud
+ le user se connecte avec le user EntraID
+
+-Hybrid : Hybrid Joined (Le PC est dans l'AD et dans Entra ID via Microsoft Entra Connect)
+ le user se connecte avec le mdp de l'AD local qui est déjà synchronisé sur EntraID
+
+ Réenroller un PC sur intune : ==============================================================
+
+  Quitter l’inscription Azure AD / MDM : dsregcmd.exe /leave
+  Supprimer les clés d’enrôlement MDM : HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Enrollments
+
+  Effacer les GPO locales appliquées : 
+   RD /S /Q "%WinDir%\System32\GroupPolicyUsers"
+   RD /S /Q "%WinDir%\System32\GroupPolicy"
+
+  Appliquer les GPO du domaine : 
+   gpupdate /force
+   dsregcmd /join (force l’appareil à se réenregistrer dans Microsoft Entra ID)
