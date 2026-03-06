@@ -160,6 +160,16 @@ VCF : Vmware cloud foundation
 	      -NSX → réseau et sécurité
 	      -Aria (vRealize) → supervision / automatisation
 
+Pour créer une VCF, avoir 4 ESXi installés
+                    installer sur mon vmware workstation local l'image cloud builder
+					donner à cloud builder le fichier excel ou json (ayant les IP esxi ...)
+					lancer le déploiement qui va me créer :
+                       -3 VMs pour NSX
+                       -VM SDDC
+					   -les VMs de la suite realize
+				       -VM vcenter
+   -->une fois terminé, je peux supprimer l'image cloud builder.
+
 VCD est une plateforme de portail cloud multi-tenant, le portail pour vendre/consommer du cloud basé VCF.
 	VCD = la couche “service cloud” au-dessus de VCF  pour devenir un cloud provider
 
