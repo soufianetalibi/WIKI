@@ -1,4 +1,7 @@
 
+Audit AD users : 
+
+
 $Today=Get-Date -Format "ddMMyy"
 $FileName = "ADAuditUsers-" + $Today
 if (Test-Path "$env:USERPROFILE\Desktop\ADAuditUsers\")
@@ -9,3 +12,17 @@ Get-ADUser -Filter * -SearchBase "OU" -Properties DisplayName, SamAccountName, U
 @{n= 'PassExpiryDate' ;e={[datetime]::FromFileTime($_.'msDS-UserPasswordExpiryTimeComputed').ToString('dd/MM/yyyy')}}, @{n='CreationDate';e={($_.whenCreated).ToString('dd/MM/yyyy')}},
 @{n='LastConnexion';e={[DateTime]::FromFileTime($_.lastLogon).ToString('dd/MM/yyyy')}}, Company, Office, PostalCode, StreetAddress, City, Co,
 Department, Title, Manager, EmailAddress, OfficePhone, MobilePhone, employeeID, @{n='Unite Organisationnelle';e={$_.distinguishedname -replace '^.+?,(CN|OU.+)','$1'}} | Export-Csv "$env:USERPROFILE\Desktop\ADAuditUsers\$FileName.csv" -Delimiter ";"
+
+================
+
+Audit AD computers : 
+
+$Today=Get-Date -Format "ddMMyy"
+$FileName = "ADComputerAudit-" + $Today
+if (Test-Path "$env:USERPROFILE\Desktop\ADComputerAudit\")
+    {}else {
+        New-Item -ItemType Directory -Path "$env:USERPROFILE\Desktop\ADComputerAudit\" }
+
+Get-ADComputer -Filter * -Properties Name, Description, Enabled, Created, LastLogonDate, Location, MemberOf, 
+ IPv4Address, distinguishedname | Select Name, Description, Enabled, @{n='Created';e={($_.Created).ToString('dd/MM/yyyy')}}, @{n='LastLogonDate';e={($_.LastLogonDate).ToString('dd/MM/yyyy')}}, Location, MemberOf, 
+IPv4Address, @{n='Unite Organisationnelle';e={$_.distinguishedname -replace '^.+?,(CN|OU.+)','$1'}} | Export-Csv "$env:USERPROFILE\Desktop\ADComputerAudit\$FileName.csv" -Delimiter ";"
