@@ -1,0 +1,11 @@
+
+$Today=Get-Date -Format "ddMMyy"
+$FileName = "ADAuditUsers-" + $Today
+if (Test-Path "$env:USERPROFILE\Desktop\ADAuditUsers\")
+{}else {
+New-Item -ItemType Directory -Path "$env:USERPROFILE\Desktop\ADAuditUsers\" }
+Get-ADUser -Filter * -SearchBase "OU" -Properties DisplayName, SamAccountName, UserprincipalName, Description, Enabled, PasswordNeverExpires, PasswordLastSet, msDS-UserPasswordExpiryTimeComputed, whenCreated, lastLogon, Company, Office, PostalCode, StreetAddress, City, Co, Department, Title, Manager, EmailAddress, OfficePhone, MobilePhone, EmployeeID, distinguishedname | Select @{n='FullName';e={($_.DisplayName)}},
+@{n='Profil';e={($_.SamAccountName)}}, UserprincipalName, Description, @{n='Actif/Inactif';e={($_.Enabled)}}, @{n='PassNeverExp';e={($_.PasswordNeverExpires)}}, @{n='LastPassMod';e={($_.PasswordLastSet).ToString('dd/MM/yyyy')}},
+@{n= 'PassExpiryDate' ;e={[datetime]::FromFileTime($_.'msDS-UserPasswordExpiryTimeComputed').ToString('dd/MM/yyyy')}}, @{n='CreationDate';e={($_.whenCreated).ToString('dd/MM/yyyy')}},
+@{n='LastConnexion';e={[DateTime]::FromFileTime($_.lastLogon).ToString('dd/MM/yyyy')}}, Company, Office, PostalCode, StreetAddress, City, Co,
+Department, Title, Manager, EmailAddress, OfficePhone, MobilePhone, employeeID, @{n='Unite Organisationnelle';e={$_.distinguishedname -replace '^.+?,(CN|OU.+)','$1'}} | Export-Csv "$env:USERPROFILE\Desktop\ADAuditUsers\$FileName.csv" -Delimiter ";"
