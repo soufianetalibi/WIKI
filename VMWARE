@@ -240,3 +240,6 @@ sur ESXI :
 
  -vswitch2 ayant 3 portgroup PROD v10, PPRD v20, TEST v30   ==>sort sur uplink 3
 
+===========================
+ESX1 a une carte vmnic0 ayant son IP management 192.168.1.10 via dhcp
+si je crée une VM dans l'ESXi et je la mets sur la carte vmnic0 aussi, elle aura l'IP 192.168.10.11 comme si c'est un serveur physique avec l'ESXi
