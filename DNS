@@ -24,6 +24,8 @@ je dois chercher par mon IP publique pour vérifier s'elle est déclarée sur le
 
 PTR : DNS inverse (1.2.3.4 -> mail.exemple.com), Aider les serveurs de réception à vérifier que l’IP d’envoi correspond bien à un domaine connu (utile contre les spams).
 
+      Les messages provenant d’IP sans enregistrement PTR sont souvent considérés comme suspects (même dans un domaine active directory, un serveur exchange doit avoir un PTR record)
+
 MX : Indique quel serveur gère les e-mails pour un domaine (précise le serveur qui héberge les BAL d'un domaine)
                 Quels sont les MX de exemple.com ?
                 réponse MX : exemple.com   MX   10 mail.exemple.com
