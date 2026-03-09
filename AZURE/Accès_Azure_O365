@@ -1,0 +1,37 @@
+
+PIM : s'assigner des rôles dont je suis éligible de façon temporaire pour exécuter un travail, il peuvent être des rôles Entra ID ou RBAC azure : 
+
+     Entra ID : 
+      -Global Administrator
+      -exchange administrator
+      -teams administrator
+      -user administrator
+      …
+
+     RBAC Azure : 
+      -owner
+      -contributor
+      -reader
+      -Virtual Machine Contributor : 	Gère uniquement les VM (créer, démarrer, arrêter...)
+      -Virtual Machine Administrator Login : Se connecter via RDP ou SSH (Azure AD) en tant qu'admin.
+      -Virtual Machine User Login : Se connecter via RDP ou SSH (Azure AD), mais sans droits admin.
+      -Storage Account Contributor
+      -Network Contributor
+      ... 
+
+-->Enfin, on peut créer des groupes affecter ces rôles AAD ou RBAC aux groupes ou users directement.       
+
+Exemples: 
+  -un global administrator est un super user dans M365 sur EntraID liée à l'abonnement O365 (Utilisateurs, groupes, apps, rôles AAD), exchange, teams,OneDrive ...
+
+  -un owner sur un abonnement est un super user 
+  -un reader sur la ressource EntraID peut voir les utilisateurs
+  
+  --prérequis pour se connecter à une VM depuis un poste client et via azure AD : 
+  pour la VM > Onglet "Identity" > "Login with Azure AD" = ✅ Activé
+  pour le poste client : doit être AD Join OU Hybrid Join  (à vérifier avec la cmd dsregcmd /status)
+                              AD join : PC "cloud only", joint directement à AAD
+                              Hybrid Join : PC dans un domaine AD synchronisé via AD connect
+         
+ NB : Un PC qui n’est pas joint à Azure AD ne pourra pas se connecter via AAD, même s'il est connecté à Internet.
+      mais il peut se connecter à une VM azure avec un user mdp déclaré localement dans la VM (donc hors Azure AD)
