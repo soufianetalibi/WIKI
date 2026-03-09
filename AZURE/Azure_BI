@@ -1,0 +1,12 @@
+La BI sur azure : 
+
+Azure DataFactory : ETL qui récupère les données des sources (https://adf.azure.com)
+
+Azure datalake : stocker les données brutes (raw) telles qu’elles proviennent des sources
+
+Azure synapse Analytics : datawarehouse, pour transformer et modéliser les données
+
+PowerBI : visualiser les données par les end users
+
+ --> Microsoft Fabric est une nouvelle solution qui comporte toute la brique classique BI dans une seule solution 
+         Sources --> Fabric Data Factory --> OneLake (central storage) --> Lakehouse / Warehouse --> Power BI intégré
