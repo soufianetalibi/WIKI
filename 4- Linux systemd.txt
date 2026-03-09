@@ -4,7 +4,8 @@
 uname -a              # Version du noyau et archi
 lsb_release -a        # Détails sur la version Ubuntu
 hostnamectl           # Nom de la machine, OS, kernel
-
+lscpu                 # Lists CPU architecture information. 
+timedatectl status    # Shows system time
 
 2. CPU
 
@@ -15,9 +16,7 @@ top                   # Utilisation CPU en temps réel
 htop                  # Version améliorée de top (apt install htop)
 mpstat 1              # Charge CPU par cœur (apt install sysstat)
 
-
 3. RAM
-
 
 free -h               # RAM totale, utilisée et libre
 vmstat 1              # Mémoire et CPU en temps réel
@@ -25,7 +24,6 @@ top ou htop           # Affiche aussi l’utilisation mémoire par processus
 
 
 4. Disque
-
 
 df -h                 # Espace disque utilisé / libre
 du -sh /chemin        # Taille d’un dossier
@@ -35,19 +33,19 @@ mount                 # Systèmes de fichiers montés
 
 5. Réseau
 
-
 ip a                  # Adresses IP
 ss -tulpn             # Ports ouverts et processus associés
 netstat -tulnp        # Alternative (apt install net-tools)
 ping google.com       # Tester la connectivité
 curl ifconfig.me      # Voir ton IP publique
 sudo lsof -i -P -n    # Toutes les communications "listen,established..." (très utile)
+ss -l                 # Shows listening sockets. 
+ip addr show          # Displays network interfaces and IP addresses.
 
 6. Services
 
 
 Ubuntu utilise systemd :
-
 
 systemctl status nom_service     # Voir l’état d’un service
 systemctl start nom_service      # Démarrer un service
@@ -57,6 +55,9 @@ systemctl enable nom_service     # Activer au démarrage
 systemctl disable nom_service    # Désactiver au démarrage
 systemctl list-units --type=service --state=running  # Lister services actifs (Services actifs gérés par systemd)
 
+<command> & Runs command in the background.
+jobs Displays background commands. 
+fg <command number> Brings command to the foreground.
 
 7. Processus
 
