@@ -1,7 +1,24 @@
 
+1- mon DNS contacte le forwarder (généralement 8.8.8.8) et il retourne la réponse "rapide"
+2- Sinon, le serveur fait des requêtes récursives depuis la racine . puis le TLD .fr puis google.fr pour pouvoir retrouver l'ip de www.google.fr  "plus lent"
 
-DNS
+Get-WinEvent -LogName "DNS Server"
+Get-WinEvent -LogName "DNS Server" | where LevelDisplayName -eq "Error"
 
+nltest /dclist:castel.afrique
+dcdiag /e /v /c /f:dcdiag_report.txt
+repadmin /replsummary
+repadmin /showrepl
+
+Vérifier un seul serveur AD : 
+ dcdiag /v 
+ dcdiag /test:dns /v
+ dfsrdiag replicationstate
+
+vérifier la NTDS : 
+esentutl /g C:\Windows\NTDS\ntds.dit
+
+le Dynamic DNS permet aux serveurs AD de mettre à jour les enregistrements DNS des machines jointes au domaine de façon dynamique
 
 ======================================
 
