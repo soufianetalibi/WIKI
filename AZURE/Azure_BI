@@ -8,5 +8,5 @@ Azure synapse Analytics : datawarehouse, pour transformer et modéliser les donn
 
 PowerBI : visualiser les données par les end users
 
- --> Microsoft Fabric est une nouvelle solution qui comporte toute la brique classique BI dans une seule solution 
+ --> Microsoft Fabric est une nouvelle solution SaaS qui comporte toute la brique classique BI dans une seule solution  
          Sources --> Fabric Data Factory --> OneLake (central storage) --> Lakehouse / Warehouse --> Power BI intégré
