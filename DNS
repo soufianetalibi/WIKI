@@ -1,0 +1,40 @@
+
+
+DNS
+
+
+======================================
+
+https://mxtoolbox.com/
+
+Chaque domaine a plusieurs info à récupérer : MX Lookup, DNS lookup, SPF record, 
+                 
+exemple de castel-afrique.com (SPF record lookup)
+
+Statut SPF : 
+v=spf1 a mx ip4:185.74.203.12 ip4:40.89.165.135 ip4:169.239.99.62 ip4:185.74.203.12 ip4:41.159.13.115 ip4:65.181.122.52 ip4:65.181.127.140 ip4:102.68.63.66 include:spf.protection.outlook.com include:_spf.general.transactional-mail-a.com -all
+
+Les serveurs MAIL/EDGE qui sortent sur internet avec ces IP publiques utilisent le SPF castel-afrique.com
+Ces serveurs doit être configurés à envoyer vers le smarthost "castelafrique-com01e.mail.protection.outlook.com", à voir sur get-sendconnector de chaque serveur mail
+
+
+
+je dois chercher par mon IP publique pour vérifier s'elle est déclarée sur le SPF d'un domaine X, si j'héberge un serveur mail, mon IP publique devrait être déclarée uniquement sur mon SPF.
+
+
+PTR : DNS inverse (1.2.3.4 -> mail.exemple.com), Aider les serveurs de réception à vérifier que l’IP d’envoi correspond bien à un domaine connu (utile contre les spams).
+
+MX : Indique quel serveur gère les e-mails pour un domaine (précise le serveur qui héberge les BAL d'un domaine)
+                Quels sont les MX de exemple.com ?
+                réponse MX : exemple.com   MX   10 mail.exemple.com
+
+SPF : Qui est autorisé à envoyer des mails via mon domaine
+      Enregistrement TXT dans le DNS qui liste les IP publiques autorisées à envoyer des emails avec le nom de mon domaine (anti-spoofing)
+
+DKIM : signature des emails 
+      clé publique dans un enregistrement TXT DNS pour signer numériquement les e-mails, le serveurs destination vérifie que le mail n'a pas été modifié
+
+DMARC : Politique en cas d’échec SPF/DKIM 
+       politique DNS qui indique aux serveurs de réception quoi faire si SPF et/ou DKIM échouent, --> mise en quarantaine.. 
+
+TXT : Conteneur de données (SPF, DKIM, DMARC, autres infos) pour ce qui est déjà cité dessus.
