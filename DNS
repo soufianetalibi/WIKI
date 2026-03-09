@@ -1,6 +1,7 @@
 
 1- mon DNS contacte le forwarder (généralement 8.8.8.8) et il retourne la réponse "rapide"
 2- Sinon, le serveur fait des requêtes récursives depuis la racine . "root hints" puis le TLD .fr puis google.fr pour pouvoir retrouver l'ip de www.google.fr  "plus lent"
+           il existe 13 root hints sur internet
 
 Get-WinEvent -LogName "DNS Server"
 Get-WinEvent -LogName "DNS Server" | where LevelDisplayName -eq "Error"
