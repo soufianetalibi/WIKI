@@ -243,3 +243,65 @@ sur ESXI :
 ===========================
 ESX1 a une carte vmnic0 ayant son IP management 192.168.1.10 via dhcp
 si je crée une VM dans l'ESXi et je la mets sur la carte vmnic0 aussi, elle aura l'IP 192.168.10.11 comme si c'est un serveur physique avec l'ESXi
+
+======================================================
+
+Un serveur physique ESXi 8.3 ayant VMNIC0, je peux y mettre toute une plateforme : LAN/24 dernière un firewall
+
+vmnic0
+   ↓
+vSwitch-WAN
+   ├── ESXi management 195.0.0.1
+   └── pfSense WAN     195.0.0.2
+
+vSwitch-LAN
+   ├── pfSense LAN 192.168.1.1
+   └── VMs  192.168.1.0/24
+
+l'interface WAN de pfsense sort sur le réseau physique et peut recevoir une IP DHCP comme l'IP MGMT de l'ESXi
+
+je peux configurer un port forward sur le WAN de pfsense : 195.0.0.1:3389 -> 192.168.1.18:3389
+
+sinon je peux configurer sur pfsense ou fortigate la VPN SSL pour arriver sur le LAN 192.168.1.0/24
+=========================================================================================================
+
+à la place de pfsense je peux mettre : 
+  -une VM JUMP avec deux carte réseaux
+  -un routeur VYOS avec eth0 LAN et eth1 WAN
+  -un fortigate VM avec LAN et WAN
+
+le cas d'une VM jump, je peux me connecter en RDP sur son IP WAN
+		      je peux sortir sur le réseau privé avec son IP LAN
+
+==============================================================================================================
+
+Monter un LAB vmware VCF dans un serveur ESXi physique : 
+
+vmnic0
+   ↓
+vSwitch-WAN
+   ├── ESXi management 195.0.0.1 DHCP
+   └── pfSense WAN     195.0.0.2 DHCP
+
+vSwitch-LAN
+   ├── pfSense LAN 192.168.1.1
+   └── VMs  192.168.1.0/24
+                     ESXi1
+			ESXi1 192.168.1.11
+			ESXi2 192.168.1.12
+			ESXi3 192.168.1.13
+			ESXi4 192.168.1.14
+			VCENTER  192.168.1.10
+			SDDC manager 192.168.1.5
+			NSX manager  192.168.1.6
+			NSX Edge node 192.168.1.7
+			Aria operations 192.168.1.8
+			Aria for logs   192.168.1.9
+
+Dans une prod NSX, il faut mettre : 
+ -3 NSX manager
+ -transport nodes (mes ESXi deviennent aussi des transport nodes) -> Tier-1 + firewall
+ -2 Edge nodes -> Tier-0
+			
+			
+
