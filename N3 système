@@ -21,6 +21,17 @@ DNAT : Destination NAT, Traduire l’adresse de destination d’un paquet entran
 
 ==================================================================================================
 
+Les accès windows :
+ Winrm via powershell : Enter-PSSession -ComputerName 192.168.1.10
+                        ou bien :  $command = { stop-Service -Name wuauserv } , Invoke-Command -ComputerName 192.168.1.10 -ScriptBlock $command
+ Winrm via CMD : Winrs -r:192.168.1.10 cmd
+ via Windows Admin center
+ via RDP : mstsc /v:192.168.1.10
+ dir \\192.168.1.10\C$ 
+ psexec \\192.168.1.10 cmd
+ WMI (RPC DCOM) : wmic /node:192.168.1.10 /user:Administrator process list
+ SSH : ssh user@192.168.1.10 (si openSSH est installé)
+
 1. Administration systèmes Windows / Linux
 
 Windows :
