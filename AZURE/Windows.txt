@@ -46,6 +46,37 @@ NTP 123
 Kerberos MAJ MDP : 464
 kerberos : 88
 ============================
+voir les GPO appliquées : 
+
+gpresult /h C:\gpo_report.html
+
+======
+
+# Dernières erreurs système (24h)
+Get-EventLog -LogName System -EntryType Error -Newest 20
+
+# Échecs d'authentification (tentatives de connexion ratées)
+Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4625} -MaxEvents 20 |
+    Select-Object TimeCreated, Message
+
+# Connexions réussies récentes
+Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4624} -MaxEvents 10 |
+    Select-Object TimeCreated, Message
+
+# Redémarrages non planifiés
+Get-EventLog -LogName System -Source "EventLog" | Where-Object {$_.EventID -eq 6008}
+
+====
+# Historique des mises à jour installées
+Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 20
+
+# Mises à jour en attente (nécessite PSWindowsUpdate)
+Get-WindowsUpdate
+
+# Dernière date de mise à jour
+(Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 1).InstalledOn
+
+========================================================
 
 Nouveauté Windows server 2019 : 
 
@@ -209,6 +240,36 @@ Service de stratégie et d’accès réseau ;
 
 Service WSUS (Windows Server Update Services).
 
+==========================
+NT AUTHORITY\SYSTEM est un compte plus puissant qu'un administrateur local 
+			sans mdp, utilisé par les services
+
+un user admin local peut se connecter en tant que SYSTEM
+
+pour utiliser NT AUTHORITY\SYSTEM :
+ être admin local
+ cd C:\tools\psexec
+ psexec -i -s cmd.exe  (lancer cmd en tant que le user SYSTEM)
+ whoami (devrait afficher : NT AUTHORITY\SYSTEM)
+ ensuite : ssms.exe (cela va ouvrir ssms via SYSTEM)
+
+ PID 4 : c'est le processus noyau de Windows
+
+====
+psexec -u CASTEL\TALIBI01 -p motdepasse cmd.exe (lancer cmd via ce user)
+
+psexec \\serveur ipconfig (voir ipconfig de la machine distante)
+
+psexec \\serveur cmd.exe (lancer cmd)
+
+psexec \\serveur1,serveur2 msiexec /i "logiciel.msi" /quiet
+
+=====
+lancer calc.exe sur une session distante : 
+
+psexec \\NomServeur cmd , puis faire query user, cela affiche les sessions distante
+
+psexec \\NomServeur -i [ID_Session] calc.exe
 
 ==========
 diskpart
