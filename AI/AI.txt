@@ -229,4 +229,37 @@ chatbot_app/
 -je peux créer un chatbot avec l'intelligence de chatgpt via son API (inclure la clé GPT payante dans le programme, utiliser le cervau développé d'OPENAI)
 -je peux créer un chatbot avec de la AI open source comme LLaMA, Falcon, GPT-J
 
+Le Chatbot est une interface, l'IA Agentique est une main-d'œuvre numérique.
+
+Benchemark via chatgpt : 
+"Agis comme un agent de recherche autonome. Ne te contente pas d'un résumé. Cherche les marques de routeurs pour PME, Analyse 5 sources différentes, crée un tableau comparatif avec les points forts/faibles et vérifie la disponibilité réelle des stocks au Maroc."
+
+============
+
+N8n : creer des workflow AI  (utilisable en mode SaaS "n8n.io" ou via une installation local sur une VM ou conteneur)
+      ex : créer un agent qui écoute 24/24, un msg whatsapp trigger l’agent, ce dernier traite et repond au questions frequentes, stocke les commandes des clients ou notifie le vendeur.
+           
+Agent AI : 
+Brain  : chat model : gpt, claude …
+Memory : simple memory
+Instructions : do and don’t
+Tools : gmail …
+
+claude code : assistant AI de code qui aide à developper
+
+-Installer claude code sur windows
+irm https://claude.ai/install.ps1 | iex
+Pour entrer saisir : claude
+for ex : Create a script to send an email to me at 7am for morning motivation
+
+-deploy n8n on premise sur docker : 
+docker volume create n8n_data
+docker run -it --rm --name n8n -p 5678:5678 -v n8n_data:/home/node/.n8n docker.n8n.io/n8nio/n8n
+-->visit : http://localhost:5678
+  le conteneur a un volume persistant pour garder en local les projets n8n
+  
+Claude Code Can Build N8N Workflows For You (Hands-Free)
+I typed one prompt into Claude Code, and it opened my n8n instance, added every node, connected them, tested the workflow, and saved it. I didn’t click a single thing.
+
+Claude code ->MCP servers ->N8N
 
