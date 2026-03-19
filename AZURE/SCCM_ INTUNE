@@ -1,0 +1,73 @@
+
+SCCM intune co-management
+
+EDR cyber Reason
+
+junf pro pour OS mac 
+
+=====================================================================================================
+
+SCCM  (MECM)
+
+ -déploiement des OS : OSD
+ -déploiement des logiciels 
+ -patch management
+ -Inventaire et Conformité
+
+il fonctionne sous forme de composants: 
+
+ Site serveur : cerveau ayant la console d'admin et la BD SQL server
+ SUP software update     : mise à jour windows, office, pilotes (necessite WSUS)
+ MP  management point    : communique avec les clients
+ DP  distribution point :  le magasin de stockage
+
+Boundaries groups :
+il faut créer des DP par pays ayant le dossier "SCCMContentLib" : OS.wim , apps .msi .exe , MAJ .cab , des pilotes
+les ordinateurs du pays se connecte à leur DP désigné pour télécharger le déployable
+
+1-la découverte des clients depuis Active Directory (ils s'affichent dans "Assets and Compliance → Devices")
+2-créer des collections qui regroupent les clients (lot1, lot2, PROD, PPRD ...) sur "Assets and Compliance/device collections"
+3-pour déployer une application, il faut l'ajouter sur SCCM
+                                 clic droit, distribute content (envoyer vers le DP)
+                                 clic droit, deploy --> Action = Install (Required / Available)
+ 				                        mode available : disponible sur software center
+
+vérifier et déployer les MAJ :
+ 
+   Administration > Site Configuration > Sites > Configure Site Components > Software Update Point 
+                     ->choisir les catégories de produits et classifications (Security Updates, Critical Updates…)
+   Software Library > Software Updates > All Software Updates → Clique sur Synchronize Software Updates
+   Créer un groupe de mises à jour (Create Software Update Group)
+   Right click > Download
+   Choisir mon Distribution Point
+   Right click on the Update Group > Deploy
+                                     ->collection cible
+                                     ->immédiat ou planifié
+   Monitoring > Deployments (Suivre le déploiement)
+   Monitoring > Reporting > Reports > Software Updates - A Compliance (Vérifier les patches manquants)
+   nettoyer régulièrement WSUS : WSUS Cleanup Wizard
+
+maîtriser : 
+
+-Active Directory (pour les groupes de PC).
+-SQL Server (pour la base de données).
+-IIS (pour les services web).
+-Le réseau (DHCP, DNS, PXE).
+
+Client Push Installation : logiciel ccmsetup.exe à installer sur les clients (dans la console, clic droit, install client)
+un compte admin local sur tous les postes clients est déclaré dans SCCM "site configuration" pour pouvoir installer dans ces clients
+
+comment un IT devient admin sur SCCM : 
+Administration → Security → Administrative Users, ajouter le user et donner le rôle : Full Administrator, scope : Default, collections : all systems
+le rôle le plus restrictif : Read-only Analyst
+
+il reçoit 2 MAJ par an : par exemple 2403 c'est l'update mars 2024 
+chaque version a une durée de vie de 18 mois
+la dernière MAJ c'est la 2511 : update de novembre 2025, 
+la MAJ est installable depuis la console elle même "Cloud Services > Updates and Servicing"
+il faut mettre à jour Windows ADK sur le serveur avant de lancer la MAJ du SCCM
+OS doit être minimum WS 2019
+SQL server doit être minimum 2019
+
+==========================================
+INTUNE : 
