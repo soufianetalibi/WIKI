@@ -51,3 +51,38 @@ azure-rg/
 ├── variables.tf
 ├── terraform.tfvars
 └── outputs.tf
+
+=========== Exemple 2 : créer une infra sur azure via terraform déclenché par un script powershell : 
+
+L’objectif : déployer une infrastructure Azure propre en quelques minutes, avec une VM Windows, réseau, sécurité et IP publique, le tout modulaire et automatisé.
+Dans ce tuto, vous allez voir :
+✔️ Création de Resource Group, VNet et Subnet
+✔️ Network Security Group avec RDP/WinRM
+✔️ VM Windows prête à l’emploi
+✔️ Terraform modulaire + script PowerShell intégré
+
+azurelab-autopilot/
+│
+│   Run-AzureLabAutopilot.ps1       # Main entry point
+│
+└───terraform/
+    │   main.tf                     # Root Terraform config
+    │   variables.tf                # Input variable definitions
+    │   outputs.tf                  # Outputs (IP, RG, etc.)
+    │   .terraform.lock.hcl         # Provider version lock
+    │
+    └───modules/
+        ├───networking/             # VNet, Subnet, NSG
+        │       main.tf
+        │       variables.tf
+        │       outputs.tf
+        │
+        └───vm-test/                # Windows VM, NIC, Disks, Public IP
+                main.tf
+                variables.tf
+                outputs.tf
+
+https://github.com/MeriemAyari/azurelab-autopilot/tree/main
+
+https://www.youtube.com/watch?v=JbM2eCUJ2Ho
+
