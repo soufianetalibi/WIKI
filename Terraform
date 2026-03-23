@@ -25,7 +25,7 @@ terraform.tfstate : garde l’état réel de l’infrastructure (réponse du pro
 
 main.tf	                 : Déclaration de l’infrastructure
 variables.tf             : Déclaration des variables de l'infra
-terraform.tfvars	 : Valeurs d’entrées des variables
+terraform.tfvars	 : Les valeurs exactes des variables
 terraform.tfstate	 : Réponse / état réel
 terraform.tfstate.backup : Sauvegarde pour récupérer l'infra en cas de perte
 outputs.tf               : permet de récupérer un ID, une IP, sortir des infos après un apply
