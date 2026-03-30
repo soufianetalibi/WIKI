@@ -1,0 +1,45 @@
+
+Entra connect : un outil Microsoft qui permet de synchroniser ton Active Directory local (on-prem) avec Microsoft Entra ID
+
+AD local -> compte Entreprise Admin
+EntraID  -> compte global admin
+
+Sur AD on prem : ajouter un suffixe DNS : cloud.ma
+                 enregistrer ce domaine sur mon EntraID
+
+types de synchro : 
+          -PHS ->recommandée  
+          -PTS
+          -ADFS
+
+choisir les OU à synchroniser
+
+si <100k objets, utiliser une BD SQL express, sinon avoir une BD SQL dédiée
+
+Pour que la synchro passe : 
+           -UPN
+           -SAMAccountName
+           -mail
+           -immutableID onprem = immutableID EntraID
+
+pour filtrer dans la synchro, utiliser "synch rules editor"
+    ex : synchroniser uniquement des groupes GRP....
+
+Metaverse : une BD comme un pont entre l'AD en-prem et EntraID
+
+on peut lancer : 
+ full import 
+ delta import
+ full sync
+ delta sync
+ export
+
+problèmes de synchro courant : 
+
+Conflit d’attribut : Valeur unique en double
+
+Duplicate : Objet déjà présent
+
+Format : Valeur invalide pour Azure AD
+
+permission issue : Le compte utilisé par le connecteur ou pour l’opération n’a pas les droits nécessaires sur l’Active Directory ou Azure AD
