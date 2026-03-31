@@ -172,6 +172,7 @@ Pour créer une VCF, avoir 4 ESXi installés
 
 VCD est une plateforme de portail cloud multi-tenant, le portail pour vendre/consommer du cloud basé VCF.
 	VCD = la couche “service cloud” au-dessus de VCF  pour devenir un cloud provider
+          plateforme de fournisseurs de cloud pour la gestion multi-tenant
 
 licence vmware : 32 cœurs par licence (une licence couvre jusqu'à 32 cœurs sur un processeur physique)
                  un minimum de 16 cœurs par processeur pour la licence (même si le CPU physique a moins que 16)
