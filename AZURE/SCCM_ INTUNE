@@ -72,7 +72,7 @@ SQL server doit être minimum 2019
 ==========================================
 
  intune nécessite deux licences, users et EntraID : 
-         licence user : intune standalone ou O365 E3/E5
+            licence user : intune standalone ou O365 E3/E5 ou M365 Business premium
 	        licence entraID : P1 ou P2
 
 🔹 Types d’enrollment des devices de mes users :
