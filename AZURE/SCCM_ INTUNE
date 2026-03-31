@@ -70,4 +70,25 @@ OS doit être minimum WS 2019
 SQL server doit être minimum 2019
 
 ==========================================
-INTUNE : 
+
+ intune nécessite deux licences, users et EntraID : 
+         licence user : intune standalone ou O365 E3/E5
+	        licence entraID : P1 ou P2
+
+🔹 Types d’enrollment des devices de mes users :
+	-Azure AD Join → PC cloud only
+	-Hybrid Join → PC AD + Azure AD
+	-BYOD → appareil perso
+	-Autopilot (config auto d'un pc neuf : join Entra ID, enrollment Intune, apps installées, policies appliquées)
+
+Etapes de gestion via intune : 
+
+1-enrollment
+
+2-policy  -> "Device, compliance policies, policies"    donne : compliant , non compliant
+
+3-app deployment  (installword.exe /silent) 
+
+4-app mobile deployment  (app, IOS Store app, outlook mobile) Required (install auto) ou Available (Company Portal)
+
+5-MAJ OS deployment : créer un update ring et l'assigner à un groupe.
