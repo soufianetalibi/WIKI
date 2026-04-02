@@ -1,0 +1,59 @@
+NSX : 
+
+virtualisation réseau : intégrer dans l'infra vmware ce qui réduit les dépenses sur des équipements physiques
+        switch : segments
+	routeur : Distributed Routing (DLR)
+	firewall : Distributed Firewall (DFW)
+	IDS/IPS
+	load balancer
+
+NSX Manager   (plan de contrôle / API) 
+
+ESXi Host 1    VM1 , VM2
+ESXi Host 2    VM3 , VM4
+ESXi Host 3    VM5 , VM6
+
+Edge Node (NSX Edge 1)
+Edge Node (NSX Edge 2)
+
+VM1 peut communiquer avec VM3 s'ils sont sur le même segment
+
+Edge node connectent les VMs vers le Réseau physique
+
+Une application web 3-tiers :
+
+Frontend (Web)       -> Segment Web → 10.10.1.0/24  pour VM1 et VM3
+Backend (App)        -> Segment App → 10.10.2.0/24  pour VM4 et VM6
+Base de données (DB) -> Segment DB → 10.10.3.0/24   pour VM2 et VM5
+
+-un routage assuré par la DLR entre : 
+		Web ↔ App 
+		App ↔ DB
+
+-Règles du firewall distribué :
+
+   ✔ Web → App (HTTP/HTTPS autorisé)
+   ✔ App → DB (SQL autorisé)
+   ❌ Web → DB (bloqué)
+
+ -load balancing : 
+
+   VIP-WEB 192.168.1.100 pour VM1 et VM3
+
+ -Accès externe : nord-sud
+   NSX Edge : NAT (public → privé) et Gateway vers Internet
+
+=======Le routage sur NSX : 
+
+Le routage NSX est séparé en deux : 
+-(Tier-0) ,connexion vers l’extérieur, internet et réseau physique "BGP, OSPF, statique" 
+-(Tier-1) ,gère le routage entre segments
+
+Dans notre cas, on peut mettre : 
+
+ T0 --> qui connecte vers l'extérieur   (c'est un lien partagé)
+
+ T1-PROD --> interconnecte les segments des différentes VMs pour la PROD
+ T1-PPRD --> interconnecte les segments des différentes VMs pour la PPRD
+
+par exemple : Internet → T0 → T1-PPRD → VM-PPRD-Web
