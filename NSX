@@ -21,6 +21,10 @@ Dans une prod NSX, il faut mettre :
  -transport nodes (mes ESXi deviennent les transport nodes) -> Tier-1 + firewall
  -2 Edge nodes -> Tier-0
 
+le firewall NSX peut s'appliquer : 
+ Niveau VM : SSH autorisé uniquement sur VM1
+ Niveau Segment : Bloquer DB-PROD vers Internet
+ Niveau T1 entier : Bloquer T1-PPRD vers Internet
 ========================================
 
 Une application web 3-tiers :
