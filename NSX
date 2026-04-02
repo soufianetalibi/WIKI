@@ -2,8 +2,8 @@ NSX :
 
 virtualisation réseau : intégrer dans l'infra vmware ce qui réduit les dépenses sur des équipements physiques
         switch : segments
-	routeur : Distributed Routing (DLR)
-	firewall : Distributed Firewall (DFW)
+	routeur : Distributed Routing  présent sur T1 et T0
+	firewall : Distributed Firewall , appliqué sur VMs
 	IDS/IPS
 	load balancer
 
@@ -16,9 +16,12 @@ ESXi Host 3    VM5 , VM6
 Edge Node (NSX Edge 1)
 Edge Node (NSX Edge 2)
 
-VM1 peut communiquer avec VM3 s'ils sont sur le même segment
+Dans une prod NSX, il faut mettre : 
+ -3 NSX manager
+ -transport nodes (mes ESXi deviennent les transport nodes) -> Tier-1 + firewall
+ -2 Edge nodes -> Tier-0
 
-Edge node connectent les VMs vers le Réseau physique
+========================================
 
 Une application web 3-tiers :
 
