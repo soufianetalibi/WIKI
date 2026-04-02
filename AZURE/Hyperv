@@ -1,0 +1,18 @@
+HyperV est un hyperviseur de Microsoft, il a 3 types de vswitches : 
+	external : les VMs vont sortir sur le réseau physique 
+	internal : les VMs vont communiquer entre eux et avec le hôte hyperV
+	private : les VMs communiquement uniquement entre eux
+
+
+Si j'ai deux hosts physiques hyperV, je peux activer : 
+
+1-Replicas : une VM sur hyperv1 est répliquée sur hyperv2 sur une fréquence de 15 min par exemple
+		problème : en cas de panne, on perd les changements entre le moment de la panne et la dernière réplication
+	    
+2-Live migration : on migre manuellement la VM de l'hyperv1 vers l'hyperv2 sans aucune interruption côté users et aucune perte (pas besoin d'un stockage partagé)  --> comme la vmotion
+
+3-cluster failover : garantir la HA des VMs, si hyperv1 est KO, les VMs redémarrent sur hyperv2
+		   ajouter le rôle failover clustering
+		   il faut avoir un stockage partagé pour les VMs
+
+4-Export/import : action à froid, exporter la VM depuis hyperv1 et l'importer sur hyperv2 
