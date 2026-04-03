@@ -83,6 +83,7 @@ T1
  └── SEG-DEV
 
 ==> un seul T1 et plusieurs segments : simplicité , le routage entre segments est activé par défaut.
+                                                    ->mais je peux bloquer la communication entre ségements via le firewall : règle : DROP SEG-PROD → SEG-PPRD
 
           T0
      /   |   |   \
