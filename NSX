@@ -7,6 +7,14 @@ virtualisation réseau : intégrer dans l'infra vmware ce qui réduit les dépen
 	IDS/IPS
 	load balancer
 
+Un overlay network = un réseau virtuel utilisé sur NSX-T via un protocole nommé : GENEVE
+
+Chaque ESXi : 
+encapsule les paquets sortants
+décapsule les paquets entrants
+
+Donc NSX est l'ajout d'une couche L3 'réseau overlay' entre les VMs qui tournent sur les ESXi et le réseau physique 
+
 NSX Manager   (plan de contrôle / API) 
 
 ESXi Host 1    VM1 , VM2
