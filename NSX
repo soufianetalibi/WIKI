@@ -1,9 +1,9 @@
 NSX : 
 
 virtualisation réseau : intégrer dans l'infra vmware ce qui réduit les dépenses sur des équipements physiques
-        switch : segments
-	routeur : Distributed Routing  présent sur T1 et T0
-	firewall : Distributed Firewall , appliqué sur VMs
+    Distributed switching : segments
+	Distributed Routing  présent sur T1 et T0
+	Distributed Firewall 
 	IDS/IPS
 	load balancer
 
