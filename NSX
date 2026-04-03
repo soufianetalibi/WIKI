@@ -25,6 +25,7 @@ le firewall NSX peut s'appliquer :
  Niveau VM : SSH autorisé uniquement sur VM1
  Niveau Segment : Bloquer DB-PROD vers Internet
  Niveau T1 entier : Bloquer T1-PPRD vers Internet
+ Niveau T0 entier : Bloquer tout le trafic sur NSX (à éviter car c'est très global)
 ========================================
 
 Une application web 3-tiers :
