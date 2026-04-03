@@ -74,6 +74,24 @@ Dans notre cas, on peut mettre :
 
 par exemple : Internet → T0 → T1-PPRD → VM-PPRD-Web
 
+il y a deus architectures possibles pour les T1 : 
+
+T1
+ ├── SEG-PROD
+ ├── SEG-PPRD
+ ├── SEG-TEST
+ └── SEG-DEV
+
+==> un seul T1 et plusieurs segments : simplicité 
+
+          T0
+     /   |   |   \
+ T1-PROD T1-PPRD T1-TEST T1-DEV
+    │        │        │        │
+ segments segments segments segments
+
+==> plusieurs T1 et plusieurs segments : meilleure isolation 
+
 ======étapes pour déployer NSX dans mon infra : 
 
 Déployer NSX Manager
