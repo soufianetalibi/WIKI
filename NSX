@@ -82,7 +82,7 @@ T1
  ├── SEG-TEST
  └── SEG-DEV
 
-==> un seul T1 et plusieurs segments : simplicité 
+==> un seul T1 et plusieurs segments : simplicité , le routage entre segments est activé par défaut.
 
           T0
      /   |   |   \
