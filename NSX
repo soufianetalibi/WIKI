@@ -65,3 +65,48 @@ Dans notre cas, on peut mettre :
  T1-PPRD --> interconnecte les segments des différentes VMs pour la PPRD
 
 par exemple : Internet → T0 → T1-PPRD → VM-PPRD-Web
+
+======étapes pour déployer NSX dans mon infra : 
+
+Déployer NSX Manager
+Connecter NSX à vCenter
+Préparer les ESXi
+Créer le réseau overlay
+Déployer Edge Node
+Créer T0 / T1
+Migrer les VMs vers NSX
+
+=================================
+
+il y a deux façon pour connecter la VM : (via NSX ou hors NSX)
+
+ Avec NSX : VM → vNIC → ESXi (DFW + overlay) → Segment NSX → T1 → T0 → Edge → réseau physique
+
+ Hors NSX : VM → vNIC → vSwitch/vDS → Port Group VLAN → vmnic (uplink physique) → switch physique
+
+======= Vcloud Director : 
+
+vApp
+ ├── vApp-Net-01a (interne)
+ │     ├── VM-Web
+ │     ├── VM-App
+ │     └── VM-DB
+ │
+ └── Tenant1-DCG1-Net (externe)
+       └── VM-Web (exposé)
+
+Routed Network : 
+ réseau : 10.10.1.0/24
+ VMs accèdent à Internet via NAT
+ connecté à un Tier-1 (T1) NSX
+  -->Un réseau Routed utilise un T1 NSX avec NAT et firewall
+
+Isolated Network : 
+  Réseau totalement isolé
+  pas connecté à T1
+  -->un réseau Isolated est totalement isolé sans routage
+
+Direct Network (bridged)
+  VM reçoit IP du réseau entreprise
+  visible directement sur LAN
+  -->un réseau Direct est connecté directement au réseau physique sans passer par NSX
