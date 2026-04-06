@@ -1,4 +1,23 @@
 
+Problème écran bleu : 
+
+-Drivers défectueux
+-Mise à jour Windows ratée
+-Registre corrompu
+-Disque dur défaillant
+-RAM instable
+
+Solution : boot avec un image ISO puis : 
+
+reparer la bcd  --> bootrec /rebuildbcd
+problème driver --> démarrer en mode sans schec et déinstaller le driver
+problème MAJ    --> démarrer en mode sans schec et déinstaller la MAJ
+restaurer la regedit --> via le dossier RegBack  
+faire un checkdsk
+restauration système (annule les modifications regedit, fichiers système, drivers, MAJ)
+
+==============================================================================================================
+
 chaque serveur AD dans l'infra a le service KDC qui délivre les tickets TGT aux clients 
 KDC n'est pas un rôle FSMO, c'est un service présent sur chaque serveur AD
   voir le serveur qui m'authentifie : echo %LOGONSERVER%
