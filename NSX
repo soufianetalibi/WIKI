@@ -113,6 +113,58 @@ il y a deux façon pour connecter la VM : (via NSX ou hors NSX)
 
  Hors NSX : VM → vNIC → vSwitch/vDS → Port Group VLAN → vmnic (uplink physique) → switch physique
 
+=============================================================================
+
+TEP tunnel overlay : ip pool 
+
+overlay : un réseau virtuel encapsulé (GENEVE) entre ESXi et edge node 
+chaque ESXi (Host Transport Node) a une IP TEP
+chaque Edge Node a aussi une IP TEP
+IP Pool TEP : plage d’adresses IP à affecter aux ESXis et edge-nodes
+
+NB : NSX manager n'utilise pas l'overlay
+
+1. ESXi : une IP MGMT dans 192.168.1.0/24 qui communique avec le vcenter
+	  une IP TEP overlay dans l'ip pool 192.168.100.0/24 
+
+2. Edge Transport Node : une IP MGMT dans 192.168.1.0/24 qui communique avec NSX Manager
+			 une IP TEP overlay dans l'ip pool 192.168.100.0/24
+			 une IP UPLINK connectée au réseau physique ex : 10.0.0.10
+
+3. vCenter : une IP MGMT dans 192.168.1.0/24 qui communique avec les ESXi et NSX manager.
+
+4. NSX Manager : une IP MGMT dans 192.168.1.0/24 qui communique avec les ESXi et vcenter.
+
+Quand je crée des segments NSX, les Gateway seront portées par un seul T1: 
+  ex : VM : 20.20.20.4 et Gateway sur le T1 : 20.20.20.1
+       VM : 30.30.30.4 et Gateway sur le T1 : 30.30.30.1
+       VM : 40.40.40.4 et Gateway sur le T1 : 40.40.40.1
+
+connecter le T1 vers mon T0 : activer : “advertise default route”
+
+j'ajoute une route statique sur le T0 qui envoie vers ip next-hop du LAN physique : 0.0.0.0/0 10.0.0.10
+
+VM-A → ESXi-1 TEP → overlay → ESXi-2 TEP → VM-B
+VM-A → ESXi-1 TEP → overlay → Edge TEP → NAT / Internet
+
+
+transport zone : le périmètre NSX, elle définit les ESXi qui participent
+						les edge nodes qui participent
+						les segments qui peuvent être utilisés
+
+Profiles : 
+ uplink profiles  : définit comment un ESXi / edge-node se connecte au réseau physique
+ transport node profiles  : à appliquer sur un cluster ESXi pour automatiser la config (préparer les hosts …)
+ node profiles : déployer les edge nodes
+
+nodes : 
+ host transport node : ESXi préparés : (overlay (GENEVE), Distributed Firewall, routage distribué (T1))
+ edge transport node : Edge-nodes déployés (NAT, LB, VPN, IDS/IPS, routage externe T0)
+
+compute managers : ici on connecte le vcenter à NSX
+
+==========
+
 ======= Vcloud Director : 
 
 vApp
