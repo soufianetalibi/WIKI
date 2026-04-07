@@ -206,7 +206,47 @@ vRealize/Aria includes :
 
 ===================================================
 
-la VM cloud Builder permet de créer le VCF, se base sur un excel ou json ayant les IP, mdp des appliances vcenter, NSX, Vrealize, SDDC Manager, VSAN si utilisé (elle crée le management domain)
+la VM cloud Builder permet de créer le SDDC, se base sur un excel ou json ayant les IP, mdp des appliances vcenter, NSX, Vrealize, SDDC Manager, VSAN si utilisé (elle crée le management domain)
+
+SDDC : infrastructure virtualisée pilotée par un logiciel 
+
+Etapes : 
+ Installer ESXi sur tous les serveurs physiques
+ Utiliser un hôte pour déployer l'Appliance
+ avoir au moins 4 ESXi pour le MGMT domain et au moins 2 ESXi pour le workload domain
+ télécharger le bundle VCF complet qui contient les images nécessaires
+
+Cloud Builder Appliance : un outil de déploiement automatisé
+
+Remplir le fichier de déploiement (Deployment Parameter Workbook)
+ C’est un fichier Excel fourni par VMware contenant :
+  IP des ESXi
+  VLAN
+  DNS / NTP
+  noms des clusters
+  config NSX, vSAN, etc.
+
+Lancer le déploiement automatisé : cloud Builder va créer : 1- MGMT domain : vCenter, NSX Manager, vSAN cluster, cluster ESXi
+							    2- Workload domain
+
+Networking : 
+-ESXi management network ✅ VMkernel (vmk)
+-Vmotion network         ✅ VMkernel (vmk)
+-VSAN network            ✅ VMkernel (vmk)
+-VM management network   ✅ Port Group
+=======================
+
+VCF operations : surveiller, analyser et maintenir l’infrastructure
+  vRealize Operations (vROps) → monitoring & performance
+  vRealize Log Insight → analyse des logs
+
+VCF automation : Déploiement automatique de VMs
+  vRealize Operations (vRA)
+
+le SDDC manager "pilote de la VCF" permet de déployer par ex VMware Aria Suite (operations et automation)
+		                   permet d'appliquer la MAJ LCM de tous les composants
+
+======================================================
 
 LCM : gérer le cycle de vie des composants : Patch ESXi, MAJ firemware
       dans un VCF, on utilise le SDDC Manager qui met à jour tout : ESXi, Vcenter, NSX, Aria
