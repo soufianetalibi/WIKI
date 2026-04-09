@@ -1,0 +1,120 @@
+
+j'ai plusieurs VLANs sous vmware et je veux les connecter : 
+
+je peux installer une VM routeur VyOS ayant deux interfaces : MGMT et TRUNK 
+l'interface trunk sera connectée à tous mes VLANs et elle va router le flux entre Vlans 
+
+je peux installer un fortigate-VM avec 3 interfaces MGMT, WAN et interface LAN ayant des sous interfaces pour chaque VLANs
+
+je peux installer un PFSENSE-VM avec interfaces WAN et LAN, l'interface LAN ayant des sous interfaces pour chaque VLANs
+ l'interface LAN est par défaut accessible en WEB pour management
+
+
+===============================================
+
+ouvrir exchange sur internet :
+
+MX Record : soufiane.com → mail.soufiane.com
+A Record : mail.soufiane.com → ton IP publique
+Reverse DNS (PTR) : IP publique → Soufiane.com  (éviter les spam)
+SPF (recommandé) : v=spf1 ip4:TON_IP_PUBLIQUE -all
+
+réception depuis Internet : IP publique → IP privée du serveur Exchange : ports 25 IN 
+envoie vers Internet : IP publique → IP privée du serveur Exchange : ports 25 OUT
+
+port 443 entant pour OWA/Outlook : 
+
+
+==============================================================================================================
+upgrader exchange depuis l'image ISO : 
+
+   arrêter tous les services manuellement : 
+Get-Service *Exchange*,*MSExchange* | Where-Object { $_.Status -eq "Running" } | Stop-Service -Force
+si les services ne s'arrête pas killer le processus ex : taskkill /F /PID 6072
+
+.\Setup.exe /m:Upgrade /IAcceptExchangeServerLicenseTerms_DiagnosticDataON
+
+===============================================================================================================
+Retirer un serveur du DAG pour l'upgrader : 
+
+DAG : 
+  EX01 actif
+  EX02 passif
+
+1. Déplacer les bases actives
+   Get-MailboxDatabase -Server EX01 | Move-ActiveMailboxDatabase -ActivateOnServer EX02
+2. Bloquer l’activation des bases
+   Set-MailboxServer EX01 -DatabaseCopyAutoActivationPolicy Blocked
+3. Mettre le serveur en maintenance
+   Set-ServerComponentState EX01 -Component ServerWideOffline -State Inactive -Requester Maintenance
+4. Rediriger le transport (important)
+   Redirect-Message -Server EX01 -Target EX02
+   Suspend-ClusterNode EX01
+
+5. Installer la mise à jour sur mon serveur EX01
+
+6. Sortir du mode maintenance
+   Resume-ClusterNode EX01
+   Set-ServerComponentState EX01 -Component ServerWideOffline -State Active -Requester Maintenance
+   Set-MailboxServer EX01 -DatabaseCopyAutoActivationPolicy Unrestricted
+7. Rebasculer les bases (optionnel)
+   Move-ActiveMailboxDatabase DB01 -ActivateOnServer EX01
+
+==========================================================================================================
+installer security update sur un serveur EDGE : 
+
+check current version : Get-ExchangeServer | fl AdminDisplayVersion
+
+Get-Queue # Vérifier queues
+
+Set-ServerComponentState -Identity I100EDGE01 -Component HubTransport -State Draining -Requester Maintenance
+
+installer fichier .msp et reboot
+
+Set-ServerComponentState -Identity I100EDGE01 -Component HubTransport -State Active -Requester Maintenance
+
+Start-EdgeSynchronization # Sync Edge
+Get-EdgeSynchronizationStatus
+
+Get-ServerComponentState I100EDGE01  # Vérifier état des composants 
+
+Get-Service *MSExchange* | Select-Object Name, Status
+
+check new version : Get-ExchangeServer | fl AdminDisplayVersion
+
+=====================
+
+Test-ServiceHealth
+Get-MailboxDatabase -Status | Format-Table Name,Mounted
+Test-ReplicationHealth
+Get-Queue
+Get-Mailbox Administrator
+
+Créer une demande de certificat (CSR)  : 
+New-ExchangeCertificate -FriendlyName "Certificat OWA" -DomainName mail.couldsky.com, autodiscover.couldsky.com -PrivateKeyExportable $true
+
+Signer le certificat :
+
+Soit via ta CA interne (Active Directory Certificate Services).
+Soit via une autorité publique (GoDaddy, DigiCert, Let’s Encrypt).
+
+installer et activer : 
+Import-ExchangeCertificate -FileName "C:\certificat.pfx" -Password (Get-Credential)
+Enable-ExchangeCertificate -Thumbprint <Thumbprint> -Services IIS,SMTP
+
+
+=========================================
+post installation exchange : 
+
+console exchange management shell ne marche pas à cause du ipv6 activé : 
+ajouter la clé de registre : 
+\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters
+  --> DisabledComponents (REG_DWORD valeur décimale 255)
+
+====
+ajouter deux enregistrements sur le DNS local : MX et SPF : 
+
+check : 
+nslookup -type=mx couldsky.com
+nslookup -type=txt couldsky.com
+ 
