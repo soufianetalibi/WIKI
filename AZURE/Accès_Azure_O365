@@ -35,3 +35,14 @@ Exemples:
          
  NB : Un PC qui n’est pas joint à Azure AD ne pourra pas se connecter via AAD, même s'il est connecté à Internet.
       mais il peut se connecter à une VM azure avec un user mdp déclaré localement dans la VM (donc hors Azure AD)
+
+O365 : 
+
+https://admin.cloud.microsoft/ -> accès global
+
+https://entra.microsoft.com
+https://admin.exchange.microsoft.com
+https://admin.teams.microsoft.com
+https://<tenant>-admin.sharepoint.com
+https://intune.microsoft.com/
+https://security.microsoft.com/
