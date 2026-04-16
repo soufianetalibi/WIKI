@@ -46,3 +46,52 @@ https://admin.teams.microsoft.com
 https://<tenant>-admin.sharepoint.com
 https://intune.microsoft.com/
 https://security.microsoft.com/
+
+============================================
+
+
+M365 famille personnel
+
+PME <300 users : M365 Business Basic/standard/premium/apps for business
+
+E/se >300 users : M365 F3 / E3 / E5 /E7
+
+ 
+Groupes : 
+
+-une équipe
+-un groupe M365            : une BAL partagée crée avec le groupe (ex: contact@soufiane.com)
+-groupe de distribution    : rediriger un mail vers une liste de users
+-groupe de sécurité        : gère les accès 
+-groupe de sécurité à extension messagerie
+-groupe de distribution dynamique
+-boite au lettres partagées 
+
+PIM : accès juste in time
+
+idfix : un outil qui corrige les erreurs de saisie sur l'AD afin de pouvoir synchroniser correctement les objets via EntraID
+
+SSPR
+Accès conditionnel : 
+  E3 seul → ❌ pas suffisant
+  E3 + P1 → ✅ accès conditionnel
+  E3 + P2 → ✅ accès conditionnel + fonctionnalités avancées
+  E5 → ✅ déjà inclus
+
+Identity protection
+defender
+pureview
+
+tâches d'administration teams, exchange, SharePoint, onedrive
+
+teams : créer équipes, politiques de réunion, Contrôler les permissions
+exchange : créer BAL, délégation d'accès, ègles de transport, filtres anti-spam, protection ocntre phishing, listes de diffusion
+OneDrive : quotas, restaurer des fichiers supprimés, Configurer le partage avec externes, 
+SharePoint : créer des sites, Gérer les permissions
+
+Teams utilise SharePoint (fichiers) + Exchange (calendrier)
+OneDrive = stockage personnel
+SharePoint = stockage d’équipe
+Exchange = emails + calendriers
+
+
