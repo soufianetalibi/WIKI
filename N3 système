@@ -306,3 +306,30 @@ TCP 88 → Kerberos
 TCP 445 → SMB
 TCP 135 + ports dynamiques (49152–65535) → RPC
 
+=====
+
+Redémarrage inattendu
+ID 41 (Kernel-Power)
+→ arrêt brutal (coupure de courant, crash, bouton power)
+
+🔹 Arrêt/redémarrage normal
+ID 1074
+→ redémarrage volontaire (mise à jour, utilisateur, logiciel, depuis vmware)
+
+🔹 Arrêt du système
+ID 6006
+→ arrêt propre
+
+🔹 Redémarrage après crash
+ID 6008
+→ arrêt inattendu
+
+🧠 Comment interpréter
+Kernel-Power 41 sans autre info → souvent matériel / alimentation / crash système
+1074 avec “Windows Update” → redémarrage dû à une mise à jour
+6008 + 41 ensemble → crash ou coupure brutale confirmée
+
+par exemple, le log 1074 : 
+   The process C:\Program Files\VMware\VMware Tools\vmtoolsd.exe (SERVEUR1) has initiated the shutdown of computer SERVEUR1 on behalf of user NT AUTHORITY  \SYSTEM for the following reason: Legacy API shutdown
+  --> signifie de l'arrêt de SERVEUR1 a été effectué depuis la console vmware (via vmtools installés)
+
