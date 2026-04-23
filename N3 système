@@ -306,6 +306,27 @@ TCP 88 → Kerberos
 TCP 445 → SMB
 TCP 135 + ports dynamiques (49152–65535) → RPC
 
+======
+Vérifier si l'AD communique sur les ports : 
+
+netstat -ano | findstr :389
+netstat -ano | findstr :3268
+...
+
+les erreurs de synchronisation AD Connect : 
+
+Applications and Services Logs
+→ Directory Synchronization
+
+Les erreurs de réplication des AD : Journaux spécifiques AD :
+
+Journaux Windows → Système
+Directory Service
+DFS Replication
+
+repadmin /replsummary
+repadmin /showrepl
+
 =====
 
 Redémarrage inattendu
@@ -328,6 +349,8 @@ ID 6008
 Kernel-Power 41 sans autre info → souvent matériel / alimentation / crash système
 1074 avec “Windows Update” → redémarrage dû à une mise à jour
 6008 + 41 ensemble → crash ou coupure brutale confirmée
+
+=======
 
 par exemple, le log 1074 : 
    The process C:\Program Files\VMware\VMware Tools\vmtoolsd.exe (SERVEUR1) has initiated the shutdown of computer SERVEUR1 on behalf of user NT AUTHORITY  \SYSTEM for the following reason: Legacy API shutdown
