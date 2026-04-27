@@ -1,0 +1,148 @@
+
+terraform (crée une infra)
+ansible (configure l'infra)
+Docker (déploie une app moderne)
+git hub actions : CI/CD (automatisation des déploiements) -> déclencher ansible et terraform 
+
+Exemple CI-CD: 
+
+Besoin : tester une application web d'abord, puis créer une VM dans azure, y installer docker et déployer cette application dans un conteneur.
+          terraform : créer la VM sur azure 
+          ansible : install docker et lance l'app
+        
+CI (test + build my app Docker dans la VM runner)
+   si l'étape CI est OK, je passe à la CD : 
+CD (Deploy VM on azure, install docker, deploy the app on a container)
+
+-->Push sur GitHub
+
+ 1-GitHub Actions démarre l'étape CI : 
+
+   le job CI s’exécute dans une machine temporaire (runner)
+     build mon Docker (index.html)
+     lance un container
+     vérifie que l’app répond (avec un curl)
+
+ 2-GitHub actions démarre l'étape CD : (si l'étape CI est OK)
+
+   le job CD s’exécute dans azure : 
+     login Azure
+     Terraform crée la VM
+     récupère l’IP
+     génère inventory.ini (y ajouter l'IP de la VMet clé ssh)
+     Ansible :
+      installe Docker
+      lance ton app
+
+========
+project/
+│
+├── terraform/
+│   ├── main.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   └── backend.tf
+│
+├── ansible/
+│   ├── inventory.ini   # généré dynamiquement en sur l'étape CI
+│   └── playbook.yml
+│
+├── app/
+│   ├── index.html
+│   └── Dockerfile
+│
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+│
+└── .gitignore
+
+
+=====================fichier deploy.yml : 
+
+name: CI-CD Azure
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+
+  # -------------------------
+  # 1. CI : Test de l'application
+  # -------------------------
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: |
+          cd app
+          docker build -t myapp .
+
+      - name: Run container
+        run: docker run -d -p 8080:80 myapp
+
+      - name: Test HTTP
+        run: curl -f http://localhost:8080
+
+  # -------------------------
+  # 2. CD : Déploiement Azure
+  # -------------------------
+  cd:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Auth Azure
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: |
+          cd terraform
+          terraform init
+
+      - name: Terraform Apply
+        run: |
+          cd terraform
+          terraform apply -auto-approve
+
+      # Récupérer IP VM
+      - name: Get Public IP
+        id: ip
+        run: |
+          echo "IP=$(cd terraform && terraform output -raw public_ip)" >> $GITHUB_OUTPUT
+
+      # Attente SSH
+      - name: Wait for VM
+        run: sleep 40
+
+      # Préparer clé SSH
+      - name: Setup SSH key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+
+      # Générer inventory Ansible
+      - name: Create inventory
+        run: |
+          echo "[web]" > inventory.ini
+          echo "${{ steps.ip.outputs.IP }} ansible_user=azureuser ansible_ssh_private_key_file=key.pem" >> inventory.ini
+
+      # Lancer Ansible
+      - name: Run Ansible
+        run: |
+          ansible-playbook -i inventory.ini ansible/playbook.yml
