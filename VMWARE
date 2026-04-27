@@ -348,6 +348,12 @@ Dans une prod NSX, il faut mettre :
  -3 NSX manager
  -transport nodes (mes ESXi deviennent aussi des transport nodes) -> Tier-1 + firewall
  -2 Edge nodes -> Tier-0
-			
-			
+
+================================================================================================================
+
+Aria Automation    vRealize AutomationProvisioning & IaC
+Aria Operations    vRealize OperationsMonitoring & AI Ops
+Aria Ops for Logs  vRealize Log InsightLog Management
+  
+
 
