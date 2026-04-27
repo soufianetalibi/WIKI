@@ -350,10 +350,11 @@ Dans une prod NSX, il faut mettre :
  -2 Edge nodes -> Tier-0
 
 ================================================================================================================
+Vmware aria est une suite d'appliances qui permet d'automatiser et surveiller l'infra vmware.
 
-Aria Automation    vRealize AutomationProvisioning & IaC
-Aria Operations    vRealize OperationsMonitoring & AI Ops
-Aria Ops for Logs  vRealize Log InsightLog Management
+Aria Automation    vRealize Automation Provisioning & IaC
+Aria Operations    vRealize Operations Monitoring & AI Ops
+Aria Ops for Logs  vRealize Log Insight Log Management
   
 
 
