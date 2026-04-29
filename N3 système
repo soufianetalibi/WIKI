@@ -324,8 +324,12 @@ Journaux Windows → Système
 Directory Service
 DFS Replication
 
+nltest /dclist:castel.afrique
+repadmin /failcache
+repadmin /syncall /adep /q
 repadmin /replsummary
 repadmin /showrepl
+dcdiag /test:replications
 
 =====
 
