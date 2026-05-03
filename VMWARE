@@ -363,9 +363,20 @@ Dans une prod NSX, il faut mettre :
 ================================================================================================================
 Vmware aria est une suite d'appliances qui permet d'automatiser et surveiller l'infra vmware.
 
-Aria Automation    vRealize Automation Provisioning & IaC
-Aria Operations    vRealize Operations Monitoring & AI Ops
-Aria Ops for Logs  vRealize Log Insight Log Management
-  
+VRA, VROPS, VRLi
 
+Aria Automation    vRealize Automation Provisioning & IaC    -->cloud automation / self-service (provisioning automatique via un self service)
+Aria Operations    vRealize Operations Monitoring & AI Ops   -->monitoring, maintien en condition opérationnel de l'infra (nettoyage, prévention)
+Aria Ops for Logs  vRealize Log Insight Log Management       -->collecte des logs puis analyse, alerte en cas de problème
+  
+Aria automation : 
+
+Aria OPerations : https://www.youtube.com/watch?v=pPoijXUSIQI&t=144s
+                  https://www.youtube.com/watch?v=SOjseHrymjw
+
+Aria operations for logs : https://www.youtube.com/watch?v=Hwhv1ouPV1k
+
+TP vmware : 
+https://www.youtube.com/watch?v=4YDwnZcu6bk
+https://www.youtube.com/watch?v=5a0_OrbR7So
 
