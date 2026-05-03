@@ -58,6 +58,11 @@ Types de subnets à avoir dans une infra VMWARE :
 -Subnet Vcenter HA
 -Subnet ISCSI (si j'utilise une baie TCP/IP)
 
+l'infra vmware B2B est divisée entre : 
+-management domain : contient les VMs vcenter NSX Aria  et serveurs AD
+-workload domain : contient juste les VMs des clients B2B (VM métiers, applications ...)
+
+
 VM déconnecté : VM setting > network adapter, check VLAN, Check console
 VM Frozen : vcenter > Tasks ans Events
 cannot power VM : Datastore > files, existing .lck file from another host
