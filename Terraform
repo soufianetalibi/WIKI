@@ -20,15 +20,18 @@ Supprime l’infrastructure créée
 
 ================================================================================================
 
-terraform.tfstate : garde l’état réel de l’infrastructure (réponse du provider après exécution du code)
+main.tf	                 : Déclaration de l’infrastructure
+variables.tf               : Déclaration des variables de l'infra
+terraform.tfvars	       : Les valeurs exactes des variables
+terraform.tfstate	       : fichier de réponse, état actuel de l'infra.
+backend.tf                 : Gère le stockage du fichier de réponse après l'apply  
+outputs.tf                 : permet de récupérer un ID, une IP, sortir des infos après un  (Affiche les résultats)
+terraform.tfstate.backup   : Sauvegarde pour récupérer l'infra en cas de perte
+
+
+--> terraform.tfstate : garde l’état réel de l’infrastructure (réponse du provider après exécution du code)
                     mémoriser ce qui est réellement déployé, éviter de redéployer l'existant
 
-main.tf	                 : Déclaration de l’infrastructure
-variables.tf             : Déclaration des variables de l'infra
-terraform.tfvars	 : Les valeurs exactes des variables
-terraform.tfstate	 : Réponse / état réel
-terraform.tfstate.backup : Sauvegarde pour récupérer l'infra en cas de perte
-outputs.tf               : permet de récupérer un ID, une IP, sortir des infos après un apply
 
 quand j'exécute terraform Apply, un fichier "terraform.tfstate.backup" est crée avant de modifier le tfstate actuel.
 
