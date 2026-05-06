@@ -1,3 +1,31 @@
+
+-Héberger un serveur web statique : VM vs Container 
+
+1-avec une VM, installer un serveur web : http://IP_du_serveur:80 
+
+2-avec un conteneur docker il faut faire un mapping, "docker pull Nginx" puis "docker run -p 80:80 Nginx" (port_host=port_container)
+
+-héberger une application 3 tiers : VM vs Containers
+
+Client → Nginx → PHP → MySQL
+
+1-avec une VM, installer le serveur web ayant php et installer MySQL, connecter le serveur web à MySQL, le serveur écoute sur 80 et 3306
+
+2-avec dockers je créée 3 conteneurs "Nginx" "php:8.2-fpm" "MySQL:8" liés via un docker-compose.yml  (je n'expose que Nginx sur 80)
+
+    Nginx utilise le port 80 (exposé)
+    php:8.2-fpm utilise le port 9000 non exposé
+    MySQL:8 utilise le port 3306 non exposé
+
+docker-compose.yml
+Nginx.conf -> lancer l'écoute sur 80
+app/index.php ->créer une page qui se connecte à MySQL
+
+lancer avec : docker-compose up -d
+http://IP_du_serveur:80 -->la page index.php retourne : Connected to MySQL successfully!
+
+=====
+
 Il y a trois façons pour lancer docker : 
 
   1-Faire un pull "docker pull nginx:latest" de limage puis l'exécuter avec "docker run -d -p 80:80 --name mon-nginx nginx:latest"
