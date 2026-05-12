@@ -67,7 +67,13 @@ VM déconnecté : VM setting > network adapter, check VLAN, Check console
 VM Frozen : vcenter > Tasks ans Events
 cannot power VM : Datastore > files, existing .lck file from another host
 Host not responding :  Host > summay hardware, check ILO/IDRAC
-vcenter down 503 : VAMI https://vcenter:5480 (services STS Postres ...)⁠
+vcenter down 503 : VAMI https://vcenter:5480 (services STS Postres ...)
+
+problèmes de stockage : 
+APD : all path down : perte temporaire de connectivité du datastore
+PDL : permament device loss : datastore supprimé définitivement
+     --->tail -f /var/log/hostd.log chercher : timeout, storage inaccessible, waiting on lock
+     --->tail -f /var/log/vmkernel.log chercher : All Paths Down, APD Start, Lost access to volume
 
 Management services restart : (Don't affect VMs) 
  /etc/init.d/hostd restart
