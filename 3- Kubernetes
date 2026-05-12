@@ -48,3 +48,44 @@ Kubernetes "k8s" permet de :
 Master (Control Plane)
 Workers (Nœuds)
 Un Pod contient un ou plusieurs containers ( qui constituent l'application)
+
+========== exemple avec microk8S : =======================================================
+
+Avec MicroK8s single node, la stack ressemble à ça :
+
+Kubernetes (k8s) → orchestrateur principal
+dqlite → base de données du cluster (remplace etcd)
+kubelite → regroupe les composants Kubernetes en un seul processus
+
+
+microk8s status --wait-ready
+microk8s kubectl get nodes
+
+microk8s enable dns         → communication entre pods
+microk8s enable Dashboard  → interface web Kubernetes
+microk8s enable storage     → volumes persistants
+
+microk8s kubectl create deployment nginx --image=nginx
+microk8s kubectl expose deployment nginx --port=80 --type=NodePort
+
+microk8s kubectl get services
+
+microk8s kubectl get pods
+microk8s kubectl describe pod <nom>
+microk8s kubectl logs <nom>
+
+microk8s kubectl exec -it nginx-66686b6766-qw5zq -- bash      -->entrer dans le conteneur
+dir                                                           -->système de fichier du conteneur
+cd /usr/share/nginx/html
+cat index.html
+echo "Hello Kubernetes" > index.html
+
+scale : 
+microk8s kubectl scale deployment nginx --replicas=3
+
+==========================================================
+ exemple kubernetes minimal : 
+kubectl create deployment nginx --image=nginx
+kubectl expose deployment nginx --port=80 --type=LoadBalancer
+kubectl get services
+
