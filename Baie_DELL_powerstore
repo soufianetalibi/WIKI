@@ -3,6 +3,7 @@ Solutions de protection et gestion des données (sauvegardes des VMs)
 -Acronis
 -Commvault
 -Netbackup
+-Networker
 --->les backup sont souvent stockés dans une baie datadomain
 =======================================
 
@@ -75,8 +76,68 @@ la sauvegarde (ex : backup VMware) et la protection des données
 déduplication compression
 DD Boost  : permet au logiciel de sauvegarde (Netbackup, Veaam, Comvault, networker) d'utiliser la déduplication
 
-NFS	Partages Linux/Unix
-CIFS/SMB	Partages Windows
+Data Domain (60 TB usable)
+│
+├── MTree_BACKUP_LINUX  → NFS
+├── MTree_BACKUP_WINDOWS → CIFS/SMB
+└── Storage Unit_VEEAM   → DD Boost
+
+========
+1. Configuration de base
+
+Avant tout :
+
+IP management
+DNS
+NTP
+licensing (NFS / CIFS / DD Boost activés)
+
+Data Domain
+│
+├── IP Management : 10.0.0.10
+│
+├── Data Interface 1 : 10.0.1.10 (NFS / CIFS)
+├── Data Interface 2 : 10.0.1.11 (DD Boost)
+└── Data Interface 3 : 10.0.1.12 (backup load balancing)
+
+2. Activer les protocoles
+
+Sur Data Domain :
+
+✔ Activer NFS
+Activer le service NFS
+Créer un export sur un MTree
+✔ Activer CIFS/SMB
+Joindre au domaine Active Directory (optionnel mais courant)
+Activer SMB service
+Créer un share
+✔ Activer DD Boost
+Activer DD Boost service
+Créer des “Storage Units”
+
+3. Créer les MTrees (structure logique)
+
+Exemple :
+
+MTree 1 → Linux backup (NFS)
+/data/col1/mtree_linux
+MTree 2 → Windows backup (CIFS)
+/data/col1/mtree_windows
+MTree 3 → DD Boost
+/data/col1/mtree_veeam
+
+4. Publier les accès
+
+NFS
+Export du MTree Linux : 192.168.1.10:/data/col1/mtree_linux
+
+CIFS / SMB
+Share réseau : \\datadomain\backup_windows
+
+DD Boost
+Création Storage Unit : SU_VEEAM
+
+=======================================
 
 Full	Sauvegarde complète
 Incremental	Sauvegarde des changements
