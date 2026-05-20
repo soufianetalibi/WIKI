@@ -69,3 +69,16 @@ Serveur ESXi / Hyper-V
 =====
 Si la Baie powerstore est pleine, on peut ajouter 3 autres Baies suplémentaires à inclure dans le même cluster mais cette nouvelle baie aura une IP appliance, ip nodeA, ip nodeB 
 
+======================
+Datadomain : 
+la sauvegarde (ex : backup VMware) et la protection des données
+déduplication compression
+DD Boost  : permet au logiciel de sauvegarde (Netbackup, Veaam, Comvault, networker) d'utiliser la déduplication
+
+NFS	Partages Linux/Unix
+CIFS/SMB	Partages Windows
+
+Full	Sauvegarde complète
+Incremental	Sauvegarde des changements
+Differential	Différences depuis dernier full
+
