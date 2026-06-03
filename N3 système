@@ -1,5 +1,23 @@
 
+== Cloud solution architect : CSA : 
 
+-Recueillir les besoins (business requirements)
+-Concevoir une architecture cible
+-Estimer les coûts
+-Présenter une solution à des managers (technical solution)
+-Rédiger un DAT
+-résoudre les problèmes architecturaux
+
+Infra cloud ( compute, storage, networking )     "compute : VM , container , serverless"
+Security : zero trust model (check identity, MFA, Least Privilege) with IAM   
+           CIA Triad (Confidentialité, Intégrité, Disponibilité), 
+           Cryptage de la data in transit (TLS, HTTPS, SSH, VPN) and at rest (AES-256 encryption)
+           Backup and disaster recovery : resilience PCA, PRA  (RTO : temps max pour restaurer, RPO : perte de données acceptable)
+           High availability 
+           Monitoring and treat detection with EDR and SIEM
+           cloud security : secure score, recommendations
+
+===================
 -Administration systèmes Windows/linux
 -Le cloud Azure                         IaaS, PaaS, SaaS, (azure stack HCI "azure-like", Azure stack HUB "mini azure"), Entra Connect, ARC, intune 
 -la virtualisation                      (virtualisation des OS ESXi 9.0 et vcenter 8.0 U3)
