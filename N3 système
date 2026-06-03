@@ -18,11 +18,13 @@ Security : zero trust model (check identity, MFA, Least Privilege) with IAM
            cloud security : secure score, recommendations
 
 
-3 technologies sont utilisées en même temps pour sécuriser un flux sur internet : 
+3 technologies sont utilisées en même temps pour sécuriser un flux en transit: 
  -AES : Chiffrement Symétrique : confidentialité avec une seule clé pour l'échange continu des données lourdes.
  -SHA : Garantir l'intégrité : Hachage : empreinte unique et irréversible.
  -RSA : Chiffrement Asymétrique : confidentialité avec deux clés pour démarrer la connexion sécurisée.
 en HTTPS : RSA initie la connexion, ensuite AES prend le relai pour transférer les données et SHA surveille chaque msg envoyé.
+
+pour le flux en repos, on utilise uniqueement AES et SHA (BitLocker sur windows, veracrypt opensource sur all OS, AES-256 by default sur azure) 
 ===================
 -Administration systèmes Windows/linux
 -Le cloud Azure                         IaaS, PaaS, SaaS, (azure stack HCI "azure-like", Azure stack HUB "mini azure"), Entra Connect, ARC, intune 
