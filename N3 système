@@ -1,14 +1,17 @@
 
 == Cloud solution architect : CSA : 
 
--Recueillir les besoins (business requirements)
--Concevoir une architecture cible
--Estimer les coûts
--Présenter une solution à des managers (technical solution)
--Rédiger un DAT
--résoudre les problèmes architecturaux
+-get the business requirements and goals, expected traffic like 'users' 'peak load'
+-Ensure that the system is secure, scalable and reliable
+--->Concevoir une architecture cible : Design a target architecture
+--->Estimer les coûts (cost management)
+-manage cloud migration from on-premise to the cloud
+-résoudre les problèmes architecturaux (Resolve architectural issues)
+-Présenter une solution à des managers (technical solutions)
+-Rédiger un DAT (Draft a Technical Architecture Document)
 
-Infra cloud ( compute, storage, networking )     "compute : VM , container , serverless"
+
+Design Infra cloud ( compute layer, network design, storage layer, Security layer, HA and DR )     "compute : VM , container , serverless"
 Security : zero trust model (check identity, MFA, Least Privilege) with IAM   
            CIA Triad (Confidentialité, Intégrité, Disponibilité), 
            Cryptage de la data in transit (TLS, HTTPS, SSH, VPN) and at rest (AES-256 encryption)
