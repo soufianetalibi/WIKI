@@ -1,7 +1,7 @@
 
-== Cloud solution architect : CSA : 
+== Cloud solution architect : CSA :       designing technology systems :   convert  "business needs"  to  "technical implementation"
 
--get the business requirements and goals, expected traffic like 'users' 'peak load'
+-get the business needs, expected traffic like 'users' 'peak load'
 -Ensure that the system is secure, scalable and reliable
 --->Concevoir une architecture cible : Design a target architecture
 --->Estimer les coûts (cost management)
