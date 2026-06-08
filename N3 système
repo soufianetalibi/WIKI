@@ -63,6 +63,7 @@ Les accès windows :
  WMI (RPC DCOM) : wmic /node:192.168.1.10 /user:Administrator process list
 ex : vérifier les services liés au rôles RDS d'un TSE : 
      wmic /node:10.246.132.149 service where "(name='TermService' or name='SessionEnv' or name='UmRdpService' or name='Tssdis')" get Name,State,StartMode
+Se connecter en RDP sur un serveur RDP en évitant son brocker (si le service brocker est KO) : mstsc /v:10.246.132.149 /admin
  SSH : ssh user@192.168.1.10 (si openSSH est installé)
 
 1. Administration systèmes Windows / Linux
