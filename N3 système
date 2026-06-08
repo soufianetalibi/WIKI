@@ -1,9 +1,11 @@
 
 == Cloud solution architect : CSA :       designing technology systems :   convert  "business needs"  to  "technical implementation"
 
--get the business needs, expected traffic like 'users' 'peak load'
+-understand the business needs, expected traffic like 'users' 'peak load'
+-Design a target architecture ( Concevoir une architecture cible )
+-choose the technologies (Firewall, Switch, Router, SD-WAN, compute, storage)
 -Ensure that the system is secure, scalable and reliable
---->Concevoir une architecture cible : Design a target architecture
+
 --->Estimer les coûts (cost management)
 -manage cloud migration from on-premise to the cloud
 -résoudre les problèmes architecturaux (Resolve architectural issues)
@@ -59,6 +61,8 @@ Les accès windows :
  dir \\192.168.1.10\C$ 
  psexec \\192.168.1.10 cmd
  WMI (RPC DCOM) : wmic /node:192.168.1.10 /user:Administrator process list
+ex : vérifier les services liés au rôles RDS d'un TSE : 
+     wmic /node:10.246.132.149 service where "(name='TermService' or name='SessionEnv' or name='UmRdpService' or name='Tssdis')" get Name,State,StartMode
  SSH : ssh user@192.168.1.10 (si openSSH est installé)
 
 1. Administration systèmes Windows / Linux
