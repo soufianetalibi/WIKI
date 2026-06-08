@@ -24,11 +24,16 @@ Security : zero trust model (check identity, MFA, Least Privilege) with IAM
            Monitoring and treat detection with EDR and SIEM
            cloud security : secure score, recommendations
 
-3 technologies sont utilisées en même temps pour sécuriser un flux en transit: 
+TLS est un protocole de sécurité qui utilisent des algorithmes (ci-dessous) au dessus du TCP pour sécuriser le communication client/serveur
+
+Les algoritmes utilisés pour sécuriser un flux en transit: 
  -AES : Chiffrement Symétrique : confidentialité avec une seule clé pour l'échange continu des données lourdes.
  -SHA : Garantir l'intégrité : Hachage : empreinte unique et irréversible.
  -RSA : Chiffrement Asymétrique : confidentialité avec deux clés pour démarrer la connexion sécurisée.
-en HTTPS : RSA initie la connexion, ensuite AES prend le relai pour transférer les données et SHA surveille chaque msg envoyé.
+ 
+
+en HTTPS avec TLS1.0, TLS1.1 : RSA initie la connexion, ensuite AES prend le relai pour transférer les données et SHA surveille chaque msg envoyé.
+en HTTPS avec TLS1.2 ou TLS1.3 (moderne) : 
 
 pour le flux en repos, on utilise uniqueement AES et SHA (BitLocker sur windows, veracrypt opensource sur all OS, AES-256 by default sur azure) 
 ===================
