@@ -14,6 +14,8 @@
 
 
 Design Infra cloud ( compute layer, network design, storage layer, Security layer, HA and DR )     "compute : VM , container , serverless"
+Framework : CAF governance (what to do and why), ESLZ how to build the azure plateform with best practices
+Deploy with : IaC like Terraform, ARM templates and Bicep and confirgure hosts with ansible.
 Security : zero trust model (check identity, MFA, Least Privilege) with IAM   
            CIA Triad (Confidentialité, Intégrité, Disponibilité), 
            Cryptage de la data in transit (TLS, HTTPS, SSH, VPN) and at rest (AES-256 encryption)
@@ -21,7 +23,6 @@ Security : zero trust model (check identity, MFA, Least Privilege) with IAM
            High availability 
            Monitoring and treat detection with EDR and SIEM
            cloud security : secure score, recommendations
-
 
 3 technologies sont utilisées en même temps pour sécuriser un flux en transit: 
  -AES : Chiffrement Symétrique : confidentialité avec une seule clé pour l'échange continu des données lourdes.
