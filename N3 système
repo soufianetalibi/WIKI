@@ -25,17 +25,25 @@ Security : zero trust model (check identity, MFA, Least Privilege) with IAM
            cloud security : secure score, recommendations
 
 TLS est un protocole de sécurité qui utilisent des algorithmes (ci-dessous) au dessus du TCP pour sécuriser le communication client/serveur
+TLS a 3 étapes : 1-Échange de clés puis 
+                 2-Chiffrement données
+                 3-check de l'ntégrité
+Les alogorithmes utilisés dans chaque étape dépendent de la version TLS : 1.0, 1.1, 1.2, 1.3 
 
-Les algoritmes utilisés pour sécuriser un flux en transit: 
+Les algoritmes utilisés sur TLS 1.0 pour sécuriser un flux en transit: 
+ -RSA : Chiffrement Asymétrique : confidentialité avec deux clés pour démarrer la connexion sécurisée. 
  -AES : Chiffrement Symétrique : confidentialité avec une seule clé pour l'échange continu des données lourdes.
  -SHA : Garantir l'intégrité : Hachage : empreinte unique et irréversible.
- -RSA : Chiffrement Asymétrique : confidentialité avec deux clés pour démarrer la connexion sécurisée.
- 
 
-en HTTPS avec TLS1.0, TLS1.1 : RSA initie la connexion, ensuite AES prend le relai pour transférer les données et SHA surveille chaque msg envoyé.
-en HTTPS avec TLS1.2 ou TLS1.3 (moderne) : 
+Les algoritmes utilisés sur TLS 1.3 pour sécuriser un flux en transit:
+- ECDHE : Échange de clés asymétrique : établissement sécurisé de la clé de session.
+- RSA-PSS / ECDSA / Ed25519 : Signature numérique : authentification du serveur.
+- AES-GCM ou ChaCha20-Poly1305 : Chiffrement symétrique : confidentialité des données échangées.
+- SHA-256 / SHA-384 : Hachage : dérivation des clés et sécurisation du handshake.
 
-pour le flux en repos, on utilise uniqueement AES et SHA (BitLocker sur windows, veracrypt opensource sur all OS, AES-256 by default sur azure) 
+pour la DATA en repos "at rest", on utilise uniqueement AES et SHA (BitLocker sur windows, veracrypt opensource sur all OS, AES-256 by default sur azure) 
+ la clé est stockée dans le TPM du hardware
+
 ===================
 -Administration systèmes Windows/linux
 -Le cloud Azure                         IaaS, PaaS, SaaS, (azure stack HCI "azure-like", Azure stack HUB "mini azure"), Entra Connect, ARC, intune 
