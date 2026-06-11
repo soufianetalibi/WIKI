@@ -28,7 +28,8 @@ TLS est un protocole de sécurité qui utilisent des algorithmes (ci-dessous) au
 TLS a 3 étapes : 1-Échange de clés puis 
                  2-Chiffrement données
                  3-check de l'ntégrité
-Les alogorithmes utilisés dans chaque étape dépendent de la version TLS : 1.0, 1.1, 1.2, 1.3 
+
+chaque version TLS (1.0, 1.1, 1.2, 1.3) utilise des algorithmes spécifiques sur ces 3 étapes. 
 
 Les algoritmes utilisés sur TLS 1.0 pour sécuriser un flux en transit: 
  -RSA : Chiffrement Asymétrique : confidentialité avec deux clés pour démarrer la connexion sécurisée. 
@@ -43,6 +44,83 @@ Les algoritmes utilisés sur TLS 1.3 pour sécuriser un flux en transit:
 
 pour la DATA en repos "at rest", on utilise uniqueement AES et SHA (BitLocker sur windows, veracrypt opensource sur all OS, AES-256 by default sur azure) 
  la clé est stockée dans le TPM du hardware
+
+Sur azure :   -SSE : server side encryption : chiffrement activé par défaut sur blob, queue, table
+                                 SSE géré par azure avec AES256
+                                 SSE-CMK géré par le client et clé mise dans azure key vault
+              -chiffrer les disques de VMs via Azure Disk Encryption (ADE), basé sur BitLocker (Windows) ou DM-Crypt (Linux), clé à stocker sur azure key vault.
+              -chiffrement des BD 
+================================================
+
+Identity federation : trust external company called IdP 
+           Log in service now with azure AD
+           log in fortigate with azure AD
+           log in my website with google account or FCB account ) 
+Identity provider "IdP" : EntraID, okta, google, ADFS…
+ pour info : ADFS est le rôle SSO qui transforme le simple active directory on premise en idp (identity provider)
+
+sur EntraID, on peut utiliser SAML ou OpenID
+==========
+SAML                      : used for legacy entreprise applications (ServiceNow, Salesforce ...)
+OpenID connect and Oauth2 : used for web and mobile apps "OIDC authentifie l’identité et Oauth autorise l’accès avec token"
+                                 log in my website with google account or facebook account
+                                 Log in my application with EntraID or ADFS
+==================================
+Storage account : 
+    Blob Storage
+           Hot / Cool / Archive.
+           LRS / ZRS / GRS / GZRS.
+           Soft Delete.
+           Versioning.
+           Snapshots.
+           Lifecycle Management.
+           SAS Tokens.
+           Private Endpoints et sécurité réseau.
+
+Azure IoT Hub : Communication avec les objets connectés, utile si je veux créer une plateforme IoT personnalisé
+Azure IoT Central : solution clé en main pour PME afin de gérer les devices IoT dans un dashbord avec alertes ...(elle contient un IoT HUB interne)
+
+Stream analytics analyse des données en continu temps téel : 
+  Capteur → IoT Hub → Stream Analytics → Power BI
+
+Event HUB : Collecte les événements massifs pour traitement en temps réel par un autre service ( vers streams analytics par exemple )
+
+Event Grid : événement détecté sur une source ---> action déclenchée sur destination (source : blob, iot, app ... destination : function, logic app, webhook, service bus ...)
+
+Azure Service bus : Pub/Sub , dans une app en microservices, (commande validé --> démarrer le paiement et générer une facture et envoyer un email et MAJ du stock) 
+
+Blob / Data Lake → Synapse → analysis service → Power BI 
+
+Blob / Data Lake → Synapse → Power BI (direct)
+
+Data factory : le camion transporteur qui recupere et nettoie la data du datalake et l envoie à synapse ou directement a powerBI, envoie d une source vers destination suivant une pipeline, il peut envoyer blob vers blob
+
+Blob / Data Lake = stockage 📦
+Data Factory = transport 🚚
+Synapse = usine d’analyse 🏭
+Power BI = dashboards 📊
+
+Les BD sur azure :
+           Sql database
+           Database for mysql
+           Database for postresql
+
+           Cosmos DB (No SQL) qui peut etre : 
+                      documents JSON
+                      key-value
+                      graph
+                      column-family
+
+           Redis : DB cache in memory RAM
+
+Je peux avoir une app connecté a redis comme cache et mysql comme persistant
+Avantage : lecture des données depuis redis plus rapide
+L’application écrit dans deux bases (redis et mysql) et le select cherche d’abord dans redis sinon arrive a mysql
+Je peux mettre redis pour les données fréquentes et mysql pour les données permanentes.
+
+
+Azure Edge Zone est une extension compute d’Azure opérée en partenariat avec Microsoft chez un FAI pour être proche des utilisateurs finaux (contient une compute limitée)
+Point de presence PoP : site d’accès au réseau backbone azure sans compute utile pour azure front door, traffic manager, CDN, O365
 
 ===================
 -Administration systèmes Windows/linux
@@ -65,6 +143,8 @@ SNAT : Source NAT, Traduire l’adresse source d’un paquet sortant, il regroup
 DNAT : Destination NAT, Traduire l’adresse de destination d’un paquet entrant ( par exeemple le port forwarding)
 
 ==================================================================================================
+les GPO appliquées (effectives sur la machine) : Auditpol.exe /get /category:*
+Source des GPO apliquées : gpresult /h report.html
 
 Les accès windows :
  Winrm via powershell : Enter-PSSession -ComputerName 192.168.1.10
