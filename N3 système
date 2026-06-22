@@ -488,3 +488,35 @@ par exemple, le log 1074 :
    The process C:\Program Files\VMware\VMware Tools\vmtoolsd.exe (SERVEUR1) has initiated the shutdown of computer SERVEUR1 on behalf of user NT AUTHORITY  \SYSTEM for the following reason: Legacy API shutdown
   --> signifie de l'arrêt de SERVEUR1 a été effectué depuis la console vmware (via vmtools installés)
 
+==========================================liste des rôles utiles sur windows  :
+
+ADDS : service de base pour gérer les domaines, utilisateurs, groupes et GPO.
+ADFS : fédération d’identités, SSO avec applications SaaS et partenaires.
+ADCS : infrastructure PKI, délivrance et gestion des certificats.
+DSRM : mode spécial pour restaurer Active Directory.
+Restauration autoritaire AD : restauration d’objets AD depuis un System State Backup (registre + AD + SYSVOL).
+Veeam / VMware snapshot : solutions tierces pour restaurer VMs et données.
+LDAPS : sécurisation des connexions LDAP via SSL/TLS.
+LAPS : rotation automatique des mots de passe locaux administrateurs.
+FSRM : quotas, filtrage de fichiers, rapports sur l’utilisation du stockage.
+DFS : réplication et namespace pour partager des fichiers sur plusieurs serveurs.
+Azure File Sync : synchronisation des fichiers entre serveurs Windows et Azure Files.
+Corbeille AD : restauration d’objets AD supprimés sans restauration complète.
+MDT : déploiement automatisé d’images Windows.
+WSUS : gestion des mises à jour Microsoft en interne.
+SCCM : gestion centralisée des postes, déploiement d’applications, patching.
+Intune : MDM/MAM cloud pour gérer les appareils et applications.
+MCC : serveur cache local qui permet aux postes de télécharger les MAJ sans aller vers internet.
+DEV Drive : volume optimisé pour les développeurs (performance + sécurité).
+Applocker : contrôle des applications autorisées (éditeurs, bloquer les .exe dans C:\Users\\Downloads*, mais appliqué juste au niveau users
+WDAC : politique de contrôle d’exécution plus stricte que Applocker (autoriser que les app d'un éditeur, dans un dossier X …) mais appliqué au noyau
+Robocopy : copie robuste de fichiers avec reprise, multi-threading, réplication.
+   robocopy "G:" "R:" /E /Z /COPYALL /SEC /XO /XD "$RECYCLE.BIN" "System Volume Information" /R:1 /W:1 /TEE /V /TS /FP /NP /log+:C:\Temp\robocopy\file.log
+BitLocker : chiffrement des volumes pour protéger les données au repos.
+Windows Hello for Business : authentification sans mot de passe (PIN, biométrie)
+NPS : serveur RADIUS qui authentifie users sur WIFI "AP", accès sur LAN filaire "switch", accès VPN via l'identité active directory.
+Always On VPN : Connexion transparente au LAN entreprise, Infrastructure requise : ADDS, un PKI, un serveur NPS(radius), Serveur VPN(client radius), client windows 
+
+
+windows server 2025 supporte 240 To de RAM et 2048 vcpu
+
