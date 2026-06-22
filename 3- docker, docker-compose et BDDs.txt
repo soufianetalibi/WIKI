@@ -1,17 +1,17 @@
 
 -Héberger un serveur web statique : VM vs Container 
 
-1-avec une VM, installer un serveur web : http://IP_du_serveur:80 
+        1-avec une VM, installer un serveur web : http://IP_du_serveur:80 
 
-2-avec un conteneur docker il faut faire un mapping, "docker pull Nginx" puis "docker run -p 80:80 Nginx" (port_host=port_container)
+        2-avec un conteneur docker il faut faire un mapping, "docker pull Nginx" puis "docker run -p 80:80 Nginx" (port_host=port_container)
 
 -héberger une application 3 tiers : VM vs Containers
 
-Client → Nginx → PHP → MySQL
+        Client → Nginx → PHP → MySQL
 
-1-avec une VM, installer le serveur web ayant php et installer MySQL, connecter le serveur web à MySQL, le serveur écoute sur 80 et 3306
+        1-avec une VM, installer le serveur web ayant php et installer MySQL, connecter le serveur web à MySQL, le serveur écoute sur 80 et 3306
 
-2-avec dockers je créée 3 conteneurs "Nginx" "php:8.2-fpm" "MySQL:8" liés via un docker-compose.yml  (je n'expose que Nginx sur 80)
+        2-avec dockers je créée 3 conteneurs "Nginx" "php:8.2-fpm" "MySQL:8" liés via un docker-compose.yml  (je n'expose que Nginx sur 80)
 
     Nginx utilise le port 80 (exposé)
     php:8.2-fpm utilise le port 9000 non exposé
@@ -24,7 +24,37 @@ app/index.php ->créer une page qui se connecte à MySQL
 lancer avec : docker-compose up -d
 http://IP_du_serveur:80 -->la page index.php retourne : Connected to MySQL successfully!
 
-=====
+======Exemple d'application dockerisée : 
+GLPI sous docker : 
+
+🌐 Mise en place d’une plateforme GLPI 11.0.7 sous Docker
+J’ai réalisé l’installation et la configuration complète d’une solution de gestion de parc informatique et de support IT basée sur GLPI 11.
+🔧 Infrastructure déployée :
+Installation sur serveur Ubuntu 24.04 LTS
+Déploiement avec Docker
+Configuration de MariaDB 11
+Mise en place de Redis pour les performances
+Configuration Apache2 + PHP 8.3 FPM
+⚙️ Paramétrage effectué :
+Création des utilisateurs et profils
+Configuration des entités et groupes
+Gestion de l’inventaire informatique
+Ajout des équipements (PC, imprimantes, etc.)
+Création et suivi des tickets d’assistance
+Configuration des notifications
+Gestion des droits d’accès
+🚀 Compétences mises en œuvre :
+Linux (Ubuntu)
+Docker
+MariaDB
+Apache2
+PHP
+GLPI
+Administration systèmes
+💡 GLPI est une solution ITSM puissante permettant de centraliser la gestion du parc informatique, le suivi des incidents et l’assistance aux utilisateurs. Associé à Docker, son déploiement devient plus flexible, sécurisé et facile à maintenir.
+📌 Ce projet m’a permis de renforcer mes compétences en administration systèmes, virtualisation, conteneurisation et gestion des services IT.
+
+===========================================================================================
 
 Il y a trois façons pour lancer docker : 
 
