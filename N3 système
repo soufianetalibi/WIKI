@@ -137,7 +137,20 @@ Point de presence PoP : site d’accès au réseau backbone azure sans compute u
 -IoT                                    connectivité des objets via une passerelle (montre, voiture, lampe, capteur, caméra …)
 -IA                                     simuler l'intelligence du cerveau humain via la ML, deep Learning, voir même l'IA augmentée qui dépasse l'humain.
 -Bases de données                       Relationnel (Mysql, SQLserver), ...
+
 ==============================
+
+ADRecon : inventaire complet d’un AD
+
+ADConnect Health : Monitoring de santé : réplication, performance
+
+Purple Knight : audit de sécurité Active Directory
+
+Idfix : un outil qui corrige les erreurs sur active directory pour pouvoir synchroniser correctement les objets via EntraID connect
+
+Gpozaurr : Check broken GPO, duplicate GPO ...
+
+================================================
 
 SNAT : Source NAT, Traduire l’adresse source d’un paquet sortant, il regroupe le NAT statique (ip to ip), le NAT dynamic (pool) et le NAT Overload (PAT) 
 DNAT : Destination NAT, Traduire l’adresse de destination d’un paquet entrant ( par exeemple le port forwarding)
