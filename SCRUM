@@ -1,0 +1,32 @@
+
+Scrum est un framework Agile qui organise le travail en sprints, avec des livraisons régulières et une adaptation continue aux besoins.
+
+les 3 rôles : Product Owner(client), Scrum Master, équipe de développement
+
+On divise tout le projet en étapes mises dans le Product Backlog
+On organise la livraison en sprints, chaqu’un a un Sprint Backlog. 
+
+A la fin de chaque sprint, un livrable est donné par l’équipe DEV au product owner qui évalue l’incrément dans le sprint review.
+
+Réunions : 
+Sprint Planning (début du sprint)
+Daily Scrum (tous les jours, 15 minutes)
+Sprint Review (fin du sprint)
+Sprint Retrospective (après la Sprint Review)
+
+Cahier des charges : besoins, objectifs, perimètre, contraintes, exigences : Que doit-on réaliser
+Plan du projet : organisation ressources budget risques : Comment va-t-on réaliser
+Roadmap : les grandes étapes
+COPROJ : projet
+COPIL : pilotage
+CODIR : direction
+Modèle RACI : précise les responsabilités 
+KPI : indicateurs
+SLA : engagements
+Go live : mise en exploitation
+Rollback
+Deadline
+Parties prenantes (stakeholders)
+
+CAPEX : dépenses d’investissement.
+OPEX : dépenses de fonctionnement.
