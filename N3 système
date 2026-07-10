@@ -414,6 +414,22 @@ Sauvegarder .cer
 Uploader .CER sur le serveur web.
 
 =================
+Certificat generique  : 
+C’est un certificat * qui peut être utilisé par plusieurs services en meme temps : 
+
+*.entreprise.com Sécurise : 
+www.entreprise.com → serveur Web
+rdp.entreprise.com → serveur RDP
+mail.entreprise.com → serveur de messagerie
+vpn.entreprise.com → VPN
+
+Mais ici la clé privée est la même dans tous ces services, si elle est volée, tous ces services sont compromis.
+
+Certificat spécifique  : 
+sécurise un seul service, par ex : www.entreprise.com
+je peux utiliser le modele computer qui permet de générer un certificat spécifique pour RDP ou VPN ou HTTPS car je précise le FQDN du host à sécuriser, si la CA d’entreprise j’utilise une GPO pour automatiser.
+
+—créer une selfsigned certificat sur le serveur web, déployer ce certificat via gpo sur tous les meumbres du domaine
 
 auto-signé : si j'ai pas de serveur ADCA interne et je n'utilise pas une autorité publique, je peux utiliser l'autosigné
              ça veut dire que le serveur sécurise l'accès lui même sans faire appel à une autorité interne ou publique
