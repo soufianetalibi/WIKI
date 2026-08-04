@@ -76,9 +76,29 @@ PDL : permament device loss : datastore supprimé définitivement
      --->tail -f /var/log/vmkernel.log chercher : All Paths Down, APD Start, Lost access to volume
 
 Management services restart : (Don't affect VMs) 
- /etc/init.d/hostd restart
+
+vmware -vl
+/etc/init.d/hostd restart
  /etc/init.d/vpxa restart
  services.sh restart
+
+services.sh status
+esxcli system process list
+
+grep -i "Host has booted" /var/log/hostd.log
+grep -i "boot" /var/log/vmkernel.log
+grep -i "starting" /var/log/vmkernel.log
+grep -i "boot" /var/log/vmkernel.log | tail -20
+
+/var/log/vmkernel.log
+/var/log/hostd.log
+tail -100 /var/log/vobd.log
+tail -100 /var/log/syslog.log
+grep -Ei "shutdown|reboot|restart" /var/log/syslog.log
+grep -Ei "panic|crash|exception" /var/log/vmkernel.log
+grep -Ei "power|reset" /var/log/vmkernel.log
+
+depuis quand il est démarré : esxcli system stats uptime get
 
 DCUI : accès console directe
 Host client : accès web via mgmt IP
