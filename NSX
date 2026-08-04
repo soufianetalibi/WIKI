@@ -191,3 +191,37 @@ Direct Network (bridged)
   VM reçoit IP du réseau entreprise
   visible directement sur LAN
   -->un réseau Direct est connecté directement au réseau physique sans passer par NSX
+
+======
+
+Les ESXi ont a VDS-01 partagé qui permet de sortir sur le overlay ainsi que MGMT,VMOTION,VSAN 
+Les Edge nodes ont aussi un VDS-02 partagé qui permet de sortir sur le overlay ainsi que le VLAN Externe
+
+Edge node : avoir 4 cartes NIC virtuelles
+ ├── vNIC 1 → Management
+ ├── vNIC 2 → TEP / Overlay
+ ├── vNIC 3 → TEP / Overlay
+ └── vNIC 4 → VLAN externe
+être membre des deux Transport Zone (overlay et VLAN)
+
+-->pourquoi, parce l'edge node présente le T1 et le T0 
+
+Les 2 Edges nodes doivent être mis dans un cluster par ex en mode active/standby
+Les 3 NSX manager doivent être dans un cluster et partager une ip virtuelle
+
+
+Distributed Firewall (DFW) : présent sur les transport nodes (ESXi) east-ouest, donc filtre le traffic entre les VMs sur ces ESXi
+
+Gateway Firewall : présent sur le T1 ou le T0 : 
+  T1 Gateway Firewall : protection des segments (flux entre segmentA et segmentB)
+  T0 Gateway Firewall : contrôle du trafic au niveau de la sortie commune vers le réseau physique.
+
+Exemple :  
+T0 Firewall : autorise uniquement le trafic HTTPS provenant du réseau externe.
+T1 Firewall : autorise HTTPS vers le segment Web, mais bloque l’accès direct aux segments Backend ou Database.
+DFW : autorise uniquement la VM Web à communiquer avec la VM Backend 8080 et autorise la VM Backend à communiquer avec la VM BD 3306.
+
+
+
+
+
