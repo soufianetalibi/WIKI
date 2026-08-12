@@ -1,12 +1,13 @@
 upgrader mon AD de 2019 à 2025 : 
 
-serveur 2019 : schéma 88 et niveau fonctionnel 2016
-serveur 2025 : schéma 91 et niveau fonctionnel 2025
+serveur 2019 : schéma objectVersion 88 et niveau fonctionnel 2016
+serveur 2025 : schéma objectVersion 91 et niveau fonctionnel 2025
 
 1-ajouter le serveur 2025 au domaine
 2-DC 2025 promu comme DC supplémentaire.
 le processus vérifie/prépare le schéma si nécessaire
 vérifier le schéma, il sera upgradé vers : objectVersion = 91
+  Get-ItemProperty 'AD:\CN=Schema,CN=Configuration,DC=mondomaine,DC=local' -Name objectVersion
 3-Vérifier la réplication :
 repadmin /replsummary
 repadmin /showrepl
