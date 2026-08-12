@@ -1,0 +1,22 @@
+upgrader mon AD de 2019 à 2025 : 
+
+serveur 2019 : schéma 88 et niveau fonctionnel 2016
+serveur 2025 : schéma 91 et niveau fonctionnel 2025
+
+1-ajouter le serveur 2025 au domaine
+2-DC 2025 promu comme DC supplémentaire.
+le processus vérifie/prépare le schéma si nécessaire
+vérifier le schéma, il sera upgradé vers : objectVersion = 91
+3-Vérifier la réplication :
+repadmin /replsummary
+repadmin /showrepl
+dcdiag
+Vérifier que DNS + Global Catalog fonctionnent sur le 2025.
+4-Transférer les 5 rôles FSMO vers le 2025.
+Vérifier les rôles FSMO : netdom query fsmo
+Vérifier que les clients utilisent correctement le DNS du 2025.
+5-Démoter proprement le DC 2019.
+Vérifier une dernière fois AD/DNS/réplication.
+6-Une fois qu'il ne reste que des DC Windows Server 2025, augmenter le niveau fonctionnel :
+Domain Functional Level → 2025
+Forest Functional Level → 2025
