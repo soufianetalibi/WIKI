@@ -286,8 +286,9 @@ le SDDC manager "pilote de la VCF" permet de déployer par ex VMware Aria Suite 
 ======================================================
 
 LCM : gérer le cycle de vie des composants : Patch ESXi, MAJ firemware
-      dans un VCF, on utilise le SDDC Manager qui met à jour tout : ESXi, Vcenter, NSX, Aria
+      dans un VCF, on utilise le SDDC Manager qui met à jour tout : ESXi, Vcenter, NSX
       dans un VVF, on on upgrade chaque solution à part de la façon traditionnelle
+
 
 VMware vCenter Enhanced Linked Mode (ELM) : créer deux vcenter qui partagent le même SSO.
  par exemple avoir deux clusters mgmt ayant vcenter1 et workload ayant vcenter2
