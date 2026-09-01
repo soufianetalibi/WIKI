@@ -415,3 +415,89 @@ https://www.youtube.com/watch?v=5a0_OrbR7So
 
 2025 : VCF 9.0 : vSphere 9, vSAN 9, NSX 9
 
+==== VCF 9.1 : =========================================================================================================
+
+installer VCF : 
+
+Étape 1 — préparer l'infrastructure physique
+
+ESXi01 ─┐
+ESXi02 ─┤
+ESXi03 ─┤── Cluster VCF Management Domain
+ESXi04 ─┘
+
+DNS ;
+NTP ;
+IP management ;
+VLAN ;
+réseau vMotion ;
+réseau vSAN ;
+réseau NSX/TEP ;
+MTU ;
+routage ;
+certificats si nécessaire ;
+stockage.
+
+Étape 2 — Déployer le VCF Installer :
+
+https://<vcf-installer>/vcf-installer-ui/ 
+-->Le wizard te permet de construire le domaine
+
+Management VLAN
+       │
+       ├── ESXi
+       ├── vCenter
+       ├── VCF Operations
+       └── NSX Manager
+
+vMotion VLAN
+       │
+       └── ESXi
+
+vSAN VLAN
+       │
+       └── ESXi
+
+NSX TEP / Overlay Network
+       │
+       ├── ESXi Transport Nodes
+       └── Edge Nodes
+
+--> Le VCF Installer va ensuite orchestrer le déploiement des composants.
+    À la fin, tu obtiens ton VCF Instance / Fleet
+
+Étape 3 — ajouter les Workload Domains : 
+
+             VCF Operations
+                    │
+              VCF Instance
+                    │
+        ┌───────────┴───────────┐
+        │                       │
+ Management Domain       Workload Domain
+        │                       │
+ vCenter + ESXi             vCenter + ESXi
+ NSX + vSAN                 NSX + vSAN
+
+workloads : 
+
+-PROD : ESXi05, ESXi06, ESXi07, ESXi08
+-TEST : ESXi09, ESXi10, ESXi11, ESXi12
+
+La BOM simplifiée VCF 9.1 : 
+
+1. VCF Operations : monitoring, health & diagnostics, logs, lifecycle ...
+2. VCF Management Services
+3. License Server
+4. SDDC Manager
+5. Cloud Proxy    (collecteur de VCF operations)
+6. vCenter Server (ESXi/cluster/VMs/vSAN/Supervisor/VKS)
+7. ESXi
+8. vSAN (stockage HCI)
+9. NSX (NSX Manager/Segments/T1/T0/DFW/Edge...)
+10. Supervisor + VKS (Kubernetes clusters/containers/pods)
+11. VCF Automation (portail self-service)
+
+
+
+
