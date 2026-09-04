@@ -1,0 +1,25 @@
+Démarrer avec CD 
+
+diskpart 
+list disk
+list volume
+
+par exemple volume1 est la partition ayant Windows installé
+
+select volume 1
+assign letter=C
+exit
+
+c:
+
+copy C:\Windows\System32\Utilman.exe C:\Windows\System32\Utilman.exe.bak
+copy C:\Windows\System32\cmd.exe C:\Windows\System32\Utilman.exe
+
+Redémarrer Windows, clic sur narrateur, utiliser le cmd : 
+net user administrateur password+123
+
+pour restaurer utilman : 
+
+copy C:\Windows\System32\Utilman.exe.bak C:\Windows\System32\Utilman.exe
+
+
