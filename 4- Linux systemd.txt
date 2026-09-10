@@ -168,6 +168,9 @@ Rester sécurisé : surveiller les logs sur ma VM, connexions établies, process
  sudo ss -tnp
  htop
 
+tester si mon linux atteint un port sur une IP distante : 
+nc -zv 192.168.121.135 22
+
 ====Démarrage linux : 
 
 1-L’ordinateur démarre et le BIOS/UEFI initialise le matériel (CPU, RAM, disques…), choix d'un disque pour le boot, lancer le bootloader(GRUB)
