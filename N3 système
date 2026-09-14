@@ -549,3 +549,55 @@ Always On VPN : Connexion transparente au LAN entreprise, Infrastructure requise
 
 windows server 2025 supporte 240 To de RAM et 2048 vcpu
 
+=====
+GPO
+======
+GPO : 
+NTP PDC : une GPO à appliquer uniquement sur le serveur PDC du domaine pour récupérer le temps depuis "time.windows.com"
+les autres machines du domaine vont automatiquement récupérer le temps depuis le PDC (sans GPO)
+
+w32tm /query /source
+w32tm /query /configuration
+
+=========
+gpresult /scope computer /r
+gpresult /h C:\Temp\RSOP.html
+
+Réinitialiser uniquement la Default Domain Policy : dcgpofix /target:domain
+Réinitialiser uniquement la Default Domain controllers Policy : dcgpofix /target:DC
+
+sauvegarder une GPO : Backup-GPO -Name "nom-GPO" -Path "C:\GPO-Backup"
+
+====
+GPO-Security-Workstations : 
+
+Désactiver SMBv1
+Désactiver LLMNR
+Désactiver NetBIOS over TCP/IP si compatible
+Windows Firewall activé
+Microsoft Defender activé
+Bloquer l'exécution automatique/AutoPlay
+Désactiver les comptes locaux inutiles
+Renforcer les mots de passe locaux
+Limiter les droits des utilisateurs locaux
+Désactiver les protocoles TLS faibles
+Audit des connexions
+Bloquer les périphériques USB selon besoin
+Activer Windows LAPS pour les comptes administrateurs locaux
+
+GPO-Security-Servers : 
+
+SMBv1 désactivé
+Windows Firewall activé
+Defender activé
+Désactivation de protocoles/services inutiles
+Restriction des droits utilisateurs
+Sécurisation RDP
+Audit des ouvertures de session
+Audit des changements de groupes
+NTLM limité progressivement
+LDAP/LDAPS renforcé selon architecture
+TLS/SSL faibles désactivés
+Windows LAPS
+PowerShell logging
+Process Creation / command-line auditing
