@@ -1,0 +1,13 @@
+Type d'authentification sur les applications : 
+
+1-Basic Avec base64 (encodage reversible) -->Reçoit username:password encodé en Base64 à chaque requête, donc mdp facile à casser, alors HTTPS indispensable.
+2-Digest Avec MDS (hachage irreversible)  -->Challenge sur le hash MD5, si le client donne le même hash MD5 que le serveur donc le MDP est correct.
+3-Avec API Keys (clé qui autorise l’accès) -->une clé générée la 1ére fois sur le serveur, le client l'utilise dans ses appels
+4-Avec session et cookie (user, mdp en hash Argon2id sur la BD) si OK le user reçoit une session et futures req juste avec ID session
+                Login → backend vérifie le mot de passe → crée une session côté serveur → renvoie un cookie contenant l'identifiant de session. Les requêtes suivantes utilisent ce cookie
+5-avec JWT : user, mdp en hash Argon2id sur la BD) si OK, je reçois un token et je l’utilise sur les futures req
+                Login → backend vérifie le mot de passe → génère un JWT → client l'envoie ensuite généralement avec Authorization: Bearer <token>. Le serveur valide le token.
+6-OAuth/OIDC : délégue l’authentification à un IDP (se connecter avec EntraID, ADFS…) avec format JSON/JWT
+7-SAML : délègue l’authentification à un IDP  avec format XML
+
+Au niveau backend j'implémente le mécanisme d’authentification selon le protocole choisi.
