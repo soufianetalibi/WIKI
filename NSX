@@ -2,6 +2,77 @@ LAB NSX : https://vdives.com/2019/06/19/nsx-t-lab-setup/
 
 NSX : 
 
+1. VLAN Management
+VLAN 10 : 10.10.10.0/24
+ESXi       10.10.10.x
+vCenter    10.10.10.x
+NSX Manager 10.10.10.x
+
+2. VLAN TEP
+
+VLAN 50 : 10.50.0.0/24
+
+ESXi-01
+ ├── vmnic0
+ ├── vmnic1
+ └── TEP → 10.50.0.10
+Il sera déclaré dans ip pool, NSX crée automatiquement le vmk et affecte une IP
+
+permet d'entrer dans le réseau overlay entre ESXi et edge nodes.
+
+3. Transport Zone VLAN :
+
+permet de sortir du réseau overlay vers le réseau physique
+
+—- entre VMs de segments : (trafic dans l'overlay seul)
+
+VM Web
+  │
+Segment-Web
+  │
+Geneve
+  │
+TEP ESXi-01
+  │
+réseau physique entre ESXi
+  │
+TEP ESXi-02
+  │
+Geneve
+  │
+VM Web
+
+—-entre une VM NSX et des VMs sur des VLANs : 
+
+VM-Web
+172.16.10.10
+   │
+Segment Overlay
+   │
+   ▼
+Tier-1
+   │
+   ▼
+Tier-0
+   │  TZ-VLAN
+   │ 
+   │ 192.168.100.1 (interface T0) qui sera prise par un edge node.
+   ▼
+Routeur physique 192.168.100.2
+   ▼
+Switch physique L2
+   │
+   ├── VLAN 100
+   ├── VLAN 200
+   ├── VLAN 300
+   └── VLAN 400
+
+L'uplink du T0, c'est une interface ayant l’IP 192.168.100.1
+La VLAN-TZ, juste un scope où le edge est meumbre, permet a un segment de sortir de l’overlay vers l’uplink du T0 puis vers le routeur physique.
+Sans VLAN-TZ, je reste confiné à l'overlay inter-segements
+
+============================
+
 virtualisation réseau : intégrer dans l'infra vmware ce qui réduit les dépenses sur des équipements physiques
     Distributed switching : segments
 	Distributed Routing  présent sur T1 et T0
@@ -197,14 +268,15 @@ Direct Network (bridged)
 Les ESXi ont a VDS-01 partagé qui permet de sortir sur le overlay ainsi que MGMT,VMOTION,VSAN 
 Les Edge nodes ont aussi un VDS-02 partagé qui permet de sortir sur le overlay ainsi que le VLAN Externe
 
-Edge node : avoir 4 cartes NIC virtuelles
+Edge node : avoir 5 cartes NIC virtuelles
  ├── vNIC 1 → Management
  ├── vNIC 2 → TEP / Overlay
  ├── vNIC 3 → TEP / Overlay
- └── vNIC 4 → VLAN externe
+ ├── vNIC 4 → VLAN externe
+ └── vNIC 5 → VLAN externe
 être membre des deux Transport Zone (overlay et VLAN)
 
--->pourquoi, parce l'edge node présente le T1 et le T0 
+-->pourquoi, parce l'edge node présente le T0 
 
 Les 2 Edges nodes doivent être mis dans un cluster par ex en mode active/standby
 Les 3 NSX manager doivent être dans un cluster et partager une ip virtuelle
