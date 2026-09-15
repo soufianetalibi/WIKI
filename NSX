@@ -293,6 +293,67 @@ T0 Firewall : autorise uniquement le trafic HTTPS provenant du réseau externe.
 T1 Firewall : autorise HTTPS vers le segment Web, mais bloque l’accès direct aux segments Backend ou Database.
 DFW : autorise uniquement la VM Web à communiquer avec la VM Backend 8080 et autorise la VM Backend à communiquer avec la VM BD 3306.
 
+===========
+Transport node : ESXi préparé pour NSX ayant un N-VDS et nsx-proxy-agent
+ 
+
+Préparer ESXi
+ -VDS (Host switch)
+ -Transport zone (overlay-TZ)
+ -uplink profil
+ -TEP (ip pool)
+ -Teaming Policy uplink mapping
+
+Edge node : VM Appliance utilisée par T0 ou même T1 pour assurer des services 
+   interfaces : 
+	eth0    : MGMT avec le même VLAN que les ESXi et vcenter 
+	fp-eth0 : TEP1 avec overlay 
+	fp-eth1 : TEP2 avec overlay
+	fp-eth2 : uplink1 vers le routeur physique
+	fp-eth3 : uplink2 vers le routeur physique
+
+Le edge node doit être sur overlay-TZ et VLAN-TZ
+L'ESXi reste uniquement sur l'overlay-TZ
+Le edge node a besoin aussi d'un uplink profil et d'un IP-POOL TEP (on peut utiliser un seul ip-pool pour ESXi et Edge node)
+  
+
+
+Transport node profil : regroupe toute la config de préparation des ESXi, on l'applique à un cluster, un nouveau ESXi dans ce cluster se prépare automatiquement.
+
+-segment : connected to : Gateway-T1
+           Transport zone : overlay-TZ
+	   subnet : 192.168.1.1/24
+
+-Gateway T1 : Distributed only = routage est-ouest only
+				 DFW
+				 connected to T0
+
+-Gateway T0 : Routeur vers le réseau physique : active/active ou active standby
+	      necessite un edge cluster
+	      créer une interface par edge node et dans l'interface fixer un segment backed VLAN
+	      
+-sur T0 : configure redistributed routes
+-sur T1 : configure advertised routes 
+
+VRF : 
+  diviser la TO sous forme de sous interfaces VRF
+  attacher la T1 d'un client à son VRF
+
+NSX Federation : 
+    RTEP : tunnel entre les edges nodes de 2 sites
+    stretched T0, stretched T1, stretched segments : permet de migrer une VM du site A vers site B sans changer d'adressage
+    1-créer site A et site B
+    2-config edge nodes stretch avec RTEP
+    3-créer un global T0 ayant siteA et siteB
+    4-créer un global T1
+    5-créer un global segment
+    6-faire une cross-vmotion du siteA vers siteB, la VM reste avec même IP sur le même segment
+
+Multi Tenancy : 
+    Default tenant géré par admin ayant le rôle entreprise admin
+    créer project1, 
+
+Backup restore : 
 
 
 
