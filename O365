@@ -1,0 +1,132 @@
+
+Connect-MgGraph -Scopes "User.Read.All", "Directory.ReadWrite.All"
+Get-MgUser -UserId user@domaine.com
+Update-MgUser -UserId "jean.dupont@tondomaine.com" -DisplayName "Soufiane Talibi"
+
+ 	voir la licence d'un user : 
+  $user = Get-MgUser -UserId user@domaine.com
+  Get-MgUserLicenseDetail -UserId $user.Id
+
+	Exchange Online :
+Connect-ExchangeOnline
+Get-Mailbox
+Get-Mailbox | Get-MailboxStatistics | Select DisplayName, TotalItemSize
+
+Get-MailboxPermission -Identity user@domaine.com
+Get-MailboxStatistics -Identity user@domaine.com
+Get-TransportRule
+
+
+	Teams Online : 
+Connect-MicrosoftTeams
+Get-TeamUser
+Get-Team  (les équipes)
+Get-TeamChannel (les canaux)
+Get-CsTeamsMessagingPolicy  (poitiques teams)
+
+https://portal.azure.com/             Gestion des ressources Azure : VM, VNet, Storage, NSG, etc.
+https://entra.microsoft.com/          Entra ID : utilisateurs, groupes, applications, Conditional Access, Identity, RBAC Entra…
+https://admin.microsoft.com/          Administration globale Microsoft 365 : utilisateurs, licences, domaines, services
+https://compliance.microsoft.com      ompliance, DLP, eDiscovery, audit, retention, information protection…
+https://admin.teams.microsoft.com     Administration Microsoft Teams
+https://admin.exchange.microsoft.com  Exchange Online : boîtes aux lettres, mail flow, connectors, recipients…
+https://intune.microsoft.com          gestion des devices : config des postes (imposer WHFB,BitLocker,Defender,Defender,NO clé USB,Conf WIFI, GPO:Configuration Profiles) , updates windows, Déploiement d'applications, sécurité et conformité, Conditional Access
+
+Accéder à mon 365 : office.com 
+gérer mon e-mail 365 : admin.exchange.microsoft.com 
+
+1== Souscrire directement à azure O365 via portails : azure.microsoft.com et microsoft365.com  (idéal pour Particuliers, freelances, petites équipes)
+2== Passer par un partenaire Microsoft CSP : Accompagnement, support, facturation mensuelle, idéal pour les entreprises, administrations…
+    ex de CSP : Crayon, First Technology
+
+Microsoft 365 est un service SaaS qui offre la suite bureautique (Word,Excel,PP,outlook)et les services cloud de collaboration dans l'entreprise (exchange,OneDrive,Teams,sharepoint)
+
+Microsoft 365 est la nouvelle version, une offre plus complète qu' Office 365
+ en plus d'Office 365, il y a : licence windows10 ou 11, Defender, gestion des appareils 
+
+L’administrateur Office 365 gère : 
+  -les users, groupes, des listes de distribution, des équipes Teams, MFA, autorisations d’accès
+  -licences, domaine
+  -config des services Teams, Exchange Online, SharePoint, OneDrive
+  -Configurer les règles de sécurité (antivirus, anti-spam, quarantaines, les blacklists, les règles de transport, quotas des BAL, message trace),exchange admin center
+              Teams policies, créer des canaux et des équipes, paramètres des réunions, les droits d’accès, teams admin center
+              Synchronisation Ondrive, quotas de l'espace de stockage, politiques de partage, OneDrive Admin Center
+              accès aux sites SharePoint, gérer les permissions, sharepoint admin center
+  -Surveillance et rapports
+
+Les licences "Business" avec maximum 300 users : PME
+ 1-Business Basic
+ 2-Business standard *
+ 3-Business premium 
+
+Les licences "Entreprises F3/E3/E3" pour + 500 users : grandes entreprises
+
+ 1-Microsoft 365 F3
+ 2-Microsoft 365 E3 *   
+ 3-Microsoft 365 E5 
+
+     F3 si l’utilisateur a besoin d’un accès léger (mobile/web) comme un vendeur, chauffeur, livreur ….
+     E3 si l’utilisateur travaille avec Office lourdement : manager, RH, IT …
+     E5 — La licence Full de M365, pour les entreprises sensibles (banques, santé, état …)
+
+When you have an Office 365 E3 license, you get access to Azure AD Premium P1 features
+When you have an Office 365 E5 license, you get access to Azure AD Premium P2 features and PowerBI pro
+
+Microsoft Purview : permet la DLP, Audit Logs, Surveille les communications internes chat, mail …, 
+
+Microsoft Endpoint Manager anciennement SCCM, peut contrôler tous les devices on promise
+
+MDM : outil de gestion des devices, enrôlement, config VPN, Mail, Wifi, gestion des applications, verrouillage à distance, suivi de conformité, localiser
+MEM : évolution du MDM, plateforme complète, applications , MAJ … sur Endpoint.microsoft.com
+
+->la facturation est par nombre d'utilisateurs
+
+ex : Une petite entreprise ayant 10 employés peut prendre le "Business standard 15€/user" ce qui donne ~150 € pour 10 users.
+
+le nom de domaine sera sous la forme : nom_entreprise.onmicrosoft.com
+
+====
+ Les rôles O365 : 
+
+Administrateur général (accès total)
+
+Administrateur utilisateur (ajout/suppression de comptes) *
+
+Administrateur Exchange (mails)
+
+Administrateur Teams
+
+Administrateur SharePoint
+
+Administrateur de la sécurité : Accès aux outils de sécurité et de conformité.
+
+Administrateur de la facturation : Gestion des abonnements, factures, et licences.
+
+--ports à connaître : 
+
+Port 993 (TCP) — IMAP sécurisé
+Port 587 (TCP) — SMTP avec TLS   ( smtp.office365.com port 587 chiffrement STARTTLS)
+Port 25 (TCP) — SMTP simple
+Port 995 (TCP) — POP3 sécurisé
+Port 443 (TCP) — Utilisé pour OWA, HTTPS avec exchange online
+
+Microsoft recommande de ne pas utiliser IMAP ou POP3 car ces derniers ne gèrent pas les calendriers, contacts, tâches, pas de SSO, MFA limitée
+Microsoft recommande d'utiliser exchange natif (protocole propre à Microsoft) 
+        -MAPI over HTTP ou Exchange Web Service EWS, port 443
+        -ExchangeActiveSync pour mobile, port 443
+
+========
+++Exchange Online Protection (EOP) : anti-spam, anti-malware, anti-phishing et DPL de base, filtrage des expéditeurs, quarantaine
+
+DLP (Data Loss Prevention) : empêcher les fuites de données
+
+++Microsoft Defender for Office 365 : complémentaire à EOP, utilisé sur O365 pour analyser les emails entrant
+   malwares, phishing, PJ .exe, .js, expéditeur usurpé "spoofing", règles personnalisées de l'entreprises 
+   --> conçu pour les attaques sophistiquées, menaces zero-day, phishing ciblé, liens malveillants
+
+Entra ID P1 : MFA conditionnel( l’emplacement, le type d'appareil …), SSPR, Groupes dynamiques, Microsoft Identity Protection partiel (monitor EntraID)
+
+Entra ID P2 : avantage du P1 + Privileged Identity Management, Identity Protection complet.
+
+==============
+
