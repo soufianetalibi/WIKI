@@ -486,17 +486,17 @@ workloads :
 
 La BOM simplifiée VCF 9.1 : 
 
-1. VCF Operations : monitoring, health & diagnostics, logs, lifecycle ...
-2. VCF Management Services
-3. License Server
-4. SDDC Manager
-5. Cloud Proxy    (collecteur de VCF operations)
-6. vCenter Server (ESXi/cluster/VMs/vSAN/Supervisor/VKS)
-7. ESXi
+1. VCF Operations : Monitoring, health, capacity, performance, diagnostics, logs et opérations
+2. VCF Management Services : Services communs de la plateforme VCF
+3. License Server : Gestion des licences VCF
+4. SDDC Manager : Déploiement, configuration et lifecycle de l'environnement VCF
+5. Cloud Proxy  : Collecte/acheminement des données depuis l'infrastructure vers VCF Operations
+6. vCenter Server : Gestion des ESXi, clusters, VM, vSAN, Supervisor
+7. ESXi 
 8. vSAN (stockage HCI)
-9. NSX (NSX Manager/Segments/T1/T0/DFW/Edge...)
+9. NSX : réseaux et sécurité, (NSX Manager/Segments/T1/T0/DFW/Edge...)
 10. Supervisor + VKS (Kubernetes clusters/containers/pods)
-11. VCF Automation (portail self-service)
+11. VCF Automation : Self-service, catalogue de services, provisioning et gestion des workloads
 
 
 
