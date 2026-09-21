@@ -1,0 +1,217 @@
+
+
+rôles azure : 
+ -Gestion N1/N2 : 
+  Network Contributor  (NSG, SR, NIC)
+  Storage Account Contributor
+  Virtual Machine Administrator Login
+  Virtual Machine Contributor
+  Virtual Machine User Login
+-déployer des ressources : 
+  owner
+  Contributor
+  User Access Administrator (gestion totale des rôles RBAC)
+
+
+1-créer une souscription
+2-créer unets vnet
+3-créer des subn
+      subnet publique : ressources accessibles depuis internet, VMs ayant une ip publiques, exposées via load balancer
+      subnet privé    : pas d'accès depuis internet, accès via VPN ou via bastion uniquement, sortie internet via NAT Gateway ou Firewall
+4-déployer les ressources (compute storage)
+
+Niveau    				Fonction
+NSG sur Subnet				Filtrage réseau pour toutes les ressources du subnet.
+NSG sur NIC				Filtrage spécifique à une VM ou une interface réseau.
+ASG (Application Security Groups)	Regrouper des VM logiquement et simplifier les règles NSG.
+Route Table (UDR)			Contrôle du routage du trafic.
+NAT Gateway				Gestion des sorties Internet (egress), à attacher à un subnet ayant des VMs avec IP privées.
+Private Endpoints			Exposition privée d'un service Azure dans le VNet.
+Service Endpoint			Accès sécurisé vers service Azure via backbone Microsoft.
+
+Azure Firewall
+Azure Bastion
+
+Peering entre vnets
+Topologie Hub and spoke with firewall in the HUB vnet.
+
+
+Availability Set : deux VMs sur deux RACK différents mais dans le même datacenter
+Availability zone : deux VMs sur deux datacenters différents de la même région
+-->généralement on utilise un load balancer L4 devants les VMs réparties
+
+VMSS : déployer un groupe de VMs identiques automatiquement, définir un modèle et activer l'autoscaling selon la charge.
+       l'availability-set est un scaling manuel 
+       VMSS est un scaling automatique
+     pratique : créer un LB puis une VMSS : https://www.youtube.com/watch?v=SkGdMbtsaIg
+
+
+====================
+
+containers sur azure a 3 types : 
+  1-Azure App Service : déployer de façon simple une app ayant qq conteneurs sans penser à son infra à partir de GitHub ou Azure DevOps (Plateform as a Service)
+  2-Azure ACI : déployer un simple conteneur (serverless containers)
+  3-AKS : on prépare une infra où déployer les apps, idéal pour microservices nombreux (Container as a Service)
+
+Déployer une application sur une VM azure : https://github.com/neilsly/AzureFunMigration/blob/master/Hands-on%20lab/Setup.md
+
+ Créer une application sur azure app service "PaaS" : 
+ déployer simplement une app 
+
+ Créer une application conteneurisée sur AKS  "CaaS" : 
+
+Crée un registre de conteneurs Azure (ACR)
+Crée un cluster Kubernetes Azure (AKS)
+Connecte le cluster à l'ACR
+Configure kubectl pour accéder au cluster
+Exécute kubectl apply -f k8s/
+
+======================================
+
+azure load balancing : L4 dans la même région (TCP/UDP distribution) qui fait seulement du LB 
+
+azure application Gateway : loadbalancer L7 dans la même région ( + WAF et reverse proxy) qui fait : soit du LB ou bien du routing based UTRL
+			    -> sur des Azure App Service (WebApp1, WebApp2)
+			    -> sur une ferme IIS : des VMs Linux/Windows ayant un serveur web 
+			    -> sur Azure Virtual Machine Scale Sets (VMSS)
+			    -> sur des apps de AKS, azure container apps
+			    -> sur des microservices d'une application: (du URL-based routing, c'est pas un load balance mais routage)
+							 /users/*    -> User API    (ex : GET https://api.contoso.com/users/15 sera dirigée vers le service users)
+							 /orders/*   -> Order API   (ex : GET https://api.contoso.com/orders/1001  sera dirigée vers le service orders)
+							 /billing/*  -> Billing API (ex : GET https://api.contoso.com/billing/10  sera dirigée vers le service billing)	
+    pratique : créer une application Gateway sur des VMs ayant IIS :https://www.youtube.com/watch?v=mhcL5czlQi8
+
+azure traffic manager : DNS-based global load balancer, utile si j'ai deux webapps sur deux régions différentes
+								 j'ai deux VMs accessibles en HTTPS avec DNS dans deux régions différentes
+			envoie le user vers la région la plus proche
+			mais : pas de WAF, pas de reverse proxy, pas de SSL termination, pas d'URL based routing
+    pratique : créer un traffic manager sur deux webapp (master et failover) : https://www.youtube.com/watch?v=Sms_b8h77rw 
+
+il vaux mieux combiner les deux solutions : 
+           traffic manager : niveau mondial, envoie vers la région la plus proche 
+	   application Gateway : niveau régional, LB layer 7  avec WAF, reverse proxy, URL based routing
+
+Internet
+    |
+Traffic Manager
+    |
++--------------------+
+|                    |
+Application Gateway  Application Gateway
+West Europe          France Central
+|                    |
+Applications         Applications
+
+Azure front door : L7 CDN + WAF + load balancing global entre régions (same like application gateway but between regions)
+
+azure WAF : c'est un service inclus dans azure azure front door "global" et azure application Gateway "régional" qui inspecte le flux http/https
+
+azure recovery service vault : Sauvegarde et restauration des données et machines à lier avec azure backup et azure ASR (local, redondance de zones, redondance de régions)
+
+Azure Key Vault : stocker un secret, une clé de chiffrement, un certificat TLS
+
+azure DDOS protection
+
+Azure migrate VM or database (DMA)
+		créer azure migrate ressource
+		discover
+		install on premise the Appliance ESXi or HyperV
+		create assessment
+		install agent (MMA) on discovered VM
+		install the dependency agent
+		create a storage account for analysis during migration
+		replicate 
+		
+		
+	pratique : https://www.youtube.com/watch?v=x4MMNESP6lw
+
+azure Firewall : 
+        vnet 10.0.0.0/16
+         snet AzureFirewallSubnet 10.0.1.0/26
+	 snet Workload-SN 10.0.2.0/24
+         route table liée aux subnet "Workload-SN" qui point vers ip privée du firewall
+	 créer application rule (autoriser un site)
+	 créer network rule (IP, port protocoles)
+	 créer une DNAT (RDP 3389 sur ip publique du firewall --> vers serveur RDP dans azure) 
+
+	pratique : https://www.youtube.com/watch?v=AImIkxryErQ
+
+====BI et big data : 
+
+Blob / Data Lake → Synapse → analysis service → Power BI 
+
+Blob / Data Lake → Synapse → Power BI (direct)
+
+Data factory : le camion transporteur qui recupere et nettoie la data du datalake et l envoie à synapse ou directement a powerBI, envoie d une source vers destination suivant une pipeline, il peut envoyer blob vers blob
+
+•	Blob / Data Lake = stockage 📦
+•	Data Factory = transport 🚚
+•	Synapse = usine d’analyse 🏭
+•	Power BI = dashboards 📊
+
+====Bases de données : 
+
+Sql database
+Database for mysql
+Database for postresql
+
+Cosmos DB (No SQL) qui peut etre : 
+•	documents JSON
+•	key-value
+•	graph
+•	column-family
+
+Redis : DB cache in memory RAM
+
+Je peux avoir une app connecté a redis comme cache et mysql comme persistant
+Avantage : lecture des données depuis redis plus rapide
+L’application écrit dans deux bases (redis et mysql) et le select cherche d’abord dans redis sinon arrive a mysql
+Je peux mettre redis pour les données fréquentes et mysql pour les données permanentes.
+
+=====
+Azure Stream Analytics : analyse des données en temps réel et faire des query avec input et output 
+
+Azure Event Hubs : service d'ingestion en temps réel, collecte d'événements afin de les envoyer pour traitement (par ex vers stream analytics) 
+
+Producer (Python / app)
+        |
+        v
+   Event Hubs
+        |
+        v
+Stream Analytics Job
+ (requête SQL streaming)
+  filtre: temp > 30 degrés
+        |
+        v
+   Blob Storage
+
+Producer envoie des températures, Eventhub ingeste les données, Stream Analytics Lit les events depuis Event Hub et filtre avec requêtes SQL puis stocke dans blob storage
+
+Azure Stream Analytics peut utiliser plusieurs types d’inputs, pas besoin d'avoir event hub : blob storage, IoT HUB, Azure Data Lake ...
+========================================
+
+
+======
+
+Storage account : 
+    Blob Storage.
+1.	Hot / Cool / Archive.
+2.	LRS / ZRS / GRS / GZRS.
+3.	Soft Delete.
+4.	Versioning.
+5.	Snapshots.
+6.	Lifecycle Management.
+7.	SAS Tokens.
+8.	Private Endpoints et sécurité réseau.
+
+=============
+Impact on cost : 
+ azure region and volume of data from azure to internet affect the cost 
+ azure pricing is due to data leaving azure while data entring azure is free of charge
+
+Les régions souveraines Azure sont des environnements cloud isolés conçus pour répondre aux exigences strictes de sécurité
+
+Azure Edge Zone est une extension compute d’Azure opérée en partenariat avec Microsoft chez un FAI pour être proche des utilisateurs finaux (contient une compute limitée)
+
+Point de presence PoP : site d’accès au réseau backbone azure sans compute utile pour azure front door, traffic manager, CDN, O365
