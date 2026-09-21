@@ -17,8 +17,14 @@ rôles azure :
 1-créer une souscription
 2-créer unets vnet
 3-créer des subn
-      subnet publique : ressources accessibles depuis internet, VMs ayant une ip publiques, exposées via load balancer
-      subnet privé    : pas d'accès depuis internet, accès via VPN ou via bastion uniquement, sortie internet via NAT Gateway ou Firewall
+      subnet publique : ressources accessibles depuis internet, VMs ayant une ip publiques, exposées (ce subnet a une route par défaut vers une IGW)
+      subnet privé    : pas d'accès depuis internet, accès via VPN ou via bastion uniquement, sortie internet via NAT Gateway ou Firewall (Ce subnet a une route par défaut vers une NAT Gateway présente dans un subnet publique)
+
+La VM privée veut aller sur Internet. Elle regarde sa table de routage privée : la route 0.0.0.0/0 lui dit d'envoyer le trafic vers la NAT Gateway.
+La NAT Gateway (qui est dans le sous-réseau public) reçoit le trafic. 
+Elle remplace l'IP privée de la VM par son IP publique.
+La NAT Gateway regarde à son tour la table de routage publique de son propre sous-réseau public : la route 0.0.0.0/0 lui dit d'envoyer le trafic vers l'Internet Gateway (IGW).L'IGW envoie enfin le trafic sur le réseau Internet global.
+
 4-déployer les ressources (compute storage)
 
 Niveau    				Fonction
