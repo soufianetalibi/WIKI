@@ -1,5 +1,24 @@
 LAB NSX : https://vdives.com/2019/06/19/nsx-t-lab-setup/
 
+users : root, admin, audit
+
+Sur un ESXi préparé : esxcli software vib list |grep nsx
+
+DR : le routage distribué East-West entre segments NSX (pas besoin d'edge node)
+SR : instance de routeur qui s'exécute sur un NSX Edge Node utile pour accès au réseau physique, NAT, DHCP, VPN, LB, Gateway FW, Gateway IDS/IPS
+
+Le distributed Firewall (DFW) contrôle le trafic est-ouest (entre segments ...)
+Le Gateway Firewall (GFW) contrôle le trafic Nord-Sud (internet -> LAN ...)
+
+La ditributed IDS/IPS → inspection du trafic est-ouest via les signatures des attaques
+La Gateway IDS/IPS → inspection du trafic Nord-Sud au niveau Gateway via les signatures des attaques
+
+===================
+
+Traceflow : tester flux "icmp, 80, 443 ..." entre une source et une destination
+
+Live trafic analysis : voir la flux live entre une source et une destination ->générer un pcap
+
 NSX : 
 
 1. VLAN Management
@@ -296,7 +315,6 @@ DFW : autorise uniquement la VM Web à communiquer avec la VM Backend 8080 et au
 ===========
 Transport node : ESXi préparé pour NSX ayant un N-VDS et nsx-proxy-agent
  
-
 Préparer ESXi
  -VDS (Host switch)
  -Transport zone (overlay-TZ)
@@ -316,8 +334,6 @@ Le edge node doit être sur overlay-TZ et VLAN-TZ
 L'ESXi reste uniquement sur l'overlay-TZ
 Le edge node a besoin aussi d'un uplink profil et d'un IP-POOL TEP (on peut utiliser un seul ip-pool pour ESXi et Edge node)
   
-
-
 Transport node profil : regroupe toute la config de préparation des ESXi, on l'applique à un cluster, un nouveau ESXi dans ce cluster se prépare automatiquement.
 
 -segment : connected to : Gateway-T1
@@ -353,7 +369,7 @@ Multi Tenancy :
     Default tenant géré par admin ayant le rôle entreprise admin
     créer project1, 
 
-Backup restore : 
+Backup restore : install a new NSX manager et y restaurer la sauvegarde.
 
 
 
