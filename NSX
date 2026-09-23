@@ -368,7 +368,8 @@ NSX Federation :
 Vsphere replication : réplication des VM d'un site VMware vers un autre site VMware DR via un réseau dédié replication.
                        la VM DR reste éteinte et le VMDK se réplique jusqu'à ce qu'on teste de failover
 
--->donc la VM peut être répliquée avec vsphere replication avec le même VMDK source ... puis démarrée sur le site DR avec le réseau NSX sur le même segment.
+NSX Federation + VM Replication peut servir à construire une architecture DR entre deux sites VMware
+-->donc la VM peut être répliquée avec vsphere replication avec le même VMDK source ... puis démarrée sur le site DR avec le réseau NSX sur le même segment avec la même IP
 
 Multi Tenancy : 
     Default tenant géré par admin ayant le rôle entreprise admin
