@@ -52,7 +52,6 @@ VMSS : déployer un groupe de VMs identiques automatiquement, définir un modèl
        VMSS est un scaling automatique
      pratique : créer un LB puis une VMSS : https://www.youtube.com/watch?v=SkGdMbtsaIg
 
-
 ====================
 
 containers sur azure a 3 types : 
@@ -86,6 +85,17 @@ azure application Gateway : loadbalancer L7 dans la même région ( + WAF et rev
 							 /users/*    -> User API    (ex : GET https://api.contoso.com/users/15 sera dirigée vers le service users)
 							 /orders/*   -> Order API   (ex : GET https://api.contoso.com/orders/1001  sera dirigée vers le service orders)
 							 /billing/*  -> Billing API (ex : GET https://api.contoso.com/billing/10  sera dirigée vers le service billing)	
+
+                         routage : 
+                          /api → Function
+                          /web → VM
+                          /app → App Service
+
+                         Load balancing HTTP : 
+                          /app/*  → App Service
+                          ├── app service 1
+                          └── app service 2
+
     pratique : créer une application Gateway sur des VMs ayant IIS :https://www.youtube.com/watch?v=mhcL5czlQi8
 
 azure traffic manager : DNS-based global load balancer, utile si j'ai deux webapps sur deux régions différentes
