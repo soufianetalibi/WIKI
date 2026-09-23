@@ -246,6 +246,28 @@ L3VPN (MPLS VPN)
 EVPN (Ethernet VPN)
 un protocole de niveau 2/3 utilisé pour étendre des réseaux Ethernet sur un backbone IP/MPLS
 
+===============================================================================
+Dual ISP : 
+
+Fortigate : 
+
+0.0.0.0/0 → ISP1 → distance 10 → priority 10
+
+0.0.0.0/0 → ISP2 → distance 10 → priority 20
+
+Puis un link-monitor surveille, par exemple, 1.1.1.1 via WAN1 si KO, la route ISP1 devient inactive 👍 WAN2 prend le trafic
+
+Cisco : 
+
+R1(config)# ip route 0.0.0.0 0.0.0.0 192.168.1.1
+R1(config)# ip route 0.0.0.0 0.0.0.0 192.168.2.1 20
+
+Puis IP SLA qui teste par exemple 8.8.8.8 via ISP1, si KO route ISP1 retirée
+
+IP SLA/Tracking peut détecter la panne du chemin WAN.
+HSRP protège contre la panne du routeur/passerelle.
+
+
 ================================================================
 ==== 3 SSID WIFI vers internet : 
 
