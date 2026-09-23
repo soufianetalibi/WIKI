@@ -1,0 +1,33 @@
+
+DR = stratégie pour continuer/reprendre l'activité après un sinistre
+
+PCA : maintenir l'activité pendant ou immédiatement après l'incident (basculement)
+PRA : procédures permettant de reconstruire/restaurer l'environnement après un sinistre (reconstruction)
+
+===DR par réplication Vmware : (VM Replication)
+
+VM Replication	Copie les données de la VM (vmx, vmdk …) du site A vers le site B
+NSX Federation	Fournit une architecture réseau cohérente entre les sites
+
+La VM DR n'est normalement pas exécutée en même temps que la VM de production. Elle peut rester arrêtée jusqu'au failover.
+
+Lors d'un sinistre : 
+
+la VM DR est enregistrée/démarrée sur le site B
+elle retrouve son réseau NSX prévu
+NSX assure la connectivité/routage
+les flux utilisateurs sont redirigés vers le site B
+
+===DR par réplication du stockage : (Storage Replication)
+
+Baie Storage A  ═══════════════════►  Baie Storage B
+                        réplication
+
+===DR par reconstruction terraform :
+
+on ne maintient pas une infrastructure standby complète
+
+Recréer Networking / VLAN / sécurité… via un terraform apply
+Restore des VMs via Veeam/Commvault
+
+===DRaaS : Un fournisseur cloud/service fournit et gère l'infrastructure PRA à activer au besoin : ex : azure site recovery
