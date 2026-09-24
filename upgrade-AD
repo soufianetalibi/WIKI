@@ -1,3 +1,34 @@
+
+Le schéma définit ce qu’Active Directory sait stocker
+Le niveau fonctionnel détermine quelles fonctionnalités AD sont disponibles sur la forêt et le domaine
+
+Windows Server 2016  → Schema 87 → Niveau fonctionnel  2016
+Windows Server 2019  → Schema 88 → Niveau fonctionnel  2016
+Windows Server 2022  → Schema 88 → Niveau fonctionnel  2016
+Windows Server 2025  → Schema 91 → Niveau fonctionnel  2025
+
+Si j'ai 3 serveurs 2016 et un nouveau serveur 2025 : 
+ -le schéma des 3 serveurs sera étendu de 87 à 91 (extension automatique lors de l'ajout du nouveau serveur 2025)
+ -le niveau fonctionnel reste 2016 jusqu'à ce que tous les serveurs soient upgradés à Windows server 2025
+
+dcdiag /v /c /f:C:\Temp\dcdiag.txt
+repadmin /showrepl * /csv > C:\Temp\replication.csv
+
+Event Viewer
+ → Applications and Services Logs
+ → Directory Service
+
+check sysvol : 
+dcdiag /test:sysvolcheck
+dcdiag /test:netlogons
+
+Check DFSR : 
+Get-WinEvent -LogName "DFS Replication" -MaxEvents 100
+
+net share
+
+===============================
+
 upgrader mon AD de 2019 à 2025 : 
 
 serveur 2019 : schéma objectVersion 88 et niveau fonctionnel 2016
