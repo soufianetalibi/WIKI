@@ -11,3 +11,51 @@ Type d'authentification sur les applications :
 7-SAML : délègue l’authentification à un IDP  avec format XML
 
 Au niveau backend j'implémente le mécanisme d’authentification selon le protocole choisi.
+
+
+
+Exemple de SSO sur fortigate via EntraID : 
+
+“Enterprise Applications” souvent SAML
+“App registrations” souvent OAuth/OIDC (OAuth : token d'accès, OIDC ajoute l’authentification au-dessus d’OAuth 2.0)
+
+
+=====
+Exemple, Accès SSL sur fortigate via EntraID :  utiliser SAML 
+
+Sur EntraID : 
+ créer une Enterprise Application, mode :SAML
+Puis : 
+ Champ Azure	Valeur venant du FortiGate    
+Identifier (Entity ID)	URL/entity-id FortiGate ex : https://129.35.171.X:40443/remote/saml/metadata
+Reply URL (ACS URL)	URL callback FortiGate  ex : https://129.35.171.X:40443/remote/saml/login
+Sign on URL	URL VPN FortiGate               ex : https://129.35.171.X:40443/remote/login
+
+récupérer les 3 éléments suivantes à utiliser sur le fortigate : 
+   Dans “SAML Certificates / Set up SSO” :
+1.Login URL (IdP SSO URL)
+2.Microsoft Entra Identifier (IdP Entity ID)
+3.Certificate (Base64)
+ 
+Sur fortigate, User & Authentication → Single Sign-On → SAML
+   IdP (Azure / Entra ID) : 
+IdP Entity ID
+→ Microsoft Entra Identifier
+IdP Single Sign-On URL
+→ Login URL
+IdP Single Logout URL (optionnel)
+→ Logout URL
+IdP Certificate
+→ certificat téléchargé depuis Entra ID
+
+comment ça marche : 
+
+Utilisateur → FortiGate VPN
+              ↓
+         Redirection Azure AD
+              ↓
+      Login + MFA Microsoft
+              ↓
+      Assertion SAML
+              ↓
+       Connexion VPN OK
