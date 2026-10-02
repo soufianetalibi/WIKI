@@ -484,6 +484,51 @@ workloads :
 -PROD : ESXi05, ESXi06, ESXi07, ESXi08
 -TEST : ESXi09, ESXi10, ESXi11, ESXi12
 
+
+==============
+
+vérifier toutes les versions firmwares depuis idrac : System → Inventory → Firmware Inventory
+
+mettre à jour : au démarrage, F10, Lifecycle Controller, Firmware Update (brancher clé USB)
+                depuis IDRAC : Maintenance, System Update (manual update or via internet)
+
+update des firemwares de mon serveur : 
+-firmware mother board
+-iDRAC (Integrated Dell Remote Access Controller) 
+-key device firmwares (such as RAID/PERC controllers, Disques HDD/SSD, network cards, and power supplies PSU)
+
+
+esxcli system status
+esxcli system settings list
+esxcli system certificate
+esxcli network ip connection list
+
+Identifier le serveur et ESXi : 
+esxcli hardware platform get
+vmware -vl
+
+Vérifier le contrôleur de stockage :
+esxcli storage core adapter list
+esxcli storage core adapter get
+
+Vérifier les disques :
+esxcli storage core device list | grep -E "Display Name|Model|Vendor"
+
+Vérifier les NIC :
+esxcli network nic list
+
+
+https://www.dell.com/support
+https://compatibilityguide.broadcom.com/
+
+Systems / Servers : 
+
+Keyword : PowerEdge R640
+Product Release Version : ESXi 9.1
+Partner Name : Dell
+
+========================================
+
 La BOM simplifiée VCF 9.1 : 
 
 1. VCF Operations : Monitoring, health, capacity, performance, diagnostics, logs et opérations
