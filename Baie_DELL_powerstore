@@ -1,3 +1,4 @@
+
 Solutions de protection et gestion des données (sauvegardes des VMs)
 -Veeam
 -Acronis
@@ -20,6 +21,19 @@ Dell Unity XT : unifiée (bloc + fichier)
 Dell PowerProtect Data Domain : dédié pour la protection de données, Sauvegarde, archivage, protection contre les ransomwares
 
 ========
+Datadomain : 
+la sauvegarde (ex : backup VMware) et la protection des données
+déduplication compression
+DD Boost  : permet au logiciel de sauvegarde (Netbackup, Veaam, Comvault, networker) d'utiliser la déduplication
+
+NFS	Partages Linux/Unix
+CIFS/SMB	Partages Windows
+
+Full	Sauvegarde complète
+Incremental	Sauvegarde des changements
+Differential	Différences depuis dernier full
+
+========================
 
 Powerstore : 
 
