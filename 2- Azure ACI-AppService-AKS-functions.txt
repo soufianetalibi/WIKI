@@ -1,9 +1,9 @@
 
-MsolService : Ancien accËs ‡ azure AD via le module MSOnline
-Azure AD : module pour gÈrer Entra-ID via PowerShell
-ExchangeOnline : module qui permet d'administrer exchange d'O365 (mailboxes Ö)
-Microsoft Graph API : accËs moderne ‡ Microsoft 365, il gËre tout : Entra-ID, M365 Ö via le module Microsoft.Graph
-Azure ARM/REST APIs : GÈrer les ressources Azure comme VMs, rÈseaux ...
+MsolService : Ancien acc√®s √† azure AD via le module MSOnline
+Azure AD : module pour g√©rer Entra-ID via PowerShell
+ExchangeOnline : module qui permet d'administrer exchange d'O365 (mailboxes ‚Ä¶)
+Microsoft Graph API : acc√®s moderne √† Microsoft 365, il g√®re tout : Entra-ID, M365 ‚Ä¶ via le module Microsoft.Graph
+Azure ARM/REST APIs : G√©rer les ressources Azure comme VMs, r√©seaux ...
 
 Connect-AzAccount
 Get-AzSubscription
@@ -14,7 +14,7 @@ Get-AzureADUser -ObjectId "soufiane.talibi@castel-afrique.com" | Format-List *
 Connect-MgGraph -Scopes "User.Read.All"
 Get-MgUser -UserId "soufiane.talibi@castel-afrique.com"
 
- GÈrer les boites mails O365
+ G√©rer les boites mails O365
 Connect-ExchangeOnline
 Get-MailboxStatistics -Identity "soufiane.talibi@castel-afrique.com" | 
     Select DisplayName, TotalItemSize, ItemCount
@@ -23,29 +23,29 @@ Get-MailboxStatistics -Identity "soufiane.talibi@castel-afrique.com" |
 
  Les 4 types de compute dans le cloud : 
 
--Machines virtuelles (VM ñ Virtual Machines)
+-Machines virtuelles (VM ‚Äì Virtual Machines)
 
--Containers as a Service : l'application et ses dÈpendances.
+-Containers as a Service : l'application et ses d√©pendances.
 
--Functions as a Service : Conteneurs serverless qui execute un code ‡ la demande.
+-Functions as a Service : Conteneurs serverless qui execute un code √† la demande.
 
 Logic Apps vs functions : 
-Logic Apps : crÈer un flux de travail visuel suite ‡ un trigger ( HTTP request, timer, email reÁu, storage event "blob", queue/service bus "un nv msg", event Grid, webhook...)
-functions : execution d'un code "C#, JS, Python..." suite ‡ un trigger aussi
+Logic Apps : cr√©er un flux de travail visuel suite √† un trigger ( HTTP request, timer, email re√ßu, storage event "blob", queue/service bus "un nv msg", event Grid, webhook...)
+functions : execution d'un code "C#, JS, Python..." suite √† un trigger aussi
 
 Exemple logic apps : 
-Bloc 1 : "When a new email arrives on recrutement@consto.com (Outlook 365)" ? DÈclencheur.
-Bloc 2 : "Condition" ? Si piËce jointe = vrai et format = PDF/DOCX.
+Bloc 1 : "When a new email arrives on recrutement@consto.com (Outlook 365)" ? D√©clencheur.
+Bloc 2 : "Condition" ? Si pi√®ce jointe = vrai et format = PDF/DOCX.
 Bloc 3 : "Create file (SharePoint)" ? Sauvegarde automatique.
 Bloc 4 : "Insert row (Excel)" ? Ajoute dans la base de suivi.
 Bloc 5 : "Send message (Teams)" ? Alerte le service RH.
 
 Exemple Azure functions : 
-un site ecommerce dÈpose un message dans azure storage queue "commandes-a-traiter"
-dÈclencheur de la fonction : nouveau msg reÁu dans la file d'attente
+un site ecommerce d√©pose un message dans azure storage queue "commandes-a-traiter"
+d√©clencheur de la fonction : nouveau msg re√ßu dans la file d'attente
 Lire les infos de la commande depuis le message (JSON).
-Mettre ‡ jour la base de donnÈes SQL server.
-Appeler un service díemail (ex. SendGrid) pour envoyer la confirmation.
+Mettre √† jour la base de donn√©es SQL server.
+Appeler un service d‚Äôemail (ex. SendGrid) pour envoyer la confirmation.
 
 =============================================
 Conteneurisation sur le cloud :
@@ -55,120 +55,120 @@ Conteneurisation sur le cloud :
       3-AKS  
             (Azure ACR est un registry des images comme docker Hub)
 
- -je crÈe une VM linux sur le cloud, j'y installe docker,docker-compose et je gËre moi mÍme le tout (VM DockerisÈe)
+ -je cr√©e une VM linux sur le cloud, j'y installe docker,docker-compose et je g√®re moi m√™me le tout (VM Dockeris√©e)
 
- -je veux juste lancer des images docker : azure ACI (conteneur serverless, je crÈe des conteneurs sans gÈrer l'infra docker) mais ne supporte pas docker compose
+ -je veux juste lancer des images docker : azure ACI (conteneur serverless, je cr√©e des conteneurs sans g√©rer l'infra docker) mais ne supporte pas docker compose
 
- -je veux dÈployer une app constituÈe de  quelques images "php+mysql" comme un docker-compose : app service for containers
+ -je veux d√©ployer une app constitu√©e de  quelques images "php+mysql" comme un docker-compose : app service for containers
 
  -orchestrer plusieurs conteneurs : Azure AKS
 
- ==========> azure ACI est idÈal pour test, script, API
+ ==========> azure ACI est id√©al pour test, script, API
 
- ==========> app service for containers est idÈal pour une app constituÈes (php+mysqlÖ)
+ ==========> app service for containers est id√©al pour une app constitu√©es (php+mysql‚Ä¶)
 
- ==========> Azure AKS est idÈal pour microservices complexes avec CI/CD
+ ==========> Azure AKS est id√©al pour microservices complexes avec CI/CD
 
 
 ======================
 App service : 
 ======================
 
--Web App : permet de dÈployer une API ou une app backend uniquement (Node.js, Spring Boot, PHP, etc.), Pas de DB incluse par dÈfaut, il faut l'ajouter manuellement
+-Web App : permet de d√©ployer une API ou une app backend uniquement (Node.js, Spring Boot, PHP, etc.), Pas de DB incluse par d√©faut, il faut l'ajouter manuellement
 
--Static Web App : App frontend only (React, vue angular) qui peut Ítre connectÈ ‡ une API serverless (Azure Functions)
+-Static Web App : App frontend only (React, vue angular) qui peut √™tre connect√© √† une API serverless (Azure Functions)
 
--Web App + Database : Apps fullstack (crÈe un backend + avec base de donnÈes incluse) ex :  Express + MySQL , Spring Boot + PostgreSQL
+-Web App + Database : Apps fullstack (cr√©e un backend + avec base de donn√©es incluse) ex :  Express + MySQL , Spring Boot + PostgreSQL
 
 -WordPress on App Service : installe un site vitrine wordpress avec DB. 
 
 Exemple de Web App : 
 
-   application backend Spring Boot uniquement, avec une API REST qui gËre des t‚ches (tasks), sans interface utilisateur (frontend)
-  on utilise avec spring boot une base de donnÈes relationnelle H2 lÈgËre en mÈmoire (ou en fichier), Ècrite en Java
+   application backend Spring Boot uniquement, avec une API REST qui g√®re des t√¢ches (tasks), sans interface utilisateur (frontend)
+  on utilise avec spring boot une base de donn√©es relationnelle H2 l√©g√®re en m√©moire (ou en fichier), √©crite en Java
 
-  GET /api/tasks ñ Liste des t‚ches
-  POST /api/tasks ñ CrÈer une t‚che
-  PUT /api/tasks/{id} ñ Modifier une t‚che
-  DELETE /api/tasks/{id} ñ Supprimer une t‚che
+  GET /api/tasks ‚Äì Liste des t√¢ches
+  POST /api/tasks ‚Äì Cr√©er une t√¢che
+  PUT /api/tasks/{id} ‚Äì Modifier une t√¢che
+  DELETE /api/tasks/{id} ‚Äì Supprimer une t√¢che
 
-AccËde ‡ líAPI :
+Acc√®de √† l‚ÄôAPI :
 GET http://localhost:8080/api/tasks
   
-AccËde ‡ la base :
+Acc√®de √† la base :
 http://localhost:8080/h2-console
 (JDBC URL : jdbc:h2:mem:taskdb, user : sa, password : vide)
 
 =============================================================
-On peut crÈer : 
+On peut cr√©er : 
  -une Web Apps (frontend only ou frontend avec backend)
  -une API Apps (back-end)
  -une Mobile Apps (pour apps mobiles)
---->le backend est souvent connectÈ ‡ une base de donnÈes
+--->le backend est souvent connect√© √† une base de donn√©es
     [Frontend] --> [Backend] --> [Azure SQL Database]
---->le frontend only peut Ítre connectÈ ‡ un azure function qui sera son backend et qui sera ‡ son tour liÈe ‡ une BD
-    [Frontend] --> [Azure Function] --> [Base de donnÈes]
+--->le frontend only peut √™tre connect√© √† un azure function qui sera son backend et qui sera √† son tour li√©e √† une BD
+    [Frontend] --> [Azure Function] --> [Base de donn√©es]
 
-+Option 1 : Frontend + Backend sÈparÈs
++Option 1 : Frontend + Backend s√©par√©s
 
-  --> CrÈe 2 App Services :
+  --> Cr√©e 2 App Services :
 
-  Un pour le frontend (React, Angular, VueÖ)
+  Un pour le frontend (React, Angular, Vue‚Ä¶)
 
-  Un pour le backend (Node.js, .NET, PythonÖ)
+  Un pour le backend (Node.js, .NET, Python‚Ä¶)
 
 Le frontend appelle le backend via son URL publique.
 
-  Base de donnÈes sÈparÈe (Azure SQL, Cosmos DBÖ) connectÈe au backend.
+  Base de donn√©es s√©par√©e (Azure SQL, Cosmos DB‚Ä¶) connect√©e au backend.
 
 +Option 2 : Backend + Frontend ensemble
 
-    -->CrÈer une seule app Service : 
+    -->Cr√©er une seule app Service : 
 
- Tu peux servir le frontend directement depuis le backend (ex. Node.js qui sert les fichiers React compilÈs).
+ Tu peux servir le frontend directement depuis le backend (ex. Node.js qui sert les fichiers React compil√©s).
 
 =====================================================
 
-DÈployer une app web en conteneur sur Azure
+D√©ployer une app web en conteneur sur Azure
 App : Application Flask (Python) exposant une API simple
 
-Objectif : CrÈer une image Docker, la pousser sur Azure Container Registry (ACR), puis la dÈployer sur Azure Container Instances (ACI)
+Objectif : Cr√©er une image Docker, la pousser sur Azure Container Registry (ACR), puis la d√©ployer sur Azure Container Instances (ACI)
 
 =====
 
-Azure Container Instances (ACI)	DÈploiements rapides , usage temporaire, facturÈ lorsque le conteneur est en execution,
-Azure App Service for Containers	Web apps  ,avec CI/CD (exemple : une web API Flask avec auto-scaling, URL personnalisÈe, et SSL)
-Azure Kubernetes Service (AKS)	application distribuÈe, microservices, multi-conteneurs 
-Azure Functions (containers)	Conteneurs serverless, traitement des msg de file, webhook, t‚che pannifiÈe, IoT, il s'agit d'une execution lÈgËre
+Azure Container Instances (ACI)	D√©ploiements rapides , usage temporaire, factur√© lorsque le conteneur est en execution,
+Azure App Service for Containers	Web apps  ,avec CI/CD (exemple : une web API Flask avec auto-scaling, URL personnalis√©e, et SSL)
+Azure Kubernetes Service (AKS)	application distribu√©e, microservices, multi-conteneurs 
+Azure Functions (containers)	Conteneurs serverless, traitement des msg de file, webhook, t√¢che pannifi√©e, IoT, il s'agit d'une execution l√©g√®re
 
 Bref : 
 
-ACI : facturÈ lorsque le conteneur est dÈmarrÈ 
-App service, AKS : conteneurisation facturÈe en continu
-Azure functions : facturÈ ‡ l'exÈcution
+ACI : factur√© lorsque le conteneur est d√©marr√© 
+App service, AKS : conteneurisation factur√©e en continu
+Azure functions : factur√© √† l'ex√©cution
 
 
-j'ai une image docker sur ACR ou dockerHub et je veux la dÈployer sur azure :    
--Utiliser ACI si tu veux un conteneur rapide, jetable, souple, et facturÈ uniquement quand il tourne.
--Utiliser App Service si tu veux hÈberger une API web 24/7 avec montÈe en charge automatique et gestion simplifiÈe.
+j'ai une image docker sur ACR ou dockerHub et je veux la d√©ployer sur azure :    
+-Utiliser ACI si tu veux un conteneur rapide, jetable, souple, et factur√© uniquement quand il tourne.
+-Utiliser App Service si tu veux h√©berger une API web 24/7 avec mont√©e en charge automatique et gestion simplifi√©e.
 
 ====Exemple de conteneuriation sur Azure ACI : 
 
-Avoir un serveur linux ayant docker installÈ.
-? CrÈer une image Docker
+Avoir un serveur linux ayant docker install√©.
+? Cr√©er une image Docker
 ? La pousser sur Azure Container Registry (ACR)
-? La dÈployer sur Azure Container Instances (ACI)
+? La d√©ployer sur Azure Container Instances (ACI)
 
- CrÈer une app simple (Flask) pour conteneurisation
+ Cr√©er une app simple (Flask) pour conteneurisation
 myapp/
 +-- app.py
 +-- Dockerfile
 
 2. Construire et tester localement
-3. CrÈer Azure Container Registry (ACR) -> comme DockerHub
-4. Se connecter ‡ ACR et pousser l'image
-5. DÈployer sur Azure Container Instances (ACI)
-  AccËde ‡ líapp via :
+3. Cr√©er Azure Container Registry (ACR) -> comme DockerHub
+4. Se connecter √† ACR et pousser l'image
+5. D√©ployer sur Azure Container Instances (ACI)
+  Acc√®de √† l‚Äôapp via :
     http://myacidemoweb.westeurope.azurecontainer.io
 =================================================================
 
@@ -179,17 +179,17 @@ myapp/
       +-- app.py
       +-- Dockerfile
     Construire et tester localement
- 2. Construire et pousser líimage vers ACR
- 3. CrÈer Azure App Service Plan et Web App
- 4. Lier ACR ‡ líApp Service (authentification)
- 5. AccËs ‡ líapplication
+ 2. Construire et pousser l‚Äôimage vers ACR
+ 3. Cr√©er Azure App Service Plan et Web App
+ 4. Lier ACR √† l‚ÄôApp Service (authentification)
+ 5. Acc√®s √† l‚Äôapplication
     Ton app est accessible via : https://myappwebdemo.azurewebsites.net
- 6. Mettre ‡ jour líimage plus tard
+ 6. Mettre √† jour l‚Äôimage plus tard
     Tu rebuilds localement ? docker push
-    Puis tu fais un restart de líApp Service
+    Puis tu fais un restart de l‚ÄôApp Service
 
 
-==>crÈer un conteneur sur ACI en se basant sur une image ACR : 
+==>cr√©er un conteneur sur ACI en se basant sur une image ACR : 
 
 az group create --name containers --location francecentral
 az container create `
@@ -202,13 +202,116 @@ az container create `
   --cpu 1 `
   --memory 1.5
 
-==>crÈer un conteneur sur ACI en se basant sur une image dockerHub : 
+==>cr√©er un conteneur sur ACI en se basant sur une image dockerHub : 
 
 az group create --name containers --location francecentral
 az container create --resource-group containers --name taskapi-container --image souflouf89/taskapi --dns-name-label taskapi-souflouf89 --ports 80 --os-type Linux --cpu 1 --memory 1.5
 
+=============================================================================================================================
 
+ACI	Ex√©cute directement un conteneur	Manuel
+ACA	Plateforme serverless pour conteneurs	Automatique
+AKS	Cluster Kubernetes manag√©	HPA et autoscaling des n≈ìuds
 
-    
+=================================Pr√©parer Azure Cloud Shell : 
+
+RG=RG-LAB-CONTAINERS
+LOCATION=francecentral
+az group create \
+  --name $RG \
+  --location $LOCATION
+az extension add --name containerapp --upgrade
+
+================================Tester ACI : d√©ployer Nginx : 
+
+az container create \
+  --resource-group $RG \
+  --name aci-nginx \
+  --image nginx:alpine \
+  --os-type Linux \
+  --cpu 1 \
+  --memory 1.5 \
+  --ip-address Public \
+  --ports 80
+
+    az container show \
+  -g $RG -n aci-nginx \
+  --query "{state:instanceView.state,ip:ipAddress.ip}" \
+  -o json
  
- 
+ R√©cup√©rer son IP : 
+
+ACI_IP=$(az container show \
+  -g $RG -n aci-nginx \
+  --query ipAddress.ip -o tsv)
+
+curl http://$ACI_IP
+
+==================================Tester ACA : d√©ployer Nginx : 
+
+az containerapp env create \
+  --name aca-env-lab \
+  --resource-group $RG \
+  --location $LOCATION
+
+az containerapp create \
+  --name aca-nginx-lab \
+  --resource-group $RG \
+  --environment aca-env-lab \
+  --image nginx:alpine \
+  --target-port 80 \
+  --ingress external \
+  --cpu 0.5 \
+  --memory 1.0Gi \
+  --min-replicas 0 \
+  --max-replicas 3
+
+r√©cup√©rer l'URL : 
+
+az containerapp show \
+  -g $RG -n aca-nginx-lab \
+  --query properties.configuration.ingress.fqdn \
+  -o tsv
+
+================================= d√©ployer Nginx sur AKS : 
+
+1-Cr√©er un cluster AKS
+
+az aks create \
+  --resource-group RG-LAB-CONTAINERS \
+  --name aks-lab \
+  --node-count 1 \
+  --node-vm-size Standard_B2s \
+  --generate-ssh-keys
+
+2-Se connecter au cluster
+
+az aks get-credentials \
+  --resource-group RG-LAB-CONTAINERS \
+  --name aks-lab
+
+kubectl get nodes
+
+3-D√©ployer Nginx
+
+kubectl create deployment nginx \
+  --image=nginx:alpine \
+  --replicas=2
+
+kubectl get pods -o wide
+
+4-Exposer Nginx
+
+kubectl expose deployment nginx \
+  --type=LoadBalancer \
+  --port=80 \
+  --target-port=80
+
+kubectl get svc nginx --watch
+
+5-Tester le scaling des Pods : 
+
+kubectl scale deployment nginx --replicas=4
+
+kubectl get pods -o wide
+
