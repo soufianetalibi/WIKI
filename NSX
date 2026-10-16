@@ -16,6 +16,8 @@ La Gateway IDS/IPS → inspection du trafic Nord-Sud au niveau Gateway via les s
 ============================================================================
 
 VXLAN : un tunnel entre ESXi et switch physique qui transporte le traffic des VMs
+		c'est un protocole d'encapsulation qui transporte le traffic des VMs sur un réseau IP dans un réseau logique
+   GENEVE est le protocole d'encapsulation utilisé par VMware NSX
         il faut déclarer un seul VLAN physique 500 déclaré sur le switch qui représente le TEP
 
 VTEP : VMK adapter : interface logique pour NSX : Ex : TEP1, TEP2
