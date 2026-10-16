@@ -13,6 +13,70 @@ Le Gateway Firewall (GFW) contrôle le trafic Nord-Sud (internet -> LAN ...)
 La ditributed IDS/IPS → inspection du trafic est-ouest via les signatures des attaques
 La Gateway IDS/IPS → inspection du trafic Nord-Sud au niveau Gateway via les signatures des attaques
 
+============================================================================
+
+VXLAN : un tunnel entre ESXi et switch physique qui transporte le traffic des VMs
+        il faut déclarer un seul VLAN physique 500 déclaré sur le switch qui représente le TEP
+
+VTEP : VMK adapter : interface logique pour NSX : Ex : TEP1, TEP2
+VNI : NSX VLAN-ID : ID du logical switch
+
+Sur le routeur : sous interface 0/0.500 avec sa gateway 10.50.0.1 (Gateway des TEP)
+
+Sur le switch : créer un VLAN 500 avec MTU 1700 (il transporte les paquets encapsulés entre les TEP)
+		Connecter les interfaces ESXI à ce VLAN
+
+-DNS records
+-Deploy NSX Manager from OVA
+-Register vcenter server
+-Add NSX license
+-Configure AD authentication
+-create TZ-OVERLAY, TZ-VLAN, IP-POOL-NSX
+-Create UPLINK-PROFIL-NSX
+-Create TNP (Transport node profil) et appliquer au cluster
+-Create Edge-cluster avec deux nodes : Edge-01 et Edge-02
+
+Edge-01 : 
+
+Management          : 10.10.10.21
+TEP 1 / TEP 2       : 10.50.0.21  / 10.50.0.22
+Uplink 1 / Uplink 2 : 172.16.1.21 / 172.16.2.21  (2 interfaces sur la T0)
+
+Edge-02 : 
+
+Management           : 10.10.10.22
+TEP 1 / TEP 2        : 10.50.0.23 / 10.50.0.24   
+Uplink 1 / Uplink 2  : 172.16.1.22 / 172.16.2.22  (2 interfaces sur la T0)
+
+les interfaces 172.16.1.21 et 172.16.1.22 vont établir deux session BGP avec l'équipement physique 172.16.1.20
+
+les interfaces 172.16.2.21 et 172.16.2.22 vont établir deux session BGP avec l'équipement physique 172.16.2.20
+
+-Créer une T1 et attacher des segments
+-Créer une T0 qui utilise Edge-cluster
+ 
+Edge-01 : 
+  ->T0 uplink interface : 172.16.1.21/24
+       -->BGP PEER IP : 172.16.1.20
+       -->BGP PEER ASN : 65001
+       -->BGP PEER Password : SFN+123
+
+  ->T0 uplink interface : 172.16.2.21/24
+       -->BGP PEER IP : 172.16.2.20
+       -->BGP PEER ASN : 65001
+       -->BGP PEER Password : SFN+123
+
+Edge-02 : 
+  ->T0 uplink interface : 172.16.1.22/24
+       -->BGP PEER IP : 172.16.1.20
+       -->BGP PEER ASN : 65001
+       -->BGP PEER Password : SFN+123
+
+  ->T0 uplink interface : 172.16.2.22/24
+       -->BGP PEER IP : 172.16.2.20
+       -->BGP PEER ASN : 65001
+       -->BGP PEER Password : SFN+123
+
 ===================
 
 Traceflow : tester flux "icmp, 80, 443 ..." entre une source et une destination
