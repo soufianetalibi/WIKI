@@ -21,7 +21,7 @@ VXLAN : un tunnel entre ESXi et switch physique qui transporte le traffic des VM
         il faut déclarer un seul VLAN physique 500 déclaré sur le switch qui représente le TEP
 
 VTEP : VMK adapter : interface logique pour NSX : Ex : TEP1, TEP2
-VNI : NSX VLAN-ID : ID du logical switch
+VNI : NSX VLAN-ID : ID du logical switch (ID du segment)
 
 Sur le routeur : sous interface 0/0.500 avec sa gateway 10.50.0.1 (Gateway des TEP)
 
